@@ -58,13 +58,13 @@ export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
     height: '身高',
     build: '体型',
     appearance: '外貌',
-    personality: '性格'
+    personality: '性格',
   };
   const metaLabels: { [key: string]: string } = {
     relationship: '关系',
     favorability: '好感度',
     description: '概要',
-    title: '称号'
+    title: '称号',
   };
 
   const attributeLabels: { [key: string]: string } = {
@@ -131,10 +131,10 @@ export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
     newPartyAttrPoints: number,
   ): any[] {
     return [
-      { event: 'updateByPath', detail:{path:`${basePath}.character.level`,value:newLevel}},
-      { event: 'updateByPath', detail:{path:'PlayerData.progress.partyExperience.current',value:newExp}},
-      { event: 'updateByPath', detail:{path:'PlayerData.progress.partyAttrPoints',value:newPartyAttrPoints}},
-    ]
+      { event: 'updateByPath', detail: { path: `${basePath}.character.level`, value: newLevel } },
+      { event: 'updateByPath', detail: { path: 'PlayerData.progress.partyExperience.current', value: newExp } },
+      { event: 'updateByPath', detail: { path: 'PlayerData.progress.partyAttrPoints', value: newPartyAttrPoints } },
+    ];
   }
 
   // 统一的升级逻辑
@@ -161,13 +161,18 @@ export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
     for (const key in tempAttributes) {
       if (tempAttributes[key] !== initialAttributes[key]) {
         // commands.push(`_.set('${basePath}.attributes.${key}', ${tempAttributes[key]});`);
-        commands.push({ event: 'updateByPath', detail:{path:`${basePath}.attributes.${key}`,value:tempAttributes[key]}})
+        commands.push({
+          event: 'updateByPath',
+          detail: { path: `${basePath}.attributes.${key}`, value: tempAttributes[key] },
+        });
       }
     }
     if (commands.length > 0) {
       // commands.push(`_.set('PlayerData.progress.partyAttrPoints', ${newPartyAttrPoints});`);
-      commands.push({ event: 'updateByPath', detail:{path:'PlayerData.progress.partyAttrPoints',value:newPartyAttrPoints}})
-
+      commands.push({
+        event: 'updateByPath',
+        detail: { path: 'PlayerData.progress.partyAttrPoints', value: newPartyAttrPoints },
+      });
     }
     return commands;
   }
@@ -210,7 +215,9 @@ export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
     // const command = commands.join('\n');
 
     await handleMvuUpdate(commands, () => {
-      partyUpgradeState.value[charName].initialAttributes = _.cloneDeep(partyUpgradeState.value[charName].tempAttributes);
+      partyUpgradeState.value[charName].initialAttributes = _.cloneDeep(
+        partyUpgradeState.value[charName].tempAttributes,
+      );
       // const freshChar = party.value.find(p => p.character.name === charName);
       // if (freshChar && partyUpgradeState.value[charName]) {
       //   partyUpgradeState.value[charName].initialAttributes = _.cloneDeep(freshChar.attributes);

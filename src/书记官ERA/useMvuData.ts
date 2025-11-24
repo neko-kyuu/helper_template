@@ -2,18 +2,17 @@
 import _ from 'lodash';
 import { ref, watch } from 'vue';
 
-
 const ERA_EVENT = {
   insertByObject: 'era:insertByObject',
   updateByObject: 'era:updateByObject',
   insertByPath: 'era:insertByPath',
   updateByPath: 'era:updateByPath',
   deleteByObject: 'era:deleteByObject',
-  deleteByPath: 'era:deleteByPath'
-}
+  deleteByPath: 'era:deleteByPath',
+};
 interface Command {
-  event:string
-  detail:any
+  event: string;
+  detail: any;
 }
 
 export function useMvuData(defaultMvuData: any) {
@@ -49,15 +48,13 @@ export function useMvuData(defaultMvuData: any) {
         if (event in ERA_EVENT) {
           // 触发事件，并传递解析出的 detail 对象
           eventEmit(ERA_EVENT[event as keyof typeof ERA_EVENT], command.detail);
-        }
-        else {
+        } else {
           console.warn(`Invalid ERA event received: ${event}`);
         }
       });
 
       // await refreshMvuData('latest');
       successCallback?.();
-
     } catch (error) {
       console.error('修改 MVU 数据失败:', error);
       toastr.error('操作失败: 保存数据时出错');
@@ -81,7 +78,7 @@ export function useMvuData(defaultMvuData: any) {
   const initialize = async () => {
     try {
       currentMessageId.value = getCurrentMessageId();
-      refreshMvuData()
+      refreshMvuData();
     } catch (error) {
       console.error('组件初始化失败:', error);
     }
@@ -101,37 +98,37 @@ export function useMvuData(defaultMvuData: any) {
       rawMvuData.value = detail.statWithoutMeta;
 
       // 处理世界书
-      const quest = rawMvuData.value?.PlayerData?.progress?.currentQuest || {}
+      const quest = rawMvuData.value?.PlayerData?.progress?.currentQuest || {};
       // const currentQuests:string[] = Object.values(quest)
       //   .filter((item:any) => item.name)
       //   .map((item:any) => item.name);
-      const currentQuests:string[] = Object.keys(quest)
+      const currentQuests: string[] = Object.keys(quest);
 
-      console.log('----开始处理世界书蓝绿灯，当前任务:',currentQuests)
+      console.log('----开始处理世界书蓝绿灯，当前任务:', currentQuests);
       updateWorldbookWith('奥弗萨斯', worldbook => {
         const QUEST_KEYWORDS = ['主线', '支线'];
         const STRATEGY_TYPE = {
           CONSTANT: 'constant' as const,
           SELECTIVE: 'selective' as const,
         };
-      
+
         return worldbook.map(entry => {
           const isQuestEntry = QUEST_KEYWORDS.some(keyword => entry.name.includes(keyword));
-      
+
           // 如果不是任务条目或缺少 strategy 属性，则直接返回原始条目，不做任何修改
           if (!isQuestEntry || !entry.strategy) {
             return entry;
           }
-      
+
           // 判断当前任务是否处于激活状态
           const isQuestActive = currentQuests.some(quest => entry.strategy.keys.includes(quest));
           const newStrategyType = isQuestActive ? STRATEGY_TYPE.CONSTANT : STRATEGY_TYPE.SELECTIVE;
-      
+
           // 如果策略类型无需改变，则直接返回原始条目，避免不必要的对象创建
           if (entry.strategy.type === newStrategyType) {
             return entry;
           }
-      
+
           // 返回一个新的条目对象，其中包含更新后的 strategy
           return {
             ...entry,

@@ -177,7 +177,7 @@
         color: var(--italics_text_color);
       }
 
-      span+button {
+      span + button {
         margin-left: 4px;
       }
     }
@@ -225,7 +225,6 @@
       font-size: var(--font-size-extra-small);
       color: var(--quote_text_color);
       line-height: 1.5;
-
     }
   }
 }
@@ -249,7 +248,6 @@
     font-weight: bold;
   }
 }
-
 
 /* 衣柜 */
 .wardrobe-container {

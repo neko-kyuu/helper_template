@@ -25,8 +25,8 @@ interface Region {
 const props = defineProps({
   coordinateHelperMode: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 const emit = defineEmits(['point-selected', 'coordinates-clicked']);
@@ -45,27 +45,44 @@ const scaleY = ref(1);
 
 const regions: Region[] = [
   {
-    name:'科雷斯帝国',
-    points:[
-      { x: 181, y: 22 },{ x: 194, y: 64 },{ x: 116, y: 146 },{ x: 96, y: 172 },{ x: 122, y: 231 },{ x: 97, y: 239 },
-      { x: 99, y: 259 },{ x: 122, y: 270 },{ x: 139, y: 260 },{ x: 151, y: 288 },{ x: 321, y: 287 },{ x: 328, y: 226 },
-      { x: 302, y: 187 },{ x: 338, y: 148 },{ x: 318, y: 117 },{ x: 260, y: 101 },{ x: 267, y: 88 },{ x: 234, y: 46 }
-    ], 
+    name: '科雷斯帝国',
+    points: [
+      { x: 181, y: 22 },
+      { x: 194, y: 64 },
+      { x: 116, y: 146 },
+      { x: 96, y: 172 },
+      { x: 122, y: 231 },
+      { x: 97, y: 239 },
+      { x: 99, y: 259 },
+      { x: 122, y: 270 },
+      { x: 139, y: 260 },
+      { x: 151, y: 288 },
+      { x: 321, y: 287 },
+      { x: 328, y: 226 },
+      { x: 302, y: 187 },
+      { x: 338, y: 148 },
+      { x: 318, y: 117 },
+      { x: 260, y: 101 },
+      { x: 267, y: 88 },
+      { x: 234, y: 46 },
+    ],
     color: 'rgba(60, 179, 113, 0.2)',
-    cities:[
+    cities: [
       { name: '迈林代尔', x: 209, y: 169 },
-      { name: '米克斯塔',x: 202, y: 184 },
-      { name: '巴拉德雷',x: 242, y: 195 }
-    ]
-  }
+      { name: '米克斯塔', x: 202, y: 184 },
+      { name: '巴拉德雷', x: 242, y: 195 },
+    ],
+  },
 ];
 
 const isPointInPolygon = (point: Point, polygon: Point[]): boolean => {
   let isInside = false;
   for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
-    const xi = polygon[i].x, yi = polygon[i].y;
-    const xj = polygon[j].x, yj = polygon[j].y;
-    const intersect = ((yi > point.y) !== (yj > point.y)) && (point.x < (xj - xi) * (point.y - yi) / (yj - yi) + xi);
+    const xi = polygon[i].x,
+      yi = polygon[i].y;
+    const xj = polygon[j].x,
+      yj = polygon[j].y;
+    const intersect = yi > point.y !== yj > point.y && point.x < ((xj - xi) * (point.y - yi)) / (yj - yi) + xi;
     if (intersect) isInside = !isInside;
   }
   return isInside;
@@ -94,12 +111,12 @@ const drawMap = () => {
   // In helper mode, don't draw regions/cities, just the clicked point
   if (props.coordinateHelperMode) {
     if (lastClickedPoint.value) {
-        ctx.fillStyle = 'cyan';
-        ctx.beginPath();
-        ctx.arc(lastClickedPoint.value.x, lastClickedPoint.value.y, 5, 0, 2 * Math.PI);
-        ctx.fill();
-        ctx.strokeStyle = 'black';
-        ctx.stroke();
+      ctx.fillStyle = 'cyan';
+      ctx.beginPath();
+      ctx.arc(lastClickedPoint.value.x, lastClickedPoint.value.y, 5, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.strokeStyle = 'black';
+      ctx.stroke();
     }
     return;
   }
@@ -143,7 +160,7 @@ const drawMap = () => {
     ctx.closePath();
     ctx.stroke();
   }
-  
+
   if (selectedCity.value) {
     ctx.strokeStyle = 'yellow';
     ctx.lineWidth = 2;
@@ -162,11 +179,11 @@ const handleCanvasClick = (event: MouseEvent) => {
   if (props.coordinateHelperMode) {
     const originalX = Math.round(clickPoint.x / scaleX.value);
     const originalY = Math.round(clickPoint.y / scaleY.value);
-    
+
     const coords = { x: originalX, y: originalY };
     console.log(`Coordinates: { x: ${coords.x}, y: ${coords.y} }`);
     emit('coordinates-clicked', coords);
-    
+
     lastClickedPoint.value = clickPoint;
     drawMap();
     return;
@@ -195,8 +212,8 @@ const handleCanvasClick = (event: MouseEvent) => {
     emit('point-selected', `${foundRegionForCity.name}, ${foundCity.name}`);
   } else {
     const scaledRegions = regions.map(region => ({
-        ...region,
-        points: region.points.map(p => ({ x: p.x * scaleX.value, y: p.y * scaleY.value }))
+      ...region,
+      points: region.points.map(p => ({ x: p.x * scaleX.value, y: p.y * scaleY.value })),
     }));
     const clickedRegionData = scaledRegions.find(region => isPointInPolygon(clickPoint, region.points));
     selectedCity.value = null;
@@ -213,51 +230,52 @@ const handleCanvasClick = (event: MouseEvent) => {
 };
 
 const resizeCanvas = () => {
-    const canvas = mapCanvas.value;
-    const container = canvasContainer.value;
-    if (!canvas || !container) return;
+  const canvas = mapCanvas.value;
+  const container = canvasContainer.value;
+  if (!canvas || !container) return;
 
-    const rect = container.getBoundingClientRect();
-    const dpr = window.devicePixelRatio || 1;
+  const rect = container.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
 
-    canvas.width = rect.width * dpr;
-    canvas.height = rect.height * dpr;
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
 
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-    ctx.scale(dpr, dpr);
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+  ctx.scale(dpr, dpr);
 
-    // Base dimensions for coordinate mapping
-    const baseWidth = 500;
-    const baseHeight = 300;
-    scaleX.value = rect.width / baseWidth;
-    scaleY.value = rect.height / baseHeight;
+  // Base dimensions for coordinate mapping
+  const baseWidth = 500;
+  const baseHeight = 300;
+  scaleX.value = rect.width / baseWidth;
+  scaleY.value = rect.height / baseHeight;
 
-    drawMap();
-}
+  drawMap();
+};
 
 let resizeObserver: ResizeObserver;
 
 onMounted(() => {
-  mapImage.crossOrigin = "Anonymous";
+  mapImage.crossOrigin = 'Anonymous';
   mapImage.onload = () => {
     isImageLoaded.value = true;
     drawMap();
   };
-  mapImage.src = 'https://raw.githubusercontent.com/neko-kyuu/the-tale-of-Ofoces/refs/heads/static-resources/public/static/vault/29A958DA-EF44-4C67-923E-1B4ECB5E6A90_1_105_c.jpeg';
-  
+  mapImage.src =
+    'https://raw.githubusercontent.com/neko-kyuu/the-tale-of-Ofoces/refs/heads/static-resources/public/static/vault/29A958DA-EF44-4C67-923E-1B4ECB5E6A90_1_105_c.jpeg';
+
   const container = canvasContainer.value;
   if (container) {
-      resizeObserver = new ResizeObserver(resizeCanvas);
-      resizeObserver.observe(container);
+    resizeObserver = new ResizeObserver(resizeCanvas);
+    resizeObserver.observe(container);
   }
   resizeCanvas();
 });
 
 onUnmounted(() => {
-    if (resizeObserver) {
-        resizeObserver.disconnect();
-    }
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+  }
 });
 </script>
 

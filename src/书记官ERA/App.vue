@@ -40,34 +40,39 @@
         <div class="world-container">
           <div class="section-title">附近NPC</div>
 
-            <div class="master-detail-body reverse">
-              <div class="scene-detail-item">
-                  <div v-for="(npc, index) in mvu.PlayerData.settings.nearbyNPC" :key="index" @click="selectNpc(npc)"
-                    :class="{ selected: selectedNpc === npc }" class="npc-name">{{ npc.character?.name }}</div>
-              </div>
-
-              <div class="detail-panel">
-                <div v-if="selectedNpc" class="scene-detail-item">
-                  <div class="column">
-                    <div class="column-content" v-for="(value, key) in selectedNpc.character" :key="key">
-                      <span>{{ characterLabels[key] || key }}</span> {{ value }}
-                    </div>
-                    <div class="column-content" v-for="(value, key) in selectedNpc.meta" :key="key">
-                      <span>{{ metaLabels[key] || key }}</span> {{ value }}
-                    </div>
-                  </div>
-                  <div class="attributes">
-                    <div class="attr" v-for="(value, key) in selectedNpc.attributes" :key="key">
-                      <span>{{ attributeLabels[key] || key }}</span>
-                      <span class="attr-value">{{ value }}</span>
-                    </div>
-                  </div>
-                </div>
-                <div v-else class="data-empty">
-                  选择一个角色查看详情
-                </div>
+          <div class="master-detail-body reverse">
+            <div class="scene-detail-item">
+              <div
+                v-for="(npc, index) in mvu.PlayerData.settings.nearbyNPC"
+                :key="index"
+                @click="selectNpc(npc)"
+                :class="{ selected: selectedNpc === npc }"
+                class="npc-name"
+              >
+                {{ npc.character?.name }}
               </div>
             </div>
+
+            <div class="detail-panel">
+              <div v-if="selectedNpc" class="scene-detail-item">
+                <div class="column">
+                  <div class="column-content" v-for="(value, key) in selectedNpc.character" :key="key">
+                    <span>{{ characterLabels[key] || key }}</span> {{ value }}
+                  </div>
+                  <div class="column-content" v-for="(value, key) in selectedNpc.meta" :key="key">
+                    <span>{{ metaLabels[key] || key }}</span> {{ value }}
+                  </div>
+                </div>
+                <div class="attributes">
+                  <div class="attr" v-for="(value, key) in selectedNpc.attributes" :key="key">
+                    <span>{{ attributeLabels[key] || key }}</span>
+                    <span class="attr-value">{{ value }}</span>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="data-empty">选择一个角色查看详情</div>
+            </div>
+          </div>
         </div>
       </template>
       <!-- 队伍 -->
@@ -80,8 +85,12 @@
                 <span>团队属性点: {{ mvu.PlayerData.progress.partyAttrPoints - totalSpentPoints }}</span>
                 <button @click="commitAttributes(char, index)">保存</button>
               </div>
-              <button @click="levelUp(char, index)" :disabled="mvu.PlayerData.progress.partyExperience.current < mvu.PlayerData.progress.partyExperience.max
-                ">
+              <button
+                @click="levelUp(char, index)"
+                :disabled="
+                  mvu.PlayerData.progress.partyExperience.current < mvu.PlayerData.progress.partyExperience.max
+                "
+              >
                 升级
               </button>
             </div>
@@ -100,9 +109,12 @@
               <div class="stat">
                 小队经验
                 <div class="bar">
-                  <div class="fill" :style="{
-                    width: `${Math.min(100, (mvu.PlayerData.progress.partyExperience.current / mvu.PlayerData.progress.partyExperience.max) * 100)}%`,
-                  }"></div>
+                  <div
+                    class="fill"
+                    :style="{
+                      width: `${Math.min(100, (mvu.PlayerData.progress.partyExperience.current / mvu.PlayerData.progress.partyExperience.max) * 100)}%`,
+                    }"
+                  ></div>
                 </div>
                 {{ mvu.PlayerData.progress.partyExperience.current }} /
                 {{ mvu.PlayerData.progress.partyExperience.max }}
@@ -113,14 +125,22 @@
               <div class="attr" v-for="(value, key) in char.attributes" :key="key">
                 <span>{{ attributeLabels[key] || key }}</span>
                 <div class="attr-value-controls" v-if="isAssigningAttributes">
-                  <button class="small" @click="decrementAttribute(char, index, key as unknown as string)" :disabled="partyUpgradeState[char.character.name]?.tempAttributes[key] <=
-                    partyUpgradeState[char.character.name]?.initialAttributes[key]
-                    ">
+                  <button
+                    class="small"
+                    @click="decrementAttribute(char, index, key as unknown as string)"
+                    :disabled="
+                      partyUpgradeState[char.character.name]?.tempAttributes[key] <=
+                      partyUpgradeState[char.character.name]?.initialAttributes[key]
+                    "
+                  >
                     -
                   </button>
                   <span class="attr-value">{{ partyUpgradeState[char.character.name]?.tempAttributes[key] }}</span>
-                  <button class="small" @click="incrementAttribute(char, index, key as unknown as string)"
-                    :disabled="mvu.PlayerData.progress.partyAttrPoints <= totalSpentPoints">
+                  <button
+                    class="small"
+                    @click="incrementAttribute(char, index, key as unknown as string)"
+                    :disabled="mvu.PlayerData.progress.partyAttrPoints <= totalSpentPoints"
+                  >
                     +
                   </button>
                 </div>
@@ -140,9 +160,13 @@
               <button>新增</button>
             </div>
 
-            <div v-for="outfit in mvu.Wardrobe.ownedOutfits" :key="outfit.id" class="outfit-item"
+            <div
+              v-for="outfit in mvu.Wardrobe.ownedOutfits"
+              :key="outfit.id"
+              class="outfit-item"
               :class="{ active: outfit.id === mvu.Wardrobe.currentOutfit, selected: outfit.id === selectedOutfitId }"
-              @click="selectedOutfitId = outfit.id">
+              @click="selectedOutfitId = outfit.id"
+            >
               {{ outfit.name }}
               <span v-if="outfit.id === mvu.Wardrobe.currentOutfit" class="current-tag">(当前)</span>
             </div>
@@ -151,8 +175,10 @@
             <template v-if="selectedOutfit">
               <div class="outfit-header">
                 <div class="section-title">{{ selectedOutfit.name }}</div>
-                <button @click="equipOutfit(selectedOutfit.id)"
-                  :disabled="selectedOutfit.id === mvu.Wardrobe.currentOutfit">
+                <button
+                  @click="equipOutfit(selectedOutfit.id)"
+                  :disabled="selectedOutfit.id === mvu.Wardrobe.currentOutfit"
+                >
                   装备
                 </button>
               </div>
@@ -161,8 +187,9 @@
                 <template v-for="(item, index) in selectedOutfit.slots" :key="index">
                   <div class="slot-item" v-if="!Array.isArray(item) && item">
                     <span class="slot-name">{{ slotNames[index] || item?.slot }}</span>
-                    <span class="item-name">{{ item.name }} <span class="item-details">({{ item.quality }}, {{
-                      item.material }})</span></span>
+                    <span class="item-name"
+                      >{{ item.name }} <span class="item-details">({{ item.quality }}, {{ item.material }})</span></span
+                    >
                   </div>
                   <div class="slot-item" v-else-if="!Array.isArray(item) && item?.slot !== 'extra'">
                     <span class="slot-name">{{ slotNames[index] || item?.slot }}</span>
@@ -171,8 +198,10 @@
                   <template v-if="item?.slot === 'extra' && Array.isArray(item) && item.length > 0">
                     <div v-for="(extraItem, index) in item" :key="`extra-${index}`" class="slot-item">
                       <span class="slot-name">{{ slotNames.extra || '额外' }}</span>
-                      <span class="item-name">{{ extraItem.name }}
-                        <span class="item-details">({{ extraItem.quality }}, {{ extraItem.material }})</span></span>
+                      <span class="item-name"
+                        >{{ extraItem.name }}
+                        <span class="item-details">({{ extraItem.quality }}, {{ extraItem.material }})</span></span
+                      >
                     </div>
                   </template>
                 </template>
@@ -198,7 +227,6 @@
               </div>
             </template>
             <div v-else class="data-empty">请选择一套服装查看详情</div>
-
           </div>
         </div>
       </template>
@@ -216,57 +244,74 @@
             <button @click="activeQuestTab = 'pendingQuests'" :class="{ active: activeQuestTab === 'pendingQuests' }">
               挂起任务
             </button>
-            <button @click="activeQuestTab = 'completedQuests'" :class="{ active: activeQuestTab === 'completedQuests' }">
+            <button
+              @click="activeQuestTab = 'completedQuests'"
+              :class="{ active: activeQuestTab === 'completedQuests' }"
+            >
               已完成任务
             </button>
           </div>
 
           <template v-if="activeQuestTab === 'currentQuests'">
             <div v-if="Object.keys(currentQuests).length === 0" class="data-empty">自由探索中</div>
-              <div v-else>
-                <div class="quest-item" v-for="(quest, index) in currentQuests" :key="index"
-                  :class="{ 'side-quest': !quest.isMain }">
-                  <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
-                  <div class="quest-description">{{ quest.description }}</div>
-                </div>
+            <div v-else>
+              <div
+                class="quest-item"
+                v-for="(quest, index) in currentQuests"
+                :key="index"
+                :class="{ 'side-quest': !quest.isMain }"
+              >
+                <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+                <div class="quest-description">{{ quest.description }}</div>
               </div>
+            </div>
           </template>
 
           <template v-if="activeQuestTab === 'nextQuests'">
             <div v-if="Object.keys(nextQuests).length === 0" class="data-empty">自由探索中</div>
-              <div v-else>
-                <div class="quest-item" v-for="(quest, index) in nextQuests" :key="index"
-                  :class="{ 'side-quest': !quest.isMain }">
-                  <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
-                  <div class="quest-description">{{ quest.description }}</div>
-                  <button @click="activeQuest(index)">激活</button>
-                </div>
+            <div v-else>
+              <div
+                class="quest-item"
+                v-for="(quest, index) in nextQuests"
+                :key="index"
+                :class="{ 'side-quest': !quest.isMain }"
+              >
+                <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+                <div class="quest-description">{{ quest.description }}</div>
+                <button @click="activeQuest(index)">激活</button>
               </div>
+            </div>
           </template>
 
           <template v-if="activeQuestTab === 'pendingQuests'">
             <div v-if="Object.keys(pendingQuests).length === 0" class="data-empty">自由探索中</div>
-              <div v-else>
-                <div class="quest-item" v-for="(quest, index) in pendingQuests" :key="index"
-                  :class="{ 'side-quest': !quest.isMain }">
-                  <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
-                  <div class="quest-description">{{ quest.description }}</div>
-                </div>
+            <div v-else>
+              <div
+                class="quest-item"
+                v-for="(quest, index) in pendingQuests"
+                :key="index"
+                :class="{ 'side-quest': !quest.isMain }"
+              >
+                <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+                <div class="quest-description">{{ quest.description }}</div>
               </div>
+            </div>
           </template>
 
           <template v-if="activeQuestTab === 'completedQuests'">
             <div v-if="Object.keys(completedQuests).length === 0" class="data-empty">自由探索中</div>
-              <div v-else>
-                <div class="quest-item" v-for="(quest, index) in completedQuests" :key="index"
-                  :class="{ 'side-quest': !quest.isMain }">
-                  <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
-                  <div class="quest-description">{{ quest.description }}</div>
-                </div>
+            <div v-else>
+              <div
+                class="quest-item"
+                v-for="(quest, index) in completedQuests"
+                :key="index"
+                :class="{ 'side-quest': !quest.isMain }"
+              >
+                <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+                <div class="quest-description">{{ quest.description }}</div>
               </div>
+            </div>
           </template>
-
-        
         </div>
       </template>
 
@@ -278,29 +323,31 @@
           </div>
           <div class="master-detail-body">
             <div class="master-grid bag-grid" v-if="Object.keys(mvu.PlayerDynamicData.inventory).length">
-              <div class="master-grid-item" v-for="(item, index) in mvu.PlayerDynamicData.inventory" :key="index"
-                @click="selectItem(item)" :class="{ selected: selectedItem?.name === item.name }">
+              <div
+                class="master-grid-item"
+                v-for="(item, index) in mvu.PlayerDynamicData.inventory"
+                :key="index"
+                @click="selectItem(item)"
+                :class="{ selected: selectedItem?.name === item.name }"
+              >
                 <i class="fa-solid fa-box" v-if="item.type == 'item'"></i>
                 <i class="fa-solid fa-shirt" v-if="item.type == 'cloth'"></i>
                 <i class="fa-solid fa-wand-sparkles" v-if="item.type == 'weapon'"></i>
                 {{ item.name }}
               </div>
             </div>
-            <div v-else class="data-empty" style="background: var(--blur_tint_color);">
-              背包空空如也
-            </div>
+            <div v-else class="data-empty" style="background: var(--blur_tint_color)">背包空空如也</div>
             <div class="detail-panel">
               <div v-if="selectedItem" class="details-content">
                 <div class="item-name">{{ selectedItem.name }}</div>
                 <div class="item-quality" :class="selectedItem.quality">{{ qualityLabels[selectedItem.quality] }}</div>
-                <div class="item-type-tier">{{ typeLabels[selectedItem.type] }} / {{ tierLabels[selectedItem.tier] }}
+                <div class="item-type-tier">
+                  {{ typeLabels[selectedItem.type] }} / {{ tierLabels[selectedItem.tier] }}
                 </div>
                 <div class="item-slot" v-if="selectedItem.slot">部位: {{ slotLabels[selectedItem.slot] }}</div>
                 <div class="item-description">{{ selectedItem.description }}</div>
               </div>
-              <div v-else class="data-empty">
-                选择一个物品查看详情
-              </div>
+              <div v-else class="data-empty">选择一个物品查看详情</div>
             </div>
           </div>
         </div>
@@ -322,14 +369,24 @@
           <div class="master-detail-body">
             <div class="master-grid codex-grid">
               <template v-if="activeCodexTab === 'bestiary'">
-                <div class="master-grid-item" v-for="(entry, index) in bestiaryEntries" :key="index"
-                  @click="selectEntry(entry)" :class="{ selected: selectedEntry?.name === entry.name }">
+                <div
+                  class="master-grid-item"
+                  v-for="(entry, index) in bestiaryEntries"
+                  :key="index"
+                  @click="selectEntry(entry)"
+                  :class="{ selected: selectedEntry?.name === entry.name }"
+                >
                   {{ entry.name }}
                 </div>
               </template>
               <template v-if="activeCodexTab === 'anecdotes'">
-                <div class="master-grid-item" v-for="(entry, index) in anecdoteEntries" :key="index"
-                  @click="selectEntry(entry)" :class="{ selected: selectedEntry?.name === entry.name }">
+                <div
+                  class="master-grid-item"
+                  v-for="(entry, index) in anecdoteEntries"
+                  :key="index"
+                  @click="selectEntry(entry)"
+                  :class="{ selected: selectedEntry?.name === entry.name }"
+                >
                   {{ entry.name }}
                 </div>
               </template>
@@ -355,9 +412,7 @@
                 <div class="item-description"><strong>描述:</strong> {{ selectedEntry.description }}</div>
                 <div class="item-description"><strong>已知信息:</strong> {{ selectedEntry.knownInfo }}</div>
               </div>
-              <div v-else class="data-empty">
-                选择一个条目查看详情
-              </div>
+              <div v-else class="data-empty">选择一个条目查看详情</div>
             </div>
           </div>
         </div>
@@ -390,7 +445,7 @@ const defaultMvuData = {
       height: '',
       build: '',
       appearance: '',
-      personality: ''
+      personality: '',
     },
     status: {
       health: {
@@ -441,7 +496,7 @@ const defaultMvuData = {
       nearbyNPC: {},
       factionPrestige: {},
       bestiary: {},
-      anecdotes: {}
+      anecdotes: {},
     },
   },
   PlayerDynamicData: {
@@ -486,14 +541,10 @@ const {
 
 const { slotNames, selectedOutfitId, selectedOutfit, currentEquippedOutfit, equipOutfit } = useWardrobe(mvu);
 
-const {
-  currentQuests,
-  nextQuests,
-  pendingQuests,
-  completedQuests,
-  activeQuestTab,
-  activeQuest
-} = useQuests(mvu, handleMvuUpdate);
+const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTab, activeQuest } = useQuests(
+  mvu,
+  handleMvuUpdate,
+);
 const { selectedNpc, selectNpc } = useWorld(mvu);
 const { testFunc } = useTest(mvu, handleMvuUpdate);
 const { selectedItem, selectItem } = useInventory();

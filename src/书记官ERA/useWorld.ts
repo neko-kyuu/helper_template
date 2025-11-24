@@ -1,12 +1,12 @@
 import { ref } from 'vue';
 
 interface NPC {
-  character:{
+  character: {
     name: string;
     level: number;
     gender: string;
     race: string;
-  },
+  };
   attributes: {
     shooting: number;
     melee: number;
@@ -20,12 +20,12 @@ interface NPC {
     medical: number;
     social: number;
     intellectual: number;
-  },
-  meta:{
+  };
+  meta: {
     relationship: string;
     favorability: number;
     description: string;
-  }
+  };
 }
 
 export function useWorld(mvu: any) {

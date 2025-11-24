@@ -1,124 +1,121 @@
 <template>
-	<div class="opening">
-		<div class="corner left-top"></div>
-		<div class="corner right-top"></div>
-		<div class="corner left-bottom"></div>
-		<div class="corner right-bottom"></div>
+  <div class="opening">
+    <div class="corner left-top"></div>
+    <div class="corner right-top"></div>
+    <div class="corner left-bottom"></div>
+    <div class="corner right-bottom"></div>
 
-		<div class="tabs">
-			<button :class="{ active: activeTab === 'character' }" @click="activeTab = 'character'">创建新角色</button>
-			<button :class="{ active: activeTab === 'race' }" @click="activeTab = 'race'">选择种族</button>
-			<button :class="{ active: activeTab === 'attributes' }" @click="activeTab = 'attributes'">属性点分配</button>
-			<button :class="{ active: activeTab === 'initLocation' }" @click="activeTab = 'initLocation'">初始地点</button>
-			<button :class="{ active: activeTab === 'confirm' }" @click="activeTab = 'confirm'">确认开局</button>
-		</div>
+    <div class="tabs">
+      <button :class="{ active: activeTab === 'character' }" @click="activeTab = 'character'">创建新角色</button>
+      <button :class="{ active: activeTab === 'race' }" @click="activeTab = 'race'">选择种族</button>
+      <button :class="{ active: activeTab === 'attributes' }" @click="activeTab = 'attributes'">属性点分配</button>
+      <button :class="{ active: activeTab === 'initLocation' }" @click="activeTab = 'initLocation'">初始地点</button>
+      <button :class="{ active: activeTab === 'confirm' }" @click="activeTab = 'confirm'">确认开局</button>
+    </div>
 
-		<div class="tab-content">
-			<div v-if="activeTab === 'character'">
-				<h1>基础信息</h1>
+    <div class="tab-content">
+      <div v-if="activeTab === 'character'">
+        <h1>基础信息</h1>
 
-				<div class="form-section">
-					<div class="form-grid">
-						<div class="form-group">
-							<label for="name">名字:</label>
-							<input type="text" id="name" v-model="character.name" placeholder="输入你的名字" />
-						</div>
-
-						<div class="form-group">
-							<label for="gender">性别:</label>
-							<select id="gender" v-model="character.gender">
-								<option v-for="g in genders" :key="g" :value="g">{{ g }}</option>
-							</select>
-						</div>
-						<div class="form-group">
-							<label for="height">身高:</label>
-							<input type="text" id="height" v-model="character.height" placeholder="例如: 185cm" />
-						</div>
-						<div class="form-group">
-							<label for="build">体型:</label>
-							<select id="build" v-model="character.build">
-								<option v-for="b in builds" :key="b" :value="b">{{ b }}</option>
-							</select>
-						</div>
-					</div>
-					<div class="form-group">
-						<label for="appearance">外貌:</label>
-						<textarea id="appearance" v-model="character.appearance" placeholder="描述角色的外貌"></textarea>
-					</div>
-					<div class="form-group">
-						<label for="personality">性格:</label>
-						<textarea id="personality" v-model="character.personality" placeholder="描述角色的性格"></textarea>
-					</div>
-				</div>
-			</div>
-
-			<div v-if="activeTab === 'race'">
-				<h1>选择种族</h1>
-				<div class="race-selection">
-					<div
-						class="race-card"
-						v-for="r in races"
-						:key="r.name"
-						:class="{ selected: character.race === r.name }"
-						@click="character.race = r.name"
-					>
-						<h3>{{ r.name }}</h3>
-						<p>{{ r.description }}</p>
-						<p class="race-bonuses">
-							<span v-for="(bonus, attr) in raceBonuses[r.name]" :key="attr" class="bonus-item">
-								{{ attributeLabels[attr] }}: +{{ bonus }}
-							</span>
-						</p>
-					</div>
-				</div>
-			</div>
-
-			<div class="attributes-section" v-if="activeTab === 'attributes'">
-				<h2>属性点分配 (剩余点数: {{ availablePoints }})</h2>
-				<ul>
-					<li v-for="(value, key) in attributes" :key="key">
-						<span class="attribute-name">{{ attributeLabels[key] }}:</span>
-						<div class="attribute-controls">
-							<button @click="decreaseAttribute(key)" :disabled="value <= baseAttributes[key]">-</button>
-							<span class="attribute-value">{{ value }}</span>
-							<button @click="increaseAttribute(key)" :disabled="availablePoints <= 0">+</button>
-						</div>
-					</li>
-				</ul>
-			</div>
-
-            <div v-if="activeTab === 'initLocation'">
-                <h1>选择初始地点</h1>
-                <div class="map-controls">
-                    <label>
-                        <input type="checkbox" v-model="coordinateHelperMode" />
-                        坐标拾取模式
-                    </label>
-                    <span v-if="lastClickedCoords">
-                        最后点击的坐标: { x: {{ lastClickedCoords.x }}, y: {{ lastClickedCoords.y }} }
-                    </span>
-                </div>
-                <MapSelector
-                    :coordinate-helper-mode="coordinateHelperMode"
-                    @point-selected="handlePointSelected"
-                    @coordinates-clicked="handleCoordinatesClicked"
-                />
-                <div v-if="character.location && !coordinateHelperMode">
-                    你选择的地点是: {{ character.location }}
-                </div>
+        <div class="form-section">
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="name">名字:</label>
+              <input type="text" id="name" v-model="character.name" placeholder="输入你的名字" />
             </div>
 
-			<div v-if="activeTab === 'confirm'">
-                <p style="white-space: pre-line;" v-html="openingConfirmText"></p>
-                <p style="white-space: pre-line;" v-html="fixedOpeningText"></p>
-
-                <div class="actions">
-				    <button class="create-button" @click="createCharacter">创建角色</button>
-			    </div>
+            <div class="form-group">
+              <label for="gender">性别:</label>
+              <select id="gender" v-model="character.gender">
+                <option v-for="g in genders" :key="g" :value="g">{{ g }}</option>
+              </select>
             </div>
-		</div>
+            <div class="form-group">
+              <label for="height">身高:</label>
+              <input type="text" id="height" v-model="character.height" placeholder="例如: 185cm" />
+            </div>
+            <div class="form-group">
+              <label for="build">体型:</label>
+              <select id="build" v-model="character.build">
+                <option v-for="b in builds" :key="b" :value="b">{{ b }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="appearance">外貌:</label>
+            <textarea id="appearance" v-model="character.appearance" placeholder="描述角色的外貌"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="personality">性格:</label>
+            <textarea id="personality" v-model="character.personality" placeholder="描述角色的性格"></textarea>
+          </div>
+        </div>
+      </div>
 
-	</div>
+      <div v-if="activeTab === 'race'">
+        <h1>选择种族</h1>
+        <div class="race-selection">
+          <div
+            class="race-card"
+            v-for="r in races"
+            :key="r.name"
+            :class="{ selected: character.race === r.name }"
+            @click="character.race = r.name"
+          >
+            <h3>{{ r.name }}</h3>
+            <p>{{ r.description }}</p>
+            <p class="race-bonuses">
+              <span v-for="(bonus, attr) in raceBonuses[r.name]" :key="attr" class="bonus-item">
+                {{ attributeLabels[attr] }}: +{{ bonus }}
+              </span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="attributes-section" v-if="activeTab === 'attributes'">
+        <h2>属性点分配 (剩余点数: {{ availablePoints }})</h2>
+        <ul>
+          <li v-for="(value, key) in attributes" :key="key">
+            <span class="attribute-name">{{ attributeLabels[key] }}:</span>
+            <div class="attribute-controls">
+              <button @click="decreaseAttribute(key)" :disabled="value <= baseAttributes[key]">-</button>
+              <span class="attribute-value">{{ value }}</span>
+              <button @click="increaseAttribute(key)" :disabled="availablePoints <= 0">+</button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <div v-if="activeTab === 'initLocation'">
+        <h1>选择初始地点</h1>
+        <div class="map-controls">
+          <label>
+            <input type="checkbox" v-model="coordinateHelperMode" />
+            坐标拾取模式
+          </label>
+          <span v-if="lastClickedCoords">
+            最后点击的坐标: { x: {{ lastClickedCoords.x }}, y: {{ lastClickedCoords.y }} }
+          </span>
+        </div>
+        <MapSelector
+          :coordinate-helper-mode="coordinateHelperMode"
+          @point-selected="handlePointSelected"
+          @coordinates-clicked="handleCoordinatesClicked"
+        />
+        <div v-if="character.location && !coordinateHelperMode">你选择的地点是: {{ character.location }}</div>
+      </div>
+
+      <div v-if="activeTab === 'confirm'">
+        <p style="white-space: pre-line" v-html="openingConfirmText"></p>
+        <p style="white-space: pre-line" v-html="fixedOpeningText"></p>
+
+        <div class="actions">
+          <button class="create-button" @click="createCharacter">创建角色</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
@@ -131,7 +128,7 @@ const lastClickedCoords = ref<{ x: number; y: number } | null>(null);
 
 const activeTab = ref('character');
 
-const defaultMvuData:any = JSON.parse(`{
+const defaultMvuData: any = JSON.parse(`{
     "PlayerData": {
         "$meta": {
             "necessary": "self",
@@ -481,32 +478,30 @@ const defaultMvuData:any = JSON.parse(`{
         },
         "currentOutfit": null
     }
-}`)
+}`);
 
 const {
-	character,
-	races,
-	genders,
-	builds,
-	attributes,
-	baseAttributes,
-	availablePoints,
-	increaseAttribute,
-	decreaseAttribute,
-	createCharacter,
-	attributeLabels,
-	raceBonuses,
-    openingConfirmText,
-    fixedOpeningText
+  character,
+  races,
+  genders,
+  builds,
+  attributes,
+  baseAttributes,
+  availablePoints,
+  increaseAttribute,
+  decreaseAttribute,
+  createCharacter,
+  attributeLabels,
+  raceBonuses,
+  openingConfirmText,
+  fixedOpeningText,
 } = useCharacterCreation(defaultMvuData);
 
 const handlePointSelected = (regionName: string) => {
-    character.location = regionName;
+  character.location = regionName;
 };
 
 const handleCoordinatesClicked = (coords: { x: number; y: number }) => {
-    lastClickedCoords.value = coords;
+  lastClickedCoords.value = coords;
 };
-
-
 </script>
