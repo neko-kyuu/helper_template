@@ -13,7 +13,7 @@
             class="master-grid-item"
             v-for="(entry, index) in bestiaryEntries"
             :key="index"
-            @click="selectEntry(entry, index as string)"
+            @click="selectEntry(entry, index as string, 'bestiaryEntries')"
             :class="{ selected: selectedEntry?.name === entry.name }"
           >
             {{ entry.name }}
@@ -24,7 +24,17 @@
             class="master-grid-item"
             v-for="(entry, index) in anecdoteEntries"
             :key="index"
-            @click="selectEntry(entry, index as string)"
+            @click="selectEntry(entry, index as string, 'anecdoteEntries')"
+            :class="{ selected: selectedEntry?.name === entry.name }"
+          >
+            {{ entry.name }}
+          </div>
+          <div style="grid-column: 1 / -1"></div>
+          <div
+            class="master-grid-item"
+            v-for="(entry, index) in archivedEntries"
+            :key="index"
+            @click="selectEntry(entry, index as string, 'archivedEntries')"
             :class="{ selected: selectedEntry?.name === entry.name }"
           >
             {{ entry.name }}
@@ -36,7 +46,7 @@
           <div v-if="!isEditing">
             <div class="item-name flex-between">
               {{ selectedEntry.name }}
-              <div>
+              <div style="flex-shrink: 0">
                 <i
                   class="fa-solid fa-pencil"
                   @click="startEditing"
@@ -46,10 +56,24 @@
                 <i
                   class="fa-solid fa-trash-can"
                   @click="deleteEntry(selectedEntry.id)"
-                  style="cursor: pointer"
+                  style="cursor: pointer; margin-right: 8px"
                   title="删除条目"
                 >
                 </i>
+                <i
+                  v-if="selectedTab != 'archivedEntries'"
+                  class="fa-solid fa-box-archive"
+                  @click="archiveEntry(selectedEntry.id)"
+                  style="cursor: pointer"
+                  title="归档条目"
+                ></i>
+                <i
+                  v-if="selectedTab == 'archivedEntries'"
+                  class="fa-solid fa-arrow-up-from-bracket"
+                  @click="openEntry(selectedEntry.id)"
+                  style="cursor: pointer"
+                  title="公开条目"
+                ></i>
               </div>
             </div>
             <div v-if="'habitat' in selectedEntry" class="detail-item">
@@ -127,6 +151,7 @@ const { mvu, handleMvuUpdate } = useMvuData();
 const {
   selectedEntry,
   selectEntry,
+  selectedTab,
   activeCodexTab,
   bestiaryEntries,
   anecdoteEntries,
@@ -136,5 +161,8 @@ const {
   startEditing,
   cancelEditing,
   saveChanges,
+  archiveEntry,
+  openEntry,
+  archivedEntries,
 } = useCodex(mvu, handleMvuUpdate);
 </script>

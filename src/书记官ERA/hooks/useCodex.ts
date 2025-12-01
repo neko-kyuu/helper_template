@@ -36,13 +36,15 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     return mvu.value.PlayerData.settings.anecdotes || {};
   });
 
-  function selectEntry(entry: BaseBestiaryEntry | BaseAnecdoteEntry | null, key: string) {
+  const selectedTab = ref('');
+  function selectEntry(entry: BaseBestiaryEntry | BaseAnecdoteEntry | null, key: string, tabName: string) {
     selectedEntry.value = entry
       ? {
           ...entry,
           id: key,
         }
       : null;
+    selectedTab.value = tabName;
   }
 
   const deleteEntry = (entryKey: string) => {
@@ -52,7 +54,7 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
         : mvu.value.PlayerData.settings.anecdotes[entryKey];
 
     if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
-      selectEntry(null, '');
+      selectEntry(null, '', '');
     }
 
     const path = activeCodexTab.value === 'bestiary' ? 'bestiary' : 'anecdotes';
@@ -122,12 +124,99 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   });
 
   watch(activeCodexTab, () => {
-    selectEntry(null, '');
+    selectEntry(null, '', '');
   });
+
+  const archivedEntries = computed(() => {
+    return mvu.value.ArchivedData.anecdotes || {};
+  });
+
+  const archiveEntry = (entryKey: string) => {
+    const entryToDelete =
+      activeCodexTab.value === 'bestiary'
+        ? mvu.value.PlayerData.settings.bestiary[entryKey]
+        : mvu.value.PlayerData.settings.anecdotes[entryKey];
+
+    if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
+      selectEntry(null, '', '');
+    }
+
+    const path = activeCodexTab.value === 'bestiary' ? 'bestiary' : 'anecdotes';
+
+    handleMvuUpdate([
+      {
+        event: 'insertByObject',
+        detail: {
+          ArchivedData: {
+            [path]: {
+              [entryKey]: entryToDelete,
+            },
+          },
+        },
+      },
+    ]);
+
+    handleMvuUpdate([
+      {
+        event: 'deleteByObject',
+        detail: {
+          PlayerData: {
+            settings: {
+              [path]: {
+                [entryKey]: {},
+              },
+            },
+          },
+        },
+      },
+    ]);
+  };
+
+  const openEntry = (entryKey: string) => {
+    const entryToDelete =
+      activeCodexTab.value === 'bestiary'
+        ? mvu.value.ArchivedData.bestiary[entryKey]
+        : mvu.value.ArchivedData.anecdotes[entryKey];
+
+    if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
+      selectEntry(null, '', '');
+    }
+
+    const path = activeCodexTab.value === 'bestiary' ? 'bestiary' : 'anecdotes';
+
+    handleMvuUpdate([
+      {
+        event: 'insertByObject',
+        detail: {
+          PlayerData: {
+            settings: {
+              [path]: {
+                [entryKey]: entryToDelete,
+              },
+            },
+          },
+        },
+      },
+    ]);
+
+    handleMvuUpdate([
+      {
+        event: 'deleteByObject',
+        detail: {
+          ArchivedData: {
+            [path]: {
+              [entryKey]: {},
+            },
+          },
+        },
+      },
+    ]);
+  };
 
   return {
     selectedEntry,
     selectEntry,
+    selectedTab,
     activeCodexTab,
     bestiaryEntries,
     anecdoteEntries,
@@ -137,5 +226,8 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     startEditing,
     cancelEditing,
     saveChanges,
+    archiveEntry,
+    openEntry,
+    archivedEntries,
   };
 }

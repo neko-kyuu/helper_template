@@ -88,8 +88,8 @@ import WorldTab from './components/worldTab.vue';
 import { useMvuData } from './hooks/useMvuData';
 import { useTest } from './hooks/useTest';
 
-import ModalDialog from './components/ModalDialog.vue';
 import MapSelector from './components/MapSelector.vue';
+import ModalDialog from './components/ModalDialog.vue';
 import OutfitSelector from './components/outfitSelector.vue';
 
 const activeTab = ref('party');
@@ -125,7 +125,22 @@ const handleConfirm = () => {
     const outfitData = modalComponentRef.value?.getOutfitData();
     if (outfitData) {
       console.log('获取到的套装数据:', outfitData);
-      // todo: 调用 handleMvuUpdate 来保存套装数据
+      // 调用 handleMvuUpdate 来保存套装数据
+      let wardrobe = Object.keys(mvu.value.Wardrobe.ownedOutfits);
+      let increasableIndex = wardrobe.length ? Number(wardrobe[wardrobe.length - 1].slice(1)) + 1 : 1;
+      let outfitKey = `O${increasableIndex}`;
+      handleMvuUpdate([
+        {
+          event: 'insertByObject',
+          detail: {
+            Wardrobe: {
+              ownedOutfits: {
+                [outfitKey]: outfitData,
+              },
+            },
+          },
+        },
+      ]);
     }
   } else {
     console.log('确认按钮被点击');

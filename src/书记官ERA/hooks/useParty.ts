@@ -1,7 +1,6 @@
 // hooks/useParty.ts
 import _ from 'lodash';
 import { computed, ref, Ref, watchEffect } from 'vue';
-import { npcConst } from '../npcConstants';
 import { MvuData } from '../types';
 
 type UpgradeState = {
@@ -16,10 +15,11 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
 
   const party = computed(() => {
     const followerNPCs = Object.keys(mvu.value.FollowerNPCData || {}).map((name: string) => {
-      const defaultNpcData = { ...npcConst.get(name) };
+      // const defaultNpcData = { ...npcConst.get(name) };
       const mvuNpcData = rawMvuData.value?.FollowerNPCData?.[name];
+      return mvuNpcData;
 
-      return mvuNpcData ? _.merge(defaultNpcData, mvuNpcData) : defaultNpcData;
+      // return mvuNpcData ? _.merge(defaultNpcData, mvuNpcData) : defaultNpcData;
     });
     return [{ ...mvu.value.PlayerData }, ...followerNPCs];
   });

@@ -1,6 +1,7 @@
 import { InventoryItem, QualityType, SlotType, TierType } from './itemConstants';
 
 export interface EquipmentItem {
+  id: string;
   name: string;
   quality: QualityType;
   material: string;
@@ -26,6 +27,7 @@ export interface Slots {
 export interface OutfitData {
   name: string;
   type: string;
+  description: string;
   slots: Slots;
 }
 
@@ -119,5 +121,10 @@ export interface MvuData {
   Wardrobe: {
     ownedOutfits: OwnedOutfits;
     currentOutfit: string;
+  };
+  ArchivedData: {
+    factionPrestige: Record<string, any>;
+    bestiary: Record<string, any>;
+    anecdotes: Record<string, any>;
   };
 }

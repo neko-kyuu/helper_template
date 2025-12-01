@@ -65,10 +65,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch, defineExpose } from 'vue';
 import _ from 'lodash';
+import { computed, defineExpose, ref, watch } from 'vue';
 import { useMvuData } from '../hooks/useMvuData';
-import { slotLabels, qualityLabels, tierLabels, type SlotType, type InventoryItem } from '../itemConstants';
+import { qualityLabels, slotLabels, tierLabels, type InventoryItem, type SlotType } from '../itemConstants';
 import { type OutfitData, type Slots } from '../types';
 
 const { mvu } = useMvuData();
@@ -218,6 +218,7 @@ const layout: (SlotType | null)[][] = [
   color: var(--italics_text_color);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
+  font-size: var(--font-size-medium);
 
   &:hover {
     border-style: solid;
@@ -282,7 +283,7 @@ const layout: (SlotType | null)[][] = [
   }
 
   .item-info {
-    /* Container for the text part of the card */
+    font-size: var(--font-size-medium);
   }
 
   .item-description {
@@ -297,6 +298,7 @@ const layout: (SlotType | null)[][] = [
     align-items: center;
     justify-content: center;
     color: var(--italics_text_color);
+    font-size: var(--font-size-small);
   }
 }
 </style>

@@ -91,7 +91,12 @@ const defaultMvuData = {
     currentOutfit: 'none',
     //todo 随从的outfit
   },
-  system: {
+  ArchivedData: {
+    factionPrestige: {},
+    bestiary: {},
+    anecdotes: {},
+  },
+  System: {
     mainStoryMode: true,
   },
 };
@@ -187,7 +192,7 @@ export function useMvuData() {
     // 使用 statWithoutMeta 来更新 UI，它是不包含 ERA 内部字段的纯净数据
     rawMvuData.value = detail.statWithoutMeta;
 
-    if (mvu.value.system.mainStoryMode) {
+    if (mvu.value.System.mainStoryMode) {
       // 处理世界书蓝绿灯
       const quest = rawMvuData.value?.PlayerData?.progress?.currentQuest || {};
       // const currentQuests:string[] = Object.values(quest)

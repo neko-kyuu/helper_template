@@ -121,7 +121,7 @@ export function useCharacterCreation(defaultMvuData: any) {
         character: { ...character, level: 1 },
         attributes: { ...attributes },
       },
-      sys: {
+      System: {
         mainStoryMode: sys.mainStoryMode,
       },
     };

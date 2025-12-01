@@ -372,7 +372,7 @@ const defaultMvuData: any = JSON.parse(`{
         "equipment": {
             "leftHand": "none",
             "rightHand": "none",
-            "body": "initalSet"
+            "outfit": "none"
         },
         "clothingAttributes": {
             "$meta": {
@@ -487,7 +487,53 @@ const defaultMvuData: any = JSON.parse(`{
         },
         "currentOutfit": null
     },
-    "system": {
+    "ArchivedData":{
+        "factionPrestige": {
+            "$meta": {
+                "updatable": true
+            },
+            "$template": {
+                "name": "[阵营名称]",
+                "description": "[简要描述]",
+                "prestige": 0,
+                "$meta": {
+                    "updatable": true
+                }
+            }
+        },
+        "bestiary": {
+            "$meta": {
+                "updatable": true
+            },
+            "$template": {
+                "name": "[异怪名称]",
+                "description": "[异怪描述]",
+                "habitat": "[栖息地]",
+                "weaknesses": "[已知弱点]",
+                "knownInfo": "[已知信息]",
+                "killCount": 0,
+                "$meta": {
+                    "updatable": true
+                }
+            }
+        },
+        "anecdotes": {
+            "$meta": {
+                "updatable": true
+            },
+            "$template": {
+                "name": "[趣闻名称]",
+                "description": "[趣闻描述]",
+                "location": "[发生地点]",
+                "charactersInvolved": "[相关人物]",
+                "knownInfo": "[已知信息]",
+                "$meta": {
+                    "updatable": true
+                }
+            }
+        }
+    },
+    "System": {
         "mainStoryMode": true,
         "$meta": {
             "updatable": true
