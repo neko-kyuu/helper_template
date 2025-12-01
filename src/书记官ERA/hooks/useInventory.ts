@@ -2,7 +2,6 @@ import { ref, watch } from 'vue';
 import type { BaseInventoryItem, InventoryItem } from '../itemConstants';
 import { MvuData } from '../types';
 
-
 export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const selectedItem = ref<InventoryItem | null>(null);
   const isEditing = ref(false);
@@ -11,9 +10,9 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   function selectItem(item: BaseInventoryItem | null, index: string) {
     selectedItem.value = item
       ? {
-        ...item,
-        id: index,
-      }
+          ...item,
+          id: index,
+        }
       : null;
   }
 
@@ -22,29 +21,33 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     if (selectedItem.value && itemToDelete && selectedItem.value.name === itemToDelete.name) {
       selectItem(null, '');
     }
-    handleMvuUpdate([{
-      event: 'deleteByObject',
-      detail: {
-        PlayerDynamicData: {
-          inventory: {
-            [itemKey]: {},
+    handleMvuUpdate([
+      {
+        event: 'deleteByObject',
+        detail: {
+          PlayerDynamicData: {
+            inventory: {
+              [itemKey]: {},
+            },
           },
         },
-      }
-    }]);
+      },
+    ]);
   };
 
   const editItem = (itemKey: string, item: BaseInventoryItem) => {
-    handleMvuUpdate([{
-      event: 'updateByObject',
-      detail: {
-        PlayerDynamicData: {
-          inventory: {
-            [itemKey]: item,
+    handleMvuUpdate([
+      {
+        event: 'updateByObject',
+        detail: {
+          PlayerDynamicData: {
+            inventory: {
+              [itemKey]: item,
+            },
           },
         },
-      }
-    }]);
+      },
+    ]);
   };
 
   const startEditing = () => {

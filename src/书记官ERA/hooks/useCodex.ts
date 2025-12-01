@@ -46,9 +46,10 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   }
 
   const deleteEntry = (entryKey: string) => {
-    const entryToDelete = activeCodexTab.value === 'bestiary'
-      ? mvu.value.PlayerData.settings.bestiary[entryKey]
-      : mvu.value.PlayerData.settings.anecdotes[entryKey];
+    const entryToDelete =
+      activeCodexTab.value === 'bestiary'
+        ? mvu.value.PlayerData.settings.bestiary[entryKey]
+        : mvu.value.PlayerData.settings.anecdotes[entryKey];
 
     if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
       selectEntry(null, '');
@@ -56,34 +57,38 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
 
     const path = activeCodexTab.value === 'bestiary' ? 'bestiary' : 'anecdotes';
 
-    handleMvuUpdate([{
-      event: 'deleteByObject',
-      detail: {
-        PlayerData: {
-          settings: {
-            [path]: {
-              [entryKey]: {},
+    handleMvuUpdate([
+      {
+        event: 'deleteByObject',
+        detail: {
+          PlayerData: {
+            settings: {
+              [path]: {
+                [entryKey]: {},
+              },
             },
           },
         },
       },
-    }]);
+    ]);
   };
 
   const editEntry = (entryKey: string, entry: BaseBestiaryEntry | BaseAnecdoteEntry) => {
     const path = activeCodexTab.value === 'bestiary' ? 'bestiary' : 'anecdotes';
-    handleMvuUpdate([{
-      event: 'updateByObject',
-      detail: {
-        PlayerData: {
-          settings: {
-            [path]: {
-              [entryKey]: entry,
+    handleMvuUpdate([
+      {
+        event: 'updateByObject',
+        detail: {
+          PlayerData: {
+            settings: {
+              [path]: {
+                [entryKey]: entry,
+              },
             },
           },
         },
       },
-    }]);
+    ]);
   };
 
   const startEditing = () => {

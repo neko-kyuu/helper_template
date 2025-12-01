@@ -226,7 +226,7 @@
           color: var(--italics_text_color);
         }
 
-        span+button {
+        span + button {
           margin-left: 4px;
         }
       }
@@ -276,8 +276,8 @@
   flex-direction: column;
   gap: 10px;
   height: 100%;
-  
-  .quest-item-container{
+
+  .quest-item-container {
     max-height: 360px;
     overflow-y: auto;
   }

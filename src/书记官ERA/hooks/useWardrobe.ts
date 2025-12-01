@@ -93,6 +93,6 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => v
     selectedOutfit,
     currentEquippedOutfit,
     equipOutfit,
-    openUpdateOutfit
+    openUpdateOutfit,
   };
 }

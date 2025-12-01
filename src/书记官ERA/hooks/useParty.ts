@@ -246,15 +246,15 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   }
 
   const selectedChar = ref<any>(null);
-  const selectedCharIndex= ref<number | null>(null)
-  
+  const selectedCharIndex = ref<number | null>(null);
+
   function selectChar(char: any, index: number) {
     if (selectedCharIndex.value === index) {
       selectedChar.value = null;
-      selectedCharIndex.value = null
+      selectedCharIndex.value = null;
     } else {
       selectedChar.value = char;
-      selectedCharIndex.value = index
+      selectedCharIndex.value = index;
     }
   }
 
@@ -273,6 +273,6 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     decrementAttribute,
     selectChar,
     selectedChar,
-    selectedCharIndex
+    selectedCharIndex,
   };
 }

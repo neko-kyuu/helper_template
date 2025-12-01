@@ -80,11 +80,11 @@ button {
 }
 
 .master-detail-body {
-	display: grid;
-	grid-template-columns: 2fr 1fr;
-	gap: 10px;
-	flex-grow: 1;
-	overflow: hidden;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 10px;
+  flex-grow: 1;
+  overflow: hidden;
 }
 
 .master-detail-body.reverse {
@@ -92,27 +92,27 @@ button {
 }
 
 .master-grid {
-	display: grid;
-	gap: 10px;
-	padding: 10px;
-	border-radius: 4px;
-	background: var(--blur_tint_color);
-	overflow-y: auto;
-	max-height: 360px;
-	grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-	grid-auto-rows: min-content;
+  display: grid;
+  gap: 10px;
+  padding: 10px;
+  border-radius: 4px;
+  background: var(--blur_tint_color);
+  overflow-y: auto;
+  max-height: 360px;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-auto-rows: min-content;
 }
 
 .master-grid-item {
-	background-color: var(--blur_tint_color_fill);
-	border: 1px solid var(--border_color);
-	border-radius: 4px;
-	text-align: center;
-	font-size: var(--font-size-small);
-	color: var(--main_text_color);
-	cursor: pointer;
-	transition: all 0.2s ease-in-out;
-	overflow: hidden;
+  background-color: var(--blur_tint_color_fill);
+  border: 1px solid var(--border_color);
+  border-radius: 4px;
+  text-align: center;
+  font-size: var(--font-size-small);
+  color: var(--main_text_color);
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  overflow: hidden;
 
   &:hover {
     background-color: var(--blur_tint_color_less);
@@ -132,51 +132,51 @@ button {
   color: var(--main_text_color);
   overflow-y: auto;
 
-	.details-content {
-		display: flex;
-		flex-direction: column;
-		gap: 8px;
+  .details-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 
-		.edit-form .form-group {
-			margin-bottom: 8px;
-			display: flex;
-			flex-direction: column;
-		}
+    .edit-form .form-group {
+      margin-bottom: 8px;
+      display: flex;
+      flex-direction: column;
+    }
 
-		.edit-form label {
-			font-weight: bold;
-			margin-bottom: 4px;
-			font-size: var(--font-size-medium);
-		}
+    .edit-form label {
+      font-weight: bold;
+      margin-bottom: 4px;
+      font-size: var(--font-size-medium);
+    }
 
-		.edit-form input,
-		.edit-form select,
-		.edit-form textarea {
-			width: 100%;
-			padding: 4px;
-			border: 1px solid var(--primary_color);
-			border-radius: 4px;
-			background-color: var(--blur_tint_color);
-			color: var(--italics_text_color);
-			font-size: var(--font-size-small);
-		}
+    .edit-form input,
+    .edit-form select,
+    .edit-form textarea {
+      width: 100%;
+      padding: 4px;
+      border: 1px solid var(--primary_color);
+      border-radius: 4px;
+      background-color: var(--blur_tint_color);
+      color: var(--italics_text_color);
+      font-size: var(--font-size-small);
+    }
 
-		.edit-form textarea {
-			min-height: 80px;
-			resize: vertical;
-		}
+    .edit-form textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
 
-		.edit-buttons {
-			margin-top: 12px;
-			text-align: right;
-		}
+    .edit-buttons {
+      margin-top: 12px;
+      text-align: right;
+    }
 
-		.edit-buttons button {
-			margin-left: 8px;
-			padding: 4px 8px;
-			cursor: pointer;
-		}
-	}
+    .edit-buttons button {
+      margin-left: 8px;
+      padding: 4px 8px;
+      cursor: pointer;
+    }
+  }
 
   .item-name {
     font-size: var(--font-size-medium);
@@ -239,11 +239,11 @@ button {
 }
 
 .stat {
-	display: grid;
-	grid-template-columns: 0.6fr 1fr 0.6fr;
-	align-items: center;
-	gap: 4px;
-	height: 20px;
+  display: grid;
+  grid-template-columns: 0.6fr 1fr 0.6fr;
+  align-items: center;
+  gap: 4px;
+  height: 20px;
 
   .bar {
     height: 12px;
@@ -270,19 +270,19 @@ button {
 
 /* 通用缺省 */
 .data-empty {
-	font-size: 12px;
-	color: rgba(108, 108, 108, 1);
-	font-style: italic;
-	padding: 20px 0;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	border-radius: 4px;
-	height: 100%;
+  font-size: 12px;
+  color: rgba(108, 108, 108, 1);
+  font-style: italic;
+  padding: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  height: 100%;
 }
 
 .flex-between {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }

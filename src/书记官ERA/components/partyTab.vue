@@ -2,8 +2,13 @@
   <div class="party-container">
     <div class="master-detail-body">
       <div class="character-card-pane">
-        <div class="character-card" v-for="(char, index) in party" :key="index"
-          :class="{ selected: selectedCharIndex === index }"  @click="selectChar(char,index)">
+        <div
+          class="character-card"
+          v-for="(char, index) in party"
+          :key="index"
+          :class="{ selected: selectedCharIndex === index }"
+          @click="selectChar(char, index)"
+        >
           <div class="char-header">
             <span class="char-name">{{ char.character.name }} (Lv. {{ char.character.level }})</span>
             <div class="right-btns">
@@ -11,8 +16,12 @@
                 <span>团队属性点: {{ mvu.PlayerData.progress.partyAttrPoints - totalSpentPoints }}</span>
                 <button @click="commitAttributes(char, index)">保存</button>
               </div>
-              <button @click="levelUp(char, index)" :disabled="mvu.PlayerData.progress.partyExperience.current < mvu.PlayerData.progress.partyExperience.max
-                ">
+              <button
+                @click="levelUp(char, index)"
+                :disabled="
+                  mvu.PlayerData.progress.partyExperience.current < mvu.PlayerData.progress.partyExperience.max
+                "
+              >
                 升级
               </button>
             </div>
@@ -31,9 +40,12 @@
               <div class="stat">
                 小队经验
                 <div class="bar">
-                  <div class="fill" :style="{
-                    width: `${Math.min(100, (mvu.PlayerData.progress.partyExperience.current / mvu.PlayerData.progress.partyExperience.max) * 100)}%`,
-                  }"></div>
+                  <div
+                    class="fill"
+                    :style="{
+                      width: `${Math.min(100, (mvu.PlayerData.progress.partyExperience.current / mvu.PlayerData.progress.partyExperience.max) * 100)}%`,
+                    }"
+                  ></div>
                 </div>
                 {{ mvu.PlayerData.progress.partyExperience.current }} /
                 {{ mvu.PlayerData.progress.partyExperience.max }}
@@ -44,14 +56,22 @@
               <div class="attr" v-for="(value, key) in char.attributes" :key="key">
                 <span>{{ attributeLabels[key] || key }}</span>
                 <div class="attr-value-controls" v-if="isAssigningAttributes">
-                  <button class="small" @click="decrementAttribute(char, index, key as unknown as string)" :disabled="partyUpgradeState[char.character.name]?.tempAttributes[key] <=
-                    partyUpgradeState[char.character.name]?.initialAttributes[key]
-                    ">
+                  <button
+                    class="small"
+                    @click="decrementAttribute(char, index, key as unknown as string)"
+                    :disabled="
+                      partyUpgradeState[char.character.name]?.tempAttributes[key] <=
+                      partyUpgradeState[char.character.name]?.initialAttributes[key]
+                    "
+                  >
                     -
                   </button>
                   <span class="attr-value">{{ partyUpgradeState[char.character.name]?.tempAttributes[key] }}</span>
-                  <button class="small" @click="incrementAttribute(char, index, key as unknown as string)"
-                    :disabled="mvu.PlayerData.progress.partyAttrPoints <= totalSpentPoints">
+                  <button
+                    class="small"
+                    @click="incrementAttribute(char, index, key as unknown as string)"
+                    :disabled="mvu.PlayerData.progress.partyAttrPoints <= totalSpentPoints"
+                  >
                     +
                   </button>
                 </div>
@@ -72,14 +92,10 @@
             </div>
           </div>
         </div>
-        <div v-else class="data-empty">
-          选择一个角色查看详情
-        </div>
+        <div v-else class="data-empty">选择一个角色查看详情</div>
       </div>
     </div>
   </div>
-
-
 </template>
 <script setup lang="ts">
 import { useMvuData } from '../hooks/useMvuData';
@@ -102,6 +118,6 @@ const {
   totalSpentPoints,
   selectChar,
   selectedChar,
-  selectedCharIndex
+  selectedCharIndex,
 } = useParty(mvu, rawMvuData, handleMvuUpdate);
 </script>

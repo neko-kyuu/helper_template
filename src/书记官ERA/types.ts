@@ -35,7 +35,6 @@ export interface Outfit extends OutfitData {
 
 export type OwnedOutfits = Record<string, OutfitData>;
 
-
 export interface NpcData {
   character: {
     name: string;

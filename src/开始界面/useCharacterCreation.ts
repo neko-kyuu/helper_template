@@ -15,8 +15,8 @@ export function useCharacterCreation(defaultMvuData: any) {
   });
 
   const sys = reactive({
-    mainStoryMode: true
-  })
+    mainStoryMode: true,
+  });
 
   const races = [
     { name: '月精灵', description: '优雅而神秘的森林居民，擅长魔法和弓箭。' },
@@ -121,31 +121,32 @@ export function useCharacterCreation(defaultMvuData: any) {
         character: { ...character, level: 1 },
         attributes: { ...attributes },
       },
-      sys:{
-        mainStoryMode: sys.mainStoryMode
-      }
+      sys: {
+        mainStoryMode: sys.mainStoryMode,
+      },
     };
-    if (sys.mainStoryMode){
+    if (sys.mainStoryMode) {
       const mainStoryInit = {
         PlayerData: {
           progress: {
             currentQuest: {
               MQ1: {
-                name: "节日的插曲",
-                description: "你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。",
-                isMain: true
-              }
-            }
+                name: '节日的插曲',
+                description:
+                  '你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。',
+                isMain: true,
+              },
+            },
           },
           settings: {
-            date: "1468DR 奈托月19日",
-            time: "傍晚",
-            weather: "飘雪",
-            currentRegion: "巴拉德雷",
-            currentLocation: "羽笔与酒杯旅店附近"
-          }
-        }
-      }
+            date: '1468DR 奈托月19日',
+            time: '傍晚',
+            weather: '飘雪',
+            currentRegion: '巴拉德雷',
+            currentLocation: '羽笔与酒杯旅店附近',
+          },
+        },
+      };
     }
     // 使用 cloneDeep 避免修改原始的 defaultMvuData, 并确保结构匹配
     const finalCharacterData = _.merge(_.cloneDeep(defaultMvuData), userSelection);
