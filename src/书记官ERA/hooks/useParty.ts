@@ -1,14 +1,15 @@
 // hooks/useParty.ts
 import _ from 'lodash';
-import { computed, ref, watchEffect } from 'vue';
-import { npcConst } from './npcConstants';
+import { computed, ref, Ref, watchEffect } from 'vue';
+import { npcConst } from '../npcConstants';
+import { MvuData } from '../types';
 
 type UpgradeState = {
-  tempAttributes: any;
-  initialAttributes: any;
+  tempAttributes: Record<string, number>;
+  initialAttributes: Record<string, number>;
 };
 
-export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
+export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdate: Function) {
   const partyUpgradeState = ref<{ [charName: string]: UpgradeState }>({});
 
   const isAssigningAttributes = computed(() => (mvu.value.PlayerData.progress.partyAttrPoints || 0) > 0);
@@ -244,6 +245,19 @@ export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
     }
   }
 
+  const selectedChar = ref<any>(null);
+  const selectedCharIndex= ref<number | null>(null)
+  
+  function selectChar(char: any, index: number) {
+    if (selectedCharIndex.value === index) {
+      selectedChar.value = null;
+      selectedCharIndex.value = null
+    } else {
+      selectedChar.value = char;
+      selectedCharIndex.value = index
+    }
+  }
+
   return {
     party,
     partyUpgradeState,
@@ -257,5 +271,8 @@ export function useParty(mvu: any, rawMvuData: any, handleMvuUpdate: Function) {
     commitAttributes,
     incrementAttribute,
     decrementAttribute,
+    selectChar,
+    selectedChar,
+    selectedCharIndex
   };
 }

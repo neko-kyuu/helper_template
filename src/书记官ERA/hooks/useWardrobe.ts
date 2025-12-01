@@ -1,8 +1,10 @@
 // hooks/useWardrobe.ts
-import { computed, ref, watch } from 'vue';
-import { QualityType, SlotType, TierType, calculateClothingAttributes } from './clothingConstants';
+import { computed, ref, Ref, watch } from 'vue';
+import { calculateClothingAttributes } from '../clothingConstants';
+import { QualityType, SlotType, TierType } from '../itemConstants';
+import { MvuData, Slots } from '../types';
 
-export function useWardrobe(mvu: any) {
+export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => void) {
   const slotNames: { [key: string]: string } = {
     head: '头部',
     bodyInner: '内衬',
@@ -55,7 +57,7 @@ export function useWardrobe(mvu: any) {
 
       if (currentOutfit) {
         for (const slot in currentOutfit.slots) {
-          const item = currentOutfit.slots[slot as keyof typeof currentOutfit.slots];
+          const item = currentOutfit.slots[slot as keyof Slots];
           if (item && !Array.isArray(item)) {
             try {
               const itemAttributes = calculateClothingAttributes({
@@ -81,11 +83,16 @@ export function useWardrobe(mvu: any) {
     { immediate: true },
   );
 
+  const openUpdateOutfit = () => {
+    emit('open-update');
+  };
+
   return {
     slotNames,
     selectedOutfitId,
     selectedOutfit,
     currentEquippedOutfit,
     equipOutfit,
+    openUpdateOutfit
   };
 }

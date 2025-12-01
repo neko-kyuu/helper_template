@@ -1,5 +1,6 @@
 .status-bar {
   width: 100%;
+  min-height: 450px;
   max-height: 580px;
   background-color: var(--blur_tint_color);
   background-image: url('https://www.transparenttextures.com/patterns/cartographer.png');
@@ -98,6 +99,9 @@
     border-bottom: 1px solid var(--border_color);
     text-transform: uppercase;
     letter-spacing: 1px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 }
 
@@ -109,6 +113,8 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    padding: 4px;
+    background: var(--blur_tint_color);
 
     .column {
       display: grid;
@@ -144,55 +150,123 @@
       }
     }
   }
-}
 
-/* 角色卡片 */
-.character-card {
-  background: var(--blur_tint_color);
-  border: 1px solid var(--border_color);
-  border-radius: 4px;
-  margin-bottom: 10px;
+  .faction-card {
+    background: var(--blur_tint_color);
+    border: 1px solid var(--border_color);
+    border-radius: 4px;
+    margin-bottom: 10px;
 
-  .char-header {
-    padding: 10px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid var(--border_color);
+    .faction-header {
+      padding: 6px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border_color);
 
-    .char-name {
-      font-size: var(--font-size-medium);
-      font-weight: bold;
-      color: var(--main_text_color);
+      .faction-name {
+        font-size: var(--font-size-small);
+        font-weight: bold;
+        color: var(--main_text_color);
+      }
+
+      .faction-prestige {
+        padding: 0 4px;
+        font-size: var(--font-size-small);
+        border: 1px solid var(--border_color);
+        border-radius: 4px;
+      }
     }
 
-    .right-btns {
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      gap: 4px;
+    .faction-content {
+      padding: 6px 5px;
 
       span {
         font-size: var(--font-size-small);
         color: var(--italics_text_color);
       }
-
-      span + button {
-        margin-left: 4px;
-      }
     }
-  }
 
-  .column {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    padding: 10px 40px;
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }
 
-.character-card:last-child {
-  margin-bottom: 0;
+/* 角色卡片 */
+.party-container {
+  .character-card {
+    background: var(--blur_tint_color);
+    border: 1px solid var(--border_color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    .char-header {
+      padding: 10px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border_color);
+
+      .char-name {
+        font-size: var(--font-size-medium);
+        font-weight: bold;
+        color: var(--main_text_color);
+      }
+
+      .right-btns {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+
+        span {
+          font-size: var(--font-size-small);
+          color: var(--italics_text_color);
+        }
+
+        span+button {
+          margin-left: 4px;
+        }
+      }
+    }
+
+    .column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px 40px;
+    }
+
+    &.selected {
+      border-color: var(--quote_text_color);
+      box-shadow: 0 0 5px var(--quote_text_color);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .scene-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .column {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+
+      .column-content {
+        display: grid;
+        grid-template-columns: 60px 1fr;
+        color: var(--main_text_color);
+        font-size: var(--font-size-small);
+      }
+    }
+  }
 }
 
 /* 任务 */
@@ -202,6 +276,11 @@
   flex-direction: column;
   gap: 10px;
   height: 100%;
+  
+  .quest-item-container{
+    max-height: 360px;
+    overflow-y: auto;
+  }
 
   .quest-item {
     margin-bottom: 10px;
@@ -235,6 +314,24 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  .bag-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+
+    .master-grid-item {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 8px;
+
+      i {
+        font-size: 32px;
+        color: var(--italics_text_color);
+      }
+    }
+  }
 }
 
 .inventory-mini {
@@ -358,25 +455,6 @@
       margin-bottom: 0;
       border-bottom: none;
       padding-bottom: 0;
-    }
-  }
-}
-
-/* 背包特定样式 */
-.bag-grid {
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-
-  .master-grid-item {
-    aspect-ratio: 1 / 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
-
-    i {
-      font-size: 32px;
-      color: var(--italics_text_color);
     }
   }
 }

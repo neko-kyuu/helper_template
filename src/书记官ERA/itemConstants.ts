@@ -1,29 +1,42 @@
+import { z } from 'zod';
+
 // ============ 类型定义 ============
 
-export type TierType = 'basic' | 'light' | 'medium' | 'heavy';
-export type QualityType = 'common' | 'good' | 'excellent' | 'masterwork' | 'legendary';
-export type SlotType =
-  | 'head'
-  | 'bodyInner'
-  | 'bodyArmor'
-  | 'hands'
-  | 'legsInner'
-  | 'legsArmor'
-  | 'feet'
-  | 'cloak'
-  | 'neck'
-  | 'ring'
-  | 'belt';
-export type ItemType = 'cloth' | 'weapon' | 'item';
+export const TierTypeSchema = z.enum(['basic', 'light', 'medium', 'heavy']);
+export type TierType = z.infer<typeof TierTypeSchema>;
+export const QualityTypeSchema = z.enum(['common', 'good', 'excellent', 'masterwork', 'legendary']);
+export type QualityType = z.infer<typeof QualityTypeSchema>;
+export const SlotTypeSchema = z.enum([
+  'head',
+  'bodyInner',
+  'bodyArmor',
+  'hands',
+  'legsInner',
+  'legsArmor',
+  'feet',
+  'cloak',
+  'neck',
+  'ring',
+  'belt',
+]);
+export type SlotType = z.infer<typeof SlotTypeSchema>;
+export const ItemTypeSchema = z.enum(['cloth', 'weapon', 'item']);
+export type ItemType = z.infer<typeof ItemTypeSchema>;
 
-export interface InventoryItem {
-  name: string;
-  description: string;
-  quality: QualityType;
-  type: ItemType;
-  tier: TierType;
-  slot?: SlotType;
-}
+export const BaseInventoryItemSchema = z.object({
+  name: z.string().default(''),
+  description: z.string().default(''),
+  quality: QualityTypeSchema.default('common'),
+  type: ItemTypeSchema.default('item'),
+  tier: TierTypeSchema.default('basic'),
+  slot: SlotTypeSchema.optional(),
+});
+export type BaseInventoryItem = z.infer<typeof BaseInventoryItemSchema>;
+
+export const InventoryItemSchema = BaseInventoryItemSchema.extend({
+  id: z.string(),
+});
+export type InventoryItem = z.infer<typeof InventoryItemSchema>;
 
 export interface TierData {
   name: string;

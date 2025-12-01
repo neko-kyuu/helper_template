@@ -10,13 +10,12 @@
       <button :class="{ active: activeTab === 'race' }" @click="activeTab = 'race'">选择种族</button>
       <button :class="{ active: activeTab === 'attributes' }" @click="activeTab = 'attributes'">属性点分配</button>
       <button :class="{ active: activeTab === 'initLocation' }" @click="activeTab = 'initLocation'">初始地点</button>
+      <button :class="{ active: activeTab === 'sys' }" @click="activeTab = 'sys'">系统设置</button>
       <button :class="{ active: activeTab === 'confirm' }" @click="activeTab = 'confirm'">确认开局</button>
     </div>
 
     <div class="tab-content">
       <div v-if="activeTab === 'character'">
-        <h1>基础信息</h1>
-
         <div class="form-section">
           <div class="form-grid">
             <div class="form-group">
@@ -53,7 +52,6 @@
       </div>
 
       <div v-if="activeTab === 'race'">
-        <h1>选择种族</h1>
         <div class="race-selection">
           <div
             class="race-card"
@@ -74,7 +72,7 @@
       </div>
 
       <div class="attributes-section" v-if="activeTab === 'attributes'">
-        <h2>属性点分配 (剩余点数: {{ availablePoints }})</h2>
+        <h2>剩余点数: {{ availablePoints }}</h2>
         <ul>
           <li v-for="(value, key) in attributes" :key="key">
             <span class="attribute-name">{{ attributeLabels[key] }}:</span>
@@ -88,22 +86,17 @@
       </div>
 
       <div v-if="activeTab === 'initLocation'">
-        <h1>选择初始地点</h1>
-        <div class="map-controls">
-          <label>
-            <input type="checkbox" v-model="coordinateHelperMode" />
-            坐标拾取模式
-          </label>
-          <span v-if="lastClickedCoords">
-            最后点击的坐标: { x: {{ lastClickedCoords.x }}, y: {{ lastClickedCoords.y }} }
-          </span>
-        </div>
         <MapSelector
-          :coordinate-helper-mode="coordinateHelperMode"
+          v-model:coordinate-helper-mode="coordinateHelperMode"
+          :show-helper-checkbox="true"
           @point-selected="handlePointSelected"
           @coordinates-clicked="handleCoordinatesClicked"
         />
-        <div v-if="character.location && !coordinateHelperMode">你选择的地点是: {{ character.location }}</div>
+      </div>
+
+      <div class="sys-section" v-if="activeTab === 'sys'">
+        主线剧情模式
+        <input type="checkbox" v-model="sys.mainStoryMode" />
       </div>
 
       <div v-if="activeTab === 'confirm'">
@@ -120,7 +113,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import MapSelector from './MapSelector.vue';
+import MapSelector from '../书记官ERA/components/MapSelector.vue';
 import { useCharacterCreation } from './useCharacterCreation';
 
 const coordinateHelperMode = ref(false);
@@ -297,6 +290,11 @@ const defaultMvuData: any = JSON.parse(`{
                     "meta": {
                         "relationship": "陌生人",
                         "favorability": 0,
+                        "favorabilityTowardsNPCs": {
+                            "$meta": {
+                                "updatable": true
+                            }
+                        },
                         "description": "[简要描述]"
                     },
                     "$meta": {
@@ -444,6 +442,16 @@ const defaultMvuData: any = JSON.parse(`{
                 "social": 0,
                 "intellectual": 0
             },
+            "meta": {
+                "relationship": "同伴",
+                "favorability": 50,
+                "favorabilityTowardsNPCs": {
+                    "$meta": {
+                        "updatable": true
+                    }
+                },
+                "description": "[简要描述]"
+            },
             "$meta": {
                 "updatable": true
             }
@@ -457,6 +465,7 @@ const defaultMvuData: any = JSON.parse(`{
             "$template": {
                 "name": "初始套装",
                 "type": "casual",
+                "description": "[套装描述]",
                 "slots": {
                     "head": null,
                     "bodyInner": null,
@@ -477,11 +486,18 @@ const defaultMvuData: any = JSON.parse(`{
             }
         },
         "currentOutfit": null
+    },
+    "system": {
+        "mainStoryMode": true,
+        "$meta": {
+            "updatable": true
+        }
     }
 }`);
 
 const {
   character,
+  sys,
   races,
   genders,
   builds,

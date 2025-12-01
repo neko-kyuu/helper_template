@@ -167,6 +167,11 @@
                     "meta": {
                         "relationship": "陌生人",
                         "favorability": 0,
+                        "favorabilityTowardsNPCs": {
+                            "$meta": {
+                                "updatable": true
+                            }
+                        },
                         "description": "[简要描述]"
                     },
                     "$meta": {
@@ -314,6 +319,16 @@
                 "social": 0,
                 "intellectual": 0
             },
+            "meta": {
+                "relationship": "同伴",
+                "favorability": 50,
+                "favorabilityTowardsNPCs": {
+                    "$meta": {
+                        "updatable": true
+                    }
+                },
+                "description": "[简要描述]"
+            },
             "$meta": {
                 "updatable": true
             }
@@ -368,6 +383,16 @@
                 "medical": 2,
                 "social": 4,
                 "intellectual": 2
+            },
+            "meta": {
+                "relationship": "同伴",
+                "favorability": 60,
+                "favorabilityTowardsNPCs": {
+                    "$meta": {
+                        "updatable": true
+                    }
+                },
+                "description": ""
             }
         }
     },
@@ -379,6 +404,7 @@
             "$template": {
                 "name": "初始套装",
                 "type": "casual",
+                "description": "[套装描述]",
                 "slots": {
                     "head": null,
                     "bodyInner": null,
@@ -399,5 +425,11 @@
             }
         },
         "currentOutfit": null
+    },
+    "system": {
+        "mainStoryMode": true,
+        "$meta": {
+            "updatable": true
+        }
     }
 }

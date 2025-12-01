@@ -14,6 +14,10 @@ export function useCharacterCreation(defaultMvuData: any) {
     location: '' as string,
   });
 
+  const sys = reactive({
+    mainStoryMode: true
+  })
+
   const races = [
     { name: '月精灵', description: '优雅而神秘的森林居民，擅长魔法和弓箭。' },
     { name: '人类', description: '适应性强，遍布世界各地，在各种领域都有建树。' },
@@ -117,7 +121,32 @@ export function useCharacterCreation(defaultMvuData: any) {
         character: { ...character, level: 1 },
         attributes: { ...attributes },
       },
+      sys:{
+        mainStoryMode: sys.mainStoryMode
+      }
     };
+    if (sys.mainStoryMode){
+      const mainStoryInit = {
+        PlayerData: {
+          progress: {
+            currentQuest: {
+              MQ1: {
+                name: "节日的插曲",
+                description: "你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。",
+                isMain: true
+              }
+            }
+          },
+          settings: {
+            date: "1468DR 奈托月19日",
+            time: "傍晚",
+            weather: "飘雪",
+            currentRegion: "巴拉德雷",
+            currentLocation: "羽笔与酒杯旅店附近"
+          }
+        }
+      }
+    }
     // 使用 cloneDeep 避免修改原始的 defaultMvuData, 并确保结构匹配
     const finalCharacterData = _.merge(_.cloneDeep(defaultMvuData), userSelection);
     console.log('Creating character:', finalCharacterData);
@@ -152,6 +181,8 @@ export function useCharacterCreation(defaultMvuData: any) {
 初始地点: 巴拉德雷
 
 开场白:
+【节日的插曲】
+
 1468DR，奈托月19日，冬至。
 
 艺术之城巴拉德雷正被长夜节的温暖灯火拥抱着。尽管寒风从德温林平原上呼啸而过，城内却洋溢着一股由烤栗子、香料热酒和松木燃烧的气味混合而成的暖意。家家户户的窗台上都点缀着冬青与小巧的魔法光球，将那些绘有壁画的墙壁和带有阳台的小楼映照得如同童话插画。
@@ -176,10 +207,12 @@ export function useCharacterCreation(defaultMvuData: any) {
       ],
       { refresh: 'all' },
     );
+    await triggerSlash('/trigger');
   }
 
   return {
     character,
+    sys,
     races,
     genders,
     builds,

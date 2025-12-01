@@ -1,6 +1,28 @@
 <template>
-  <div ref="canvasContainer" class="canvas-container">
-    <canvas ref="mapCanvas" @click="handleCanvasClick"></canvas>
+  <div class="map-selector-wrapper">
+    <div class="map-controls">
+      <div class="selected-point-preview">
+        <span v-if="selectedCity || selectedRegion">
+          已选择：{{ selectedCity ? `${selectedRegion?.name}, ${selectedCity.name}` : selectedRegion?.name }}
+        </span>
+      </div>
+      <div v-if="showHelperCheckbox" class="helper-controls">
+        <span v-if="lastClickedOriginalCoords">
+          坐标: { x: {{ lastClickedOriginalCoords.x }}, y: {{ lastClickedOriginalCoords.y }} }
+        </span>
+        <label>
+          <input
+            type="checkbox"
+            :checked="coordinateHelperMode"
+            @change="$emit('update:coordinateHelperMode', ($event.target as HTMLInputElement).checked)"
+          />
+          坐标拾取模式
+        </label>
+      </div>
+    </div>
+    <div ref="canvasContainer" class="canvas-container">
+      <canvas ref="mapCanvas" @click="handleCanvasClick"></canvas>
+    </div>
   </div>
 </template>
 
@@ -27,15 +49,20 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  showHelperCheckbox: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(['point-selected', 'coordinates-clicked']);
+const emit = defineEmits(['point-selected', 'coordinates-clicked', 'update:coordinateHelperMode']);
 
 const mapCanvas = ref<HTMLCanvasElement | null>(null);
 const canvasContainer = ref<HTMLDivElement | null>(null);
 const selectedRegion = ref<Region | null>(null);
 const selectedCity = ref<City | null>(null);
 const lastClickedPoint = ref<Point | null>(null); // For helper mode
+const lastClickedOriginalCoords = ref<Point | null>(null);
 const cityClickRadius = 8;
 
 const mapImage = new Image();
@@ -183,7 +210,7 @@ const handleCanvasClick = (event: MouseEvent) => {
     const coords = { x: originalX, y: originalY };
     console.log(`Coordinates: { x: ${coords.x}, y: ${coords.y} }`);
     emit('coordinates-clicked', coords);
-
+    lastClickedOriginalCoords.value = coords;
     lastClickedPoint.value = clickPoint;
     drawMap();
     return;
@@ -280,6 +307,36 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+.map-selector-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.map-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 24px; /* Prevent layout shift */
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+.selected-point-preview {
+  text-align: left;
+  font-weight: bold;
+  padding: 0 0.5rem;
+  flex-grow: 1;
+}
+.helper-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.helper-controls label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
 .canvas-container {
   width: 100%;
   position: relative;

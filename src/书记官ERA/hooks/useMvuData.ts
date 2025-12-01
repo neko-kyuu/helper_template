@@ -1,6 +1,100 @@
 // hooks/useMvuData.ts
 import _ from 'lodash';
 import { ref, watch } from 'vue';
+import { InventoryItem } from '../itemConstants';
+import { NpcData, OutfitData } from '../types';
+
+// 默认的 MVU 数据结构
+const defaultMvuData = {
+  PlayerData: {
+    character: {
+      name: '',
+      level: 1,
+      gender: '男',
+      race: '',
+      height: '',
+      build: '',
+      appearance: '',
+      personality: '',
+    },
+    status: {
+      health: {
+        current: 12,
+        max: 12,
+      },
+      mood: {
+        current: 0,
+        max: 100,
+      },
+      arousal: {
+        current: 50,
+        max: 100,
+      },
+    },
+    attributes: {
+      shooting: 0,
+      melee: 0,
+      construction: 0,
+      mining: 0,
+      cooking: 0,
+      planting: 0,
+      animals: 0,
+      crafting: 0,
+      artistic: 0,
+      medical: 0,
+      social: 0,
+      intellectual: 0,
+    },
+    progress: {
+      questPhase: '',
+      partyExperience: {
+        current: 0,
+        max: 100,
+      },
+      partyAttrPoints: 0,
+      currentQuest: {},
+      nextQuest: {},
+      pendingQuest: {},
+      completedQuest: {},
+    },
+    settings: {
+      date: '',
+      time: '',
+      weather: '',
+      currentRegion: '',
+      currentLocation: '',
+      nearbyNPC: {} as Record<string, NpcData>,
+      factionPrestige: {},
+      bestiary: {},
+      anecdotes: {},
+    },
+  },
+  PlayerDynamicData: {
+    inventory: {} as Record<string, InventoryItem>,
+    equipment: {
+      leftHand: 'none',
+      rightHand: 'none',
+      body: 'none',
+    },
+    clothingAttributes: {
+      defense: 0,
+      comfort: 0,
+      warmth: 0,
+      social: 0,
+      weight: 0,
+    },
+    gold: 100,
+  },
+  FollowerNPCData: {},
+  Wardrobe: {
+    ownedOutfits: {} as Record<string, OutfitData>,
+    currentOutfit: 'none',
+    //todo 随从的outfit
+  },
+  system: {
+    mainStoryMode: true,
+  },
+};
 
 const ERA_EVENT = {
   insertByObject: 'era:insertByObject',
@@ -15,18 +109,17 @@ interface Command {
   detail: any;
 }
 
-export function useMvuData(defaultMvuData: any) {
-  const rawMvuData = ref<any | null>(null);
-  const currentMessageId = ref(0);
-  const mvu = ref(_.cloneDeep(defaultMvuData));
+const rawMvuData = ref<any | null>(null);
+const currentMessageId = ref(0);
+const mvu = ref(_.cloneDeep(defaultMvuData));
 
+export function useMvuData() {
   /**
    * 刷新 MVU 数据
    * @param messageId 消息楼层 ID
    */
   const refreshMvuData = async (messageId?: number | 'latest') => {
     try {
-      console.log('Requesting initial ERA variables...');
       eventEmit('era:requestWriteDone');
     } catch (error) {
       console.error(`获取楼层 ${messageId} 的 MVU 数据失败:`, error);
@@ -43,7 +136,6 @@ export function useMvuData(defaultMvuData: any) {
     }
     try {
       commands.forEach((command: Command) => {
-        console.log('---era parse command', command);
         const event = command.event;
         if (event in ERA_EVENT) {
           // 触发事件，并传递解析出的 detail 对象
@@ -65,14 +157,13 @@ export function useMvuData(defaultMvuData: any) {
   watch(rawMvuData, newData => {
     if (!newData) {
       mvu.value = _.cloneDeep(defaultMvuData);
-      console.log('MVU 数据无效或为空, 已重置为默认值');
+      console.warn('MVU 数据无效或为空, 已重置为默认值');
       return;
     }
 
     // 更新状态: 将新数据合并到默认结构的深拷贝
     const baseState = _.cloneDeep(defaultMvuData);
     mvu.value = _.merge(baseState, newData);
-    console.log(`已更新楼层 ${currentMessageId.value} 的变量:`, mvu.value);
   });
 
   const initialize = async () => {
@@ -91,20 +182,19 @@ export function useMvuData(defaultMvuData: any) {
     //   // return;
     // }
 
-    console.log('ERA:writeDone event received:', detail);
-    // 使用 statWithoutMeta 来更新 UI，它是不包含 ERA 内部字段的纯净数据
-    if (detail && detail.statWithoutMeta) {
-      // updateUI(detail.statWithoutMeta);
-      rawMvuData.value = detail.statWithoutMeta;
+    if (!detail || !detail.statWithoutMeta) return;
 
-      // 处理世界书
+    // 使用 statWithoutMeta 来更新 UI，它是不包含 ERA 内部字段的纯净数据
+    rawMvuData.value = detail.statWithoutMeta;
+
+    if (mvu.value.system.mainStoryMode) {
+      // 处理世界书蓝绿灯
       const quest = rawMvuData.value?.PlayerData?.progress?.currentQuest || {};
       // const currentQuests:string[] = Object.values(quest)
       //   .filter((item:any) => item.name)
       //   .map((item:any) => item.name);
       const currentQuests: string[] = Object.keys(quest);
 
-      console.log('----开始处理世界书蓝绿灯，当前任务:', currentQuests);
       updateWorldbookWith('奥弗萨斯', worldbook => {
         const QUEST_KEYWORDS = ['主线', '支线'];
         const STRATEGY_TYPE = {

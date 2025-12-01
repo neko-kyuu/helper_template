@@ -1,7 +1,7 @@
 import App from './App.vue';
-import './base.scss';
-import './common.scss';
-import './style.scss';
+import './css/base.scss';
+import './css/common.scss';
+import './css/style.scss';
 
 $(() => {
   createApp(App).mount('#app');

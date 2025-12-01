@@ -21,12 +21,11 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
   const activeQuestTab = ref('currentQuests');
 
   const activeQuest = (questId: string) => {
-    console.log(questId);
     const questToActivate = mvu.value.PlayerData.progress.nextQuest[questId];
-    console.log(questToActivate);
 
     if (questToActivate) {
       const quest = _.cloneDeep(questToActivate);
+      toastr.success(`成功激活 ${questToActivate.name} `);
       handleMvuUpdate([
         {
           event: 'insertByObject',
