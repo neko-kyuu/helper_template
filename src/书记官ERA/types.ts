@@ -1,5 +1,9 @@
 import { InventoryItem, QualityType, SlotType, TierType } from './itemConstants';
 
+export type WithId<T> = T & {
+  id: string;
+};
+
 export interface EquipmentItem {
   id: string;
   name: string;

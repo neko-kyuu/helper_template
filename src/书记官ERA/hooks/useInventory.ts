@@ -8,12 +8,16 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const editableItem = ref<InventoryItem | null>(null);
 
   function selectItem(item: BaseInventoryItem | null, index: string) {
-    selectedItem.value = item
-      ? {
-          ...item,
-          id: index,
-        }
-      : null;
+    if (selectedItem.value?.id === index) {
+      selectedItem.value = null;
+    } else {
+      selectedItem.value = item
+        ? {
+            ...item,
+            id: index,
+          }
+        : null;
+    }
   }
 
   const deleteItem = (itemKey: string) => {

@@ -38,13 +38,17 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
 
   const selectedTab = ref('');
   function selectEntry(entry: BaseBestiaryEntry | BaseAnecdoteEntry | null, key: string, tabName: string) {
-    selectedEntry.value = entry
-      ? {
-          ...entry,
-          id: key,
-        }
-      : null;
-    selectedTab.value = tabName;
+    if (selectedEntry.value?.id === key) {
+      selectedEntry.value = null;
+    } else {
+      selectedEntry.value = entry
+        ? {
+            ...entry,
+            id: key,
+          }
+        : null;
+      selectedTab.value = tabName;
+    }
   }
 
   const deleteEntry = (entryKey: string) => {

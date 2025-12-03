@@ -10,8 +10,8 @@
         <div
           v-for="(npc, index) in mvu.PlayerData.settings.nearbyNPC"
           :key="index"
-          @click="selectNpc(npc)"
-          :class="{ selected: selectedNpc === npc }"
+          @click="selectNpc(npc, index)"
+          :class="{ selected: selectedNpc?.id === index }"
           class="npc-name"
         >
           {{ npc.character?.name }}
@@ -20,6 +20,13 @@
 
       <div class="detail-panel">
         <div v-if="selectedNpc" class="scene-detail-item">
+          <i
+            class="fa-solid fa-trash-can"
+            @click="deleteNPC(selectedNpc.id)"
+            style="cursor: pointer; position: absolute; top: 15px; right: 15px"
+            title="删除物品"
+          >
+          </i>
           <div class="column">
             <div class="column-content" v-for="(value, key) in selectedNpc.character" :key="key">
               <span>{{ characterLabels[key as keyof typeof selectedNpc.character] || key }}</span> {{ value }}
@@ -61,6 +68,10 @@ import { useWorld } from '../hooks/useWorld';
 const emit = defineEmits(['open-map']);
 
 const { mvu, rawMvuData, handleMvuUpdate } = useMvuData();
-const { selectedNpc, selectNpc, openWorldMap, getPrestigeDescription, getPrestigeColor } = useWorld(mvu, emit);
+const { selectedNpc, selectNpc, openWorldMap, getPrestigeDescription, getPrestigeColor, deleteNPC } = useWorld(
+  mvu,
+  handleMvuUpdate,
+  emit,
+);
 const { characterLabels, metaLabels, attributeLabels } = useParty(mvu, rawMvuData, handleMvuUpdate);
 </script>

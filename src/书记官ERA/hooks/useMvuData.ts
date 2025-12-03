@@ -191,6 +191,8 @@ export function useMvuData() {
 
     // 使用 statWithoutMeta 来更新 UI，它是不包含 ERA 内部字段的纯净数据
     rawMvuData.value = detail.statWithoutMeta;
+    const currentRegion = rawMvuData.value?.PlayerData?.settings?.currentRegion;
+    let currentQuests: string[] = [];
 
     if (mvu.value.System.mainStoryMode) {
       // 处理世界书蓝绿灯
@@ -198,43 +200,46 @@ export function useMvuData() {
       // const currentQuests:string[] = Object.values(quest)
       //   .filter((item:any) => item.name)
       //   .map((item:any) => item.name);
-      const currentQuests: string[] = Object.keys(quest);
-
-      updateWorldbookWith('奥弗萨斯', worldbook => {
-        const QUEST_KEYWORDS = ['主线', '支线'];
-        const STRATEGY_TYPE = {
-          CONSTANT: 'constant' as const,
-          SELECTIVE: 'selective' as const,
-        };
-
-        return worldbook.map(entry => {
-          const isQuestEntry = QUEST_KEYWORDS.some(keyword => entry.name.includes(keyword));
-
-          // 如果不是任务条目或缺少 strategy 属性，则直接返回原始条目，不做任何修改
-          if (!isQuestEntry || !entry.strategy) {
-            return entry;
-          }
-
-          // 判断当前任务是否处于激活状态
-          const isQuestActive = currentQuests.some(quest => entry.strategy.keys.includes(quest));
-          const newStrategyType = isQuestActive ? STRATEGY_TYPE.CONSTANT : STRATEGY_TYPE.SELECTIVE;
-
-          // 如果策略类型无需改变，则直接返回原始条目，避免不必要的对象创建
-          if (entry.strategy.type === newStrategyType) {
-            return entry;
-          }
-
-          // 返回一个新的条目对象，其中包含更新后的 strategy
-          return {
-            ...entry,
-            strategy: {
-              ...entry.strategy, // 复制 strategy 的所有现有属性
-              type: newStrategyType, // 仅覆盖 type 属性
-            },
-          };
-        });
-      });
+      currentQuests = Object.keys(quest);
     }
+
+    updateWorldbookWith('奥弗萨斯', worldbook => {
+      const MAP_KEYWORD = '地图';
+      const QUEST_KEYWORDS = ['主线', '支线'];
+      const STRATEGY_TYPE = {
+        CONSTANT: 'constant' as const,
+        SELECTIVE: 'selective' as const,
+      };
+
+      return worldbook.map(entry => {
+        const isQuestEntry = QUEST_KEYWORDS.some(keyword => entry.name.includes(keyword));
+        const isMapEntry = entry.name.includes(MAP_KEYWORD);
+
+        // 如果不是地图或任务条目或缺少 strategy 属性，则直接返回原始条目，不做任何修改
+        if ((!isMapEntry && !isQuestEntry) || !entry.strategy) {
+          return entry;
+        }
+
+        // 判断需要激活的条目是否处于激活状态
+        const isQuestActive = currentQuests.some(quest => entry.strategy.keys.includes(quest));
+        const isMapActive = entry.strategy.keys.includes(currentRegion);
+        const newStrategyType = isQuestActive || isMapActive ? STRATEGY_TYPE.CONSTANT : STRATEGY_TYPE.SELECTIVE;
+
+        // 如果策略类型无需改变，则直接返回原始条目，避免不必要的对象创建
+        if (entry.strategy.type === newStrategyType) {
+          return entry;
+        }
+
+        // 返回一个新的条目对象，其中包含更新后的 strategy
+        return {
+          ...entry,
+          strategy: {
+            ...entry.strategy, // 复制 strategy 的所有现有属性
+            type: newStrategyType, // 仅覆盖 type 属性
+          },
+        };
+      });
+    });
   });
 
   return {

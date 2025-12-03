@@ -116,7 +116,7 @@ export function useCharacterCreation(defaultMvuData: any) {
   function createCharacter() {
     // TODO: Implement character creation logic
     // This would likely involve saving the data using酒馆助手 APIs
-    const userSelection = {
+    let userSelection = {
       PlayerData: {
         character: { ...character, level: 1 },
         attributes: { ...attributes },
@@ -147,6 +147,7 @@ export function useCharacterCreation(defaultMvuData: any) {
           },
         },
       };
+      userSelection = _.merge(userSelection, mainStoryInit);
     }
     // 使用 cloneDeep 避免修改原始的 defaultMvuData, 并确保结构匹配
     const finalCharacterData = _.merge(_.cloneDeep(defaultMvuData), userSelection);
@@ -154,7 +155,7 @@ export function useCharacterCreation(defaultMvuData: any) {
 
     try {
       eventEmit('era:insertByObject', finalCharacterData);
-      // createMessage()
+      createMessage();
     } catch (error) {
       console.error('修改 MVU 数据失败:', error);
       toastr.error('操作失败: 保存数据时出错');

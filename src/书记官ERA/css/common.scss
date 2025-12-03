@@ -1,4 +1,5 @@
 .corner {
+  z-index:1;
   width: 97px;
   height: 94px;
   background-size: 97px 94px;
@@ -126,6 +127,7 @@ button {
 }
 
 .detail-panel {
+  position: relative;
   background: var(--blur_tint_color);
   padding: 15px;
   border-radius: 4px;

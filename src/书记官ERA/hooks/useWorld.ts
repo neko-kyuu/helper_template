@@ -1,14 +1,19 @@
 import { ref, Ref } from 'vue';
-import { MvuData, NpcData } from '../types';
+import { MvuData, NpcData, WithId } from '../types';
 
-export function useWorld(mvu: Ref<MvuData>, emit: (event: 'open-map') => void) {
-  const selectedNpc = ref<NpcData | null>(null);
+export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (event: 'open-map') => void) {
+  const selectedNpc = ref<WithId<NpcData> | null>(null);
 
-  function selectNpc(npc: NpcData) {
-    if (selectedNpc.value === npc) {
+  function selectNpc(npc: NpcData | null, index: string) {
+    if (selectedNpc.value?.id === index) {
       selectedNpc.value = null;
     } else {
-      selectedNpc.value = npc;
+      selectedNpc.value = npc
+        ? {
+            ...npc,
+            id: index,
+          }
+        : null;
     }
   }
 
@@ -32,11 +37,33 @@ export function useWorld(mvu: Ref<MvuData>, emit: (event: 'open-map') => void) {
     return '#8bc34a';
   };
 
+  const deleteNPC = (npcKey: string) => {
+    const itemToDelete = mvu.value.PlayerData.settings.nearbyNPC[npcKey];
+    if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
+      selectNpc(null, '');
+    }
+    handleMvuUpdate([
+      {
+        event: 'deleteByObject',
+        detail: {
+          PlayerData: {
+            settings: {
+              nearbyNPC: {
+                [npcKey]: {},
+              },
+            },
+          },
+        },
+      },
+    ]);
+  };
+
   return {
     selectedNpc,
     selectNpc,
     openWorldMap,
     getPrestigeDescription,
     getPrestigeColor,
+    deleteNPC,
   };
 }

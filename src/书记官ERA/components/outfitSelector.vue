@@ -218,7 +218,7 @@ const layout: (SlotType | null)[][] = [
   color: var(--italics_text_color);
   cursor: pointer;
   transition: all 0.2s ease-in-out;
-  font-size: var(--font-size-medium);
+  font-size: var(--font-size-small);
 
   &:hover {
     border-style: solid;

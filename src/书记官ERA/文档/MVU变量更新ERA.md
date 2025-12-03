@@ -26,6 +26,12 @@ gold: |
   - 一方领主: 日收入约 25,000 金币
 favorability: |
   好感度: -100至100，单次好感度变化不宜大于5。
+experience: |
+  经验: 探索、任务、挑战、剧情突破均可提升经验，应当积极给予经验奖励。
+  - 小挑战 / 击败弱小敌人: +10 ~ +30 XP
+  - 普通战斗 / 任务环节: +50 ~ +100 XP
+  - 艰难的战斗 / 关键剧情突破: +150 ~ +300 XP
+  - 史诗级事件 / 击败首领: +500 XP 或更多
 
 # 2. 数据类型定义
 NpcData:
@@ -94,8 +100,8 @@ PlayerData: # Object: 玩家静态数据根对象
     date:            {{ERA:PlayerData.settings.date}} # String: 当前日期，格式参考<world_background>中的历法，如 "1149DR 奈托9日"
     time:            {{ERA:PlayerData.settings.time}} # String: 模糊时间，如 "下午"
     weather:         {{ERA:PlayerData.settings.weather}} # String: 天气状况
-    currentRegion:   {{ERA:PlayerData.settings.currentRegion}} # String: 当前大区域（城市及以上）
-    currentLocation: {{ERA:PlayerData.settings.currentLocation}} # String: 当前地点（小于城市）
+    currentRegion:   {{ERA:PlayerData.settings.currentRegion}} # String: 当前大区域，最细到城市
+    currentLocation: {{ERA:PlayerData.settings.currentLocation}} # String: 当前地点
     nearbyNPC:       {{ERA:PlayerData.settings.nearbyNPC}} # Object: NpcData, 场景内的NPC，包括友善、中立、敌对。NPC信息可以随玩家对其的了解程度更新。
     factionPrestige: {{ERA:PlayerData.settings.factionPrestige}} # Object: FactionData, 阵营声望
     bestiary:        {{ERA:PlayerData.settings.bestiary}} # Object: BestiaryEntry, 生物图鉴

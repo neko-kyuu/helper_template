@@ -39,9 +39,11 @@
           :key="questId"
           :class="{ 'side-quest': !quest.isMain }"
         >
-          <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="activeQuest(questId as unknown as string)">激活</button>
+          </div>
           <div class="quest-description">{{ quest.description }}</div>
-          <button @click="activeQuest(questId as unknown as string)">激活</button>
         </div>
       </div>
     </template>
