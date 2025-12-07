@@ -338,6 +338,7 @@ onUnmounted(() => {
   gap: 4px;
 }
 .canvas-container {
+  min-width: 450px;
   width: 100%;
   position: relative;
   aspect-ratio: 500 / 300; /* Maintain aspect ratio of original design */

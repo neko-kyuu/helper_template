@@ -87,9 +87,15 @@
             <div class="column-content" v-for="(value, key) in selectedChar.character" :key="key">
               <span>{{ characterLabels[key] || key }}</span> {{ value }}
             </div>
-            <div class="column-content" v-for="(value, key) in selectedChar.meta" :key="key">
-              <span>{{ metaLabels[key] || key }}</span> {{ value }}
-            </div>
+            <template v-if="'meta' in selectedChar">
+              <div class="column-content" v-for="(value, key) in selectedChar.meta" :key="key">
+                <span>{{ metaLabels[key] || key }}</span>
+                <span v-if="key === 'favorabilityTowardsNPCs'">
+                  <div v-for="(fav, npcName) in value" :key="npcName">{{ npcName }}: {{ fav }}</div>
+                </span>
+                <span v-else> {{ value }} </span>
+              </div>
+            </template>
           </div>
         </div>
         <div v-else class="data-empty">选择一个角色查看详情</div>

@@ -58,6 +58,7 @@ export interface NpcData {
     favorability: number;
     description: string;
     title?: string;
+    favorabilityTowardsNPCs?: Record<string, number>;
   };
   status?: {
     health: { current: number; max: number };
@@ -132,3 +133,5 @@ export interface MvuData {
     anecdotes: Record<string, any>;
   };
 }
+
+export type PartyMember = MvuData['PlayerData'] | NpcData;

@@ -71,6 +71,11 @@
                     "$meta": {
                         "updatable": true
                     }
+                },
+                "MQ1": {
+                    "name": "节日的插曲",
+                    "description": "你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。",
+                    "isMain": true
                 }
             },
             "nextQuest": {
@@ -126,11 +131,11 @@
                 "necessary": "self",
                 "updatable": true
             },
-            "date": "",
-            "time": "",
-            "weather": "",
-            "currentRegion": "",
-            "currentLocation": "",
+            "date": "1468DR 奈托月19日",
+            "time": "傍晚",
+            "weather": "飘雪",
+            "currentRegion": "巴拉德雷",
+            "currentLocation": "羽笔与酒杯旅店附近",
             "nearbyNPC": {
                 "$meta": {
                     "updatable": true

@@ -1,7 +1,7 @@
 // hooks/useParty.ts
 import _ from 'lodash';
 import { computed, ref, Ref, watchEffect } from 'vue';
-import { MvuData } from '../types';
+import { MvuData, PartyMember } from '../types';
 
 type UpgradeState = {
   tempAttributes: Record<string, number>;
@@ -64,6 +64,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const metaLabels: { [key: string]: string } = {
     relationship: '关系',
     favorability: '好感度',
+    favorabilityTowardsNPCs: '与NPC好感度',
     description: '概要',
     title: '称号',
   };
@@ -245,7 +246,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     }
   }
 
-  const selectedChar = ref<any>(null);
+  const selectedChar = ref<PartyMember | null>(null);
   const selectedCharIndex = ref<number | null>(null);
 
   function selectChar(char: any, index: number) {

@@ -6,47 +6,63 @@
     <div class="corner right-bottom"></div>
 
     <div class="tabs">
+      <button :class="{ active: activeTab === 'sys' }" @click="activeTab = 'sys'">系统设置</button>
       <button :class="{ active: activeTab === 'character' }" @click="activeTab = 'character'">创建新角色</button>
       <button :class="{ active: activeTab === 'race' }" @click="activeTab = 'race'">选择种族</button>
       <button :class="{ active: activeTab === 'attributes' }" @click="activeTab = 'attributes'">属性点分配</button>
+      <button :class="{ active: activeTab === 'follower' }" @click="activeTab = 'follower'">随行NPC</button>
       <button :class="{ active: activeTab === 'initLocation' }" @click="activeTab = 'initLocation'">初始地点</button>
-      <button :class="{ active: activeTab === 'sys' }" @click="activeTab = 'sys'">系统设置</button>
       <button :class="{ active: activeTab === 'confirm' }" @click="activeTab = 'confirm'">确认开局</button>
     </div>
 
     <div class="tab-content">
+      <div class="sys-section" v-if="activeTab === 'sys'">
+        <div><input type="checkbox" v-model="sys.mainStoryMode" /> 主线剧情模式</div>
+
+        <div
+          class="card"
+          v-for="m in modes"
+          :key="m.name"
+          :class="{ selected: selectedMode === m.name }"
+          @click="selectedMode = m.name"
+        >
+          <h3>{{ m.name }}</h3>
+          <p>{{ m.description }}</p>
+        </div>
+      </div>
+
       <div v-if="activeTab === 'character'">
         <div class="form-section">
           <div class="form-grid">
             <div class="form-group">
               <label for="name">名字:</label>
-              <input type="text" id="name" v-model="character.name" placeholder="输入你的名字" />
+              <input type="text" id="name" v-model="state.character.name" placeholder="输入你的名字" />
             </div>
 
             <div class="form-group">
               <label for="gender">性别:</label>
-              <select id="gender" v-model="character.gender">
+              <select id="gender" v-model="state.character.gender">
                 <option v-for="g in genders" :key="g" :value="g">{{ g }}</option>
               </select>
             </div>
             <div class="form-group">
               <label for="height">身高:</label>
-              <input type="text" id="height" v-model="character.height" placeholder="例如: 185cm" />
+              <input type="text" id="height" v-model="state.character.height" placeholder="例如: 185cm" />
             </div>
             <div class="form-group">
               <label for="build">体型:</label>
-              <select id="build" v-model="character.build">
+              <select id="build" v-model="state.character.build">
                 <option v-for="b in builds" :key="b" :value="b">{{ b }}</option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label for="appearance">外貌:</label>
-            <textarea id="appearance" v-model="character.appearance" placeholder="描述角色的外貌"></textarea>
+            <textarea id="appearance" v-model="state.character.appearance" placeholder="描述角色的外貌"></textarea>
           </div>
           <div class="form-group">
             <label for="personality">性格:</label>
-            <textarea id="personality" v-model="character.personality" placeholder="描述角色的性格"></textarea>
+            <textarea id="personality" v-model="state.character.personality" placeholder="描述角色的性格"></textarea>
           </div>
         </div>
       </div>
@@ -54,15 +70,15 @@
       <div v-if="activeTab === 'race'">
         <div class="race-selection">
           <div
-            class="race-card"
+            class="card"
             v-for="r in races"
             :key="r.name"
-            :class="{ selected: character.race === r.name }"
-            @click="character.race = r.name"
+            :class="{ selected: state.character.race === r.name }"
+            @click="state.character.race = r.name"
           >
             <h3>{{ r.name }}</h3>
             <p>{{ r.description }}</p>
-            <p class="race-bonuses">
+            <p class="card-bonuses">
               <span v-for="(bonus, attr) in raceBonuses[r.name]" :key="attr" class="bonus-item">
                 {{ attributeLabels[attr] }}: +{{ bonus }}
               </span>
@@ -74,7 +90,7 @@
       <div class="attributes-section" v-if="activeTab === 'attributes'">
         <h2>剩余点数: {{ availablePoints }}</h2>
         <ul>
-          <li v-for="(value, key) in attributes" :key="key">
+          <li v-for="(value, key) in state.attributes" :key="key">
             <span class="attribute-name">{{ attributeLabels[key] }}:</span>
             <div class="attribute-controls">
               <button @click="decreaseAttribute(key)" :disabled="value <= baseAttributes[key]">-</button>
@@ -85,6 +101,68 @@
         </ul>
       </div>
 
+      <div v-if="activeTab === 'follower'">
+        <div class="follower-section">
+          <div class="follower-header">添加随行NPC<button @click="addFollower">+</button></div>
+
+          <div v-for="(follower, index) in state.followers" :key="index" class="follower-card">
+            <div class="follower-header">
+              随行NPC {{ index + 1 }} <button @click="removeFollower(index)">删除</button>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>名字:</label>
+                <input type="text" v-model="follower.character.name" />
+              </div>
+              <div class="form-group">
+                <label>性别:</label>
+                <select v-model="follower.character.gender">
+                  <option v-for="g in genders" :key="g" :value="g">{{ g }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>种族:</label>
+                <select v-model="follower.character.race">
+                  <option v-for="r in races" :key="r.name" :value="r.name">{{ r.name }}</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>身高:</label>
+                <input type="text" v-model="follower.character.height" />
+              </div>
+              <div class="form-group">
+                <label>体型:</label>
+                <select v-model="follower.character.build">
+                  <option v-for="b in builds" :key="b" :value="b">{{ b }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>外貌:</label>
+              <textarea v-model="follower.character.appearance"></textarea>
+            </div>
+            <div class="form-group">
+              <label>性格:</label>
+              <textarea v-model="follower.character.personality"></textarea>
+            </div>
+
+            <div class="follower-header">属性</div>
+            <div class="attributes-section">
+              <ul>
+                <li v-for="(value, key) in follower.attributes" :key="key">
+                  <span class="attribute-name">{{ attributeLabels[key] }}:</span>
+                  <div class="attribute-controls">
+                    <button @click="follower.attributes[key]--">-</button>
+                    <span class="attribute-value">{{ value }}</span>
+                    <button @click="follower.attributes[key]++">+</button>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div v-if="activeTab === 'initLocation'">
         <MapSelector
           v-model:coordinate-helper-mode="coordinateHelperMode"
@@ -92,11 +170,6 @@
           @point-selected="handlePointSelected"
           @coordinates-clicked="handleCoordinatesClicked"
         />
-      </div>
-
-      <div class="sys-section" v-if="activeTab === 'sys'">
-        主线剧情模式
-        <input type="checkbox" v-model="sys.mainStoryMode" />
       </div>
 
       <div v-if="activeTab === 'confirm'">
@@ -542,12 +615,13 @@ const defaultMvuData: any = JSON.parse(`{
 }`);
 
 const {
-  character,
+  state,
   sys,
+  selectedMode,
+  modes,
   races,
   genders,
   builds,
-  attributes,
   baseAttributes,
   availablePoints,
   increaseAttribute,
@@ -557,10 +631,12 @@ const {
   raceBonuses,
   openingConfirmText,
   fixedOpeningText,
+  addFollower,
+  removeFollower,
 } = useCharacterCreation(defaultMvuData);
 
 const handlePointSelected = (regionName: string) => {
-  character.location = regionName;
+  state.character.location = regionName;
 };
 
 const handleCoordinatesClicked = (coords: { x: number; y: number }) => {
