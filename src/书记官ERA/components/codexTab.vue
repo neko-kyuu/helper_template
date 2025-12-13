@@ -20,25 +20,30 @@
           </div>
         </template>
         <template v-if="activeCodexTab === 'anecdotes'">
-          <div
-            class="master-grid-item"
-            v-for="(entry, index) in anecdoteEntries"
-            :key="index"
-            @click="selectEntry(entry, index as string, 'anecdoteEntries')"
-            :class="{ selected: selectedEntry?.name === entry.name }"
-          >
-            {{ entry.name }}
-          </div>
-          <div class="grid-col-span-full"></div>
-          <div
-            class="master-grid-item"
-            v-for="(entry, index) in archivedEntries"
-            :key="index"
-            @click="selectEntry(entry, index as string, 'archivedEntries')"
-            :class="{ selected: selectedEntry?.name === entry.name }"
-          >
-            {{ entry.name }}
-          </div>
+          <template v-if="Object.keys(anecdoteEntries).length">
+            <div class="section-title grid-col-span-full">逸闻</div>
+            <div
+              class="master-grid-item"
+              v-for="(entry, index) in anecdoteEntries"
+              :key="index"
+              @click="selectEntry(entry, index as string, 'anecdoteEntries')"
+              :class="{ selected: selectedEntry?.name === entry.name }"
+            >
+              {{ entry.name }}
+            </div>
+          </template>
+          <template v-if="Object.keys(archivedEntries).length">
+            <div class="section-title grid-col-span-full">已归档</div>
+            <div
+              class="master-grid-item"
+              v-for="(entry, index) in archivedEntries"
+              :key="index"
+              @click="selectEntry(entry, index as string, 'archivedEntries')"
+              :class="{ selected: selectedEntry?.name === entry.name }"
+            >
+              {{ entry.name }}
+            </div>
+          </template>
         </template>
       </div>
       <div class="detail-panel">

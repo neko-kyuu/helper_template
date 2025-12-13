@@ -230,7 +230,7 @@ const layout: (SlotType | null)[][] = [
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
-  width: 300px; // Give it a fixed width
+  width: 321px;
   flex-shrink: 0;
 }
 

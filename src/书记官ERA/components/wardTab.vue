@@ -49,19 +49,19 @@
         <div class="clothing-attributes">
           <div class="section-title">当前总属性</div>
           <div class="attr">
-            <span>防御</span><span>{{ mvu.PlayerDynamicData.clothingAttributes.defense.toFixed(1) }}</span>
+            <span>防御</span><span>{{ clothingAttributes.defense.toFixed(1) }}</span>
           </div>
           <div class="attr">
-            <span>舒适</span><span>{{ mvu.PlayerDynamicData.clothingAttributes.comfort.toFixed(1) }}</span>
+            <span>舒适</span><span>{{ clothingAttributes.comfort.toFixed(1) }}</span>
           </div>
           <div class="attr">
-            <span>保暖</span><span>{{ mvu.PlayerDynamicData.clothingAttributes.warmth.toFixed(1) }}</span>
+            <span>保暖</span><span>{{ clothingAttributes.warmth.toFixed(1) }}</span>
           </div>
           <div class="attr">
-            <span>社交</span><span>{{ mvu.PlayerDynamicData.clothingAttributes.social.toFixed(1) }}</span>
+            <span>社交</span><span>{{ clothingAttributes.social.toFixed(1) }}</span>
           </div>
           <div class="attr">
-            <span>重量</span><span>{{ mvu.PlayerDynamicData.clothingAttributes.weight.toFixed(1) }}</span>
+            <span>重量</span><span>{{ clothingAttributes.weight.toFixed(1) }}</span>
           </div>
         </div>
       </template>
@@ -78,5 +78,8 @@ const emit = defineEmits<{
 }>();
 
 const { mvu, rawMvuData, handleMvuUpdate, initialize } = useMvuData();
-const { slotNames, selectedOutfitId, selectedOutfit, editOutfit, openUpdateOutfit } = useWardrobe(mvu, emit);
+const { slotNames, selectedOutfitId, selectedOutfit, editOutfit, openUpdateOutfit, clothingAttributes } = useWardrobe(
+  mvu,
+  emit,
+);
 </script>

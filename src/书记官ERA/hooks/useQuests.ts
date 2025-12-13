@@ -57,6 +57,30 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
     }
   };
 
+  const deleteQuest = (
+    questId: string,
+    questType: 'currentQuest' | 'nextQuest' | 'pendingQuest' | 'completedQuest',
+  ) => {
+    const questToDelete = mvu.value.PlayerData.progress[questType]?.[questId];
+    if (questToDelete) {
+      toastr.success(`成功删除 ${questToDelete.name}`);
+      handleMvuUpdate([
+        {
+          event: 'deleteByObject',
+          detail: {
+            PlayerData: {
+              progress: {
+                [questType]: {
+                  [questId]: {},
+                },
+              },
+            },
+          },
+        },
+      ]);
+    }
+  };
+
   return {
     currentQuests,
     nextQuests,
@@ -64,5 +88,6 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
     completedQuests,
     activeQuestTab,
     activeQuest,
+    deleteQuest,
   };
 }

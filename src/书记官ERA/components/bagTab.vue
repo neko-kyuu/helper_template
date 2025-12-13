@@ -4,19 +4,30 @@
       <div class="gold">💰 {{ mvu.PlayerDynamicData.gold }}金币</div>
     </div>
     <div class="master-detail-body">
-      <div class="master-grid bag-grid" v-if="Object.keys(mvu.PlayerDynamicData.inventory).length">
-        <div
-          class="master-grid-item"
-          v-for="(item, index) in mvu.PlayerDynamicData.inventory"
-          :key="index"
-          :class="{ selected: selectedItem?.name === item.name }"
-          @click="selectItem(item, index)"
-        >
-          <i class="fa-solid fa-box" v-if="item.type == 'item'"></i>
-          <i class="fa-solid fa-shirt" v-if="item.type == 'cloth'"></i>
-          <i class="fa-solid fa-wand-sparkles" v-if="item.type == 'weapon'"></i>
-          {{ item.name }}
-        </div>
+      <div
+        class="master-grid bag-grid"
+        v-if="mvu.PlayerDynamicData.inventory && Object.keys(mvu.PlayerDynamicData.inventory).length"
+      >
+        <template v-for="type in groupOrder" :key="type">
+          <template v-if="groupedInventory[type] && Object.keys(groupedInventory[type]).length">
+            <!-- <div > -->
+            <div class="section-title grid-col-span-full">{{ typeLabels[type] }}</div>
+
+            <div
+              class="master-grid-item"
+              v-for="(item, key) in groupedInventory[type]"
+              :key="key"
+              :class="{ selected: selectedItem?.name === item.name }"
+              @click="selectItem(item, key as unknown as string)"
+            >
+              <i class="fa-solid fa-box" v-if="item.type == 'item'"></i>
+              <i class="fa-solid fa-shirt" v-if="item.type == 'cloth'"></i>
+              <i class="fa-solid fa-wand-sparkles" v-if="item.type == 'weapon'"></i>
+              {{ item.name }}
+            </div>
+            <!-- </div> -->
+          </template>
+        </template>
       </div>
       <div v-else class="data-empty" style="background: var(--blur_tint_color)">背包空空如也</div>
       <div class="detail-panel">
@@ -96,6 +107,16 @@ import { useMvuData } from '../hooks/useMvuData';
 import { qualityLabels, slotLabels, tierLabels, typeLabels } from '../itemConstants';
 
 const { mvu, handleMvuUpdate } = useMvuData();
-const { selectedItem, selectItem, deleteItem, isEditing, editableItem, startEditing, cancelEditing, saveChanges } =
-  useInventory(mvu, handleMvuUpdate);
+const {
+  selectedItem,
+  selectItem,
+  deleteItem,
+  isEditing,
+  editableItem,
+  startEditing,
+  cancelEditing,
+  saveChanges,
+  groupOrder,
+  groupedInventory,
+} = useInventory(mvu, handleMvuUpdate);
 </script>

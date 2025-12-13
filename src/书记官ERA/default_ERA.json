@@ -54,6 +54,12 @@
       "social": 4,
       "intellectual": 2
     },
+    "equipment": {
+      "leftHand": "none",
+      "rightHand": "none",
+      "outfit": "none",
+      "outfitContent": "none"
+    },
     "progress": {
       "$meta": {
         "necessary": "self",
@@ -251,11 +257,6 @@
         }
       }
     },
-    "equipment": {
-      "leftHand": "none",
-      "rightHand": "none",
-      "outfit": "none"
-    },
     "clothingAttributes": {
       "$meta": {
         "necessary": "all",
@@ -327,7 +328,8 @@
       "equipment": {
         "leftHand": "none",
         "rightHand": "none",
-        "outfit": "none"
+        "outfit": "none",
+        "outfitContent": "none"
       },
       "meta": {
         "relationship": "同伴",

@@ -55,6 +55,14 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update', outf
     emit('open-update', outfitId);
   };
 
+  const clothingAttributes = ref({
+    defense: 0,
+    comfort: 0,
+    warmth: 0,
+    social: 0,
+    weight: 0,
+  });
+
   // 侦听当前服装变化, 自动重新计算总属性
   watch(
     selectedOutfit,
@@ -89,7 +97,7 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update', outf
         }
       }
 
-      // TODO: This should trigger an MVU update to persist the change？
+      clothingAttributes.value = newAttributes;
     },
     { immediate: true },
   );
@@ -104,5 +112,6 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update', outf
     selectedOutfit,
     editOutfit,
     openUpdateOutfit,
+    clothingAttributes,
   };
 }

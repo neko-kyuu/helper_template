@@ -1,4 +1,4 @@
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import type { BaseInventoryItem, InventoryItem } from '../itemConstants';
 import { MvuData } from '../types';
 
@@ -84,6 +84,27 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     }
   });
 
+  const groupOrder = ['item', 'cloth', 'weapon'] as const;
+
+  const groupedInventory = computed(() => {
+    const groups: { [key: string]: { [key: string]: any } } = {
+      cloth: {},
+      weapon: {},
+      item: {},
+    };
+
+    if (mvu.value.PlayerDynamicData.inventory) {
+      for (const key in mvu.value.PlayerDynamicData.inventory) {
+        const item = mvu.value.PlayerDynamicData.inventory[key];
+        if (item.type && groups[item.type]) {
+          groups[item.type][key] = item;
+        }
+      }
+    }
+
+    return groups;
+  });
+
   return {
     selectedItem,
     selectItem,
@@ -94,5 +115,7 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     startEditing,
     cancelEditing,
     saveChanges,
+    groupOrder,
+    groupedInventory,
   };
 }

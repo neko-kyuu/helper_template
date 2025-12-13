@@ -208,6 +208,12 @@ export function useCharacterCreation(defaultMvuData: any) {
             mood: { current: 50, max: 100 },
             arousal: { current: 50, max: 100 },
           },
+          equipment: {
+            leftHand: 'none',
+            rightHand: 'none',
+            outfit: 'none',
+            outfitContent: 'none',
+          },
           meta: {
             relationship: '同伴',
             favorability: 50,
@@ -408,12 +414,14 @@ function createDefaultCharacter(state: any) {
 
   state.character = filterMeta(defaultEra.PlayerData.character);
   state.attributes = filterMeta(defaultEra.PlayerData.attributes);
+  state.equipment = filterMeta(defaultEra.PlayerData.equipment);
   state.followers = Object.values(filterMeta(defaultEra.FollowerNPCData))
     .filter((v: any) => v.character)
     .map((v: any) => {
       return {
         character: filterMeta(v.character),
         attributes: filterMeta(v.attributes),
+        equipment: filterMeta(v.equipment),
       };
     });
 }

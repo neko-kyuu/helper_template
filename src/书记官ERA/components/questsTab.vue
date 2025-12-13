@@ -24,7 +24,10 @@
           :key="index"
           :class="{ 'side-quest': !quest.isMain }"
         >
-          <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="deleteQuest(index as unknown as string, 'currentQuest')">删除</button>
+          </div>
           <div class="quest-description">{{ quest.description }}</div>
         </div>
       </div>
@@ -41,7 +44,10 @@
         >
           <div class="quest-title">
             {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
-            <button @click="activeQuest(questId as unknown as string)">激活</button>
+            <div>
+              <button @click="activeQuest(questId as unknown as string)" style="margin-right: 6px">激活</button>
+              <button @click="deleteQuest(questId as unknown as string, 'nextQuest')">删除</button>
+            </div>
           </div>
           <div class="quest-description">{{ quest.description }}</div>
         </div>
@@ -57,7 +63,10 @@
           :key="index"
           :class="{ 'side-quest': !quest.isMain }"
         >
-          <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="deleteQuest(index as unknown as string, 'pendingQuest')">删除</button>
+          </div>
           <div class="quest-description">{{ quest.description }}</div>
         </div>
       </div>
@@ -72,7 +81,10 @@
           :key="index"
           :class="{ 'side-quest': !quest.isMain }"
         >
-          <div class="quest-title">{{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}</div>
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="deleteQuest(index as unknown as string, 'completedQuest')">删除</button>
+          </div>
           <div class="quest-description">{{ quest.description }}</div>
         </div>
       </div>
@@ -86,8 +98,6 @@ import { useQuests } from '../hooks/useQuests';
 
 const { mvu, handleMvuUpdate } = useMvuData();
 
-const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTab, activeQuest } = useQuests(
-  mvu,
-  handleMvuUpdate,
-);
+const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTab, activeQuest, deleteQuest } =
+  useQuests(mvu, handleMvuUpdate);
 </script>

@@ -1,0 +1,1982 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>宝可梦高级对战界面 (多对战支持)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+SC:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      .battle-result-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+        animation: fadeInResult 0.5s ease-out;
+      }
+      .battle-result-overlay.visible {
+        display: flex;
+      }
+      .result-panel {
+        font-family: var(--font-pixel);
+        background-color: var(--pkmn-white);
+        color: var(--pkmn-dark);
+        border: 4px solid var(--pkmn-dark);
+        border-radius: 12px;
+        padding: 25px;
+        text-align: center;
+        width: 90%;
+        max-width: 500px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        transform: scale(0.7);
+        opacity: 0;
+        animation: popInResult 0.5s 0.2s forwards;
+      }
+      .result-title {
+        font-size: 28px;
+        margin: 0 0 15px 0;
+        border-bottom: 3px solid var(--pkmn-grey);
+        padding-bottom: 10px;
+      }
+      .result-description {
+        font-size: 14px;
+        color: #555;
+        margin-bottom: 20px;
+      }
+      .result-custom-input {
+        font-family: var(--font-ui);
+        width: 100%;
+        height: 70px;
+        margin-bottom: 20px;
+        padding: 10px;
+        border-radius: 8px;
+        border: 3px solid var(--pkmn-grey);
+        font-size: 14px;
+        resize: vertical;
+        box-sizing: border-box;
+        background-color: var(--pkmn-white);
+        color: var(--pkmn-dark);
+      }
+      .result-button {
+        font-family: var(--font-pixel);
+        font-size: 16px;
+        padding: 12px 25px;
+        border: 3px solid var(--pkmn-dark);
+        border-radius: 8px;
+        background-color: var(--pkmn-red);
+        color: var(--pkmn-white);
+        cursor: pointer;
+        box-shadow: 0 4px var(--pkmn-dark);
+        transition: all 0.1s ease;
+      }
+      .result-button:active:not(:disabled) {
+        transform: translateY(4px);
+        box-shadow: 0 0 var(--pkmn-dark);
+      }
+      .result-button:disabled {
+        filter: grayscale(0.5);
+        cursor: not-allowed;
+        opacity: 0.7;
+      }
+      @keyframes fadeInResult {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes popInResult {
+        from {
+          transform: scale(0.7);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      :root {
+        --pkmn-red: #f83030;
+        --pkmn-white: #f8f8f8;
+        --pkmn-dark: #212121;
+        --pkmn-grey: #a0a0a0;
+        --font-pixel: 'Press Start 2P', 'Noto Sans SC', sans-serif;
+        --font-ui: 'Noto Sans SC', sans-serif;
+        --color-buff: #4caf50;
+        --color-debuff: #f44336;
+        --color-system-msg: #ffc107;
+        --bg-light: #f8f8f8;
+        --bg-dark-mode: #2c3e50;
+        --selection-highlight: rgba(255, 235, 59, 0.8);
+        --mechanic-color: #ffc107;
+        --special-cmd-color: #2196f3;
+      }
+      .battle-data-container {
+        display: none;
+      }
+
+      body {
+        background-color: var(--bg-light);
+        margin: 0;
+        padding: 10px;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease;
+      }
+
+      #theme-toggle {
+        position: absolute;
+        bottom: 8px;
+        left: 8px;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid var(--pkmn-dark);
+        background-color: var(--pkmn-white);
+        cursor: pointer;
+        font-size: 16px;
+        z-index: 10;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+      }
+      details#battle-wrapper {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        border: 4px solid var(--pkmn-dark);
+        border-radius: 12px;
+        overflow: hidden;
+        background: var(--bg-light);
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        transition: all 0.3s ease;
+      }
+      summary#battle-summary {
+        font-family: var(--font-pixel);
+        font-size: 16px;
+        padding: 12px 18px;
+        cursor: pointer;
+        background-color: var(--pkmn-dark);
+        color: var(--pkmn-white);
+        user-select: none;
+      }
+      summary#battle-summary::-webkit-details-marker {
+        display: none;
+      }
+      summary#battle-summary {
+        list-style: none;
+      }
+      details[open] > summary#battle-summary {
+        border-bottom: 4px solid var(--pkmn-dark);
+      }
+      summary#battle-summary::after {
+        content: ' ▶';
+        font-size: 12px;
+        margin-left: 8px;
+      }
+      details[open] > summary#battle-summary::after {
+        content: ' ▼';
+      }
+
+      .battle-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .info-panel {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background-color: rgba(0, 0, 0, 0.05);
+        border-bottom: 4px solid var(--pkmn-dark);
+        flex-shrink: 0;
+      }
+      .side-container {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .pokemon-info-box {
+        position: relative;
+        background-color: var(--pkmn-white);
+        border: 3px solid var(--pkmn-dark);
+        border-radius: 8px;
+        padding: 10px;
+        font-size: 12px;
+        line-height: 1.5;
+        flex: 1;
+        min-width: 150px;
+        max-width: 200px;
+        transition: all 0.2s ease;
+      }
+      .pkmn-mechanic-indicator {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        background-color: var(--mechanic-color);
+        color: var(--pkmn-dark);
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        padding: 3px 6px;
+        border-radius: 8px;
+        border: 2px solid var(--pkmn-dark);
+        box-shadow: 2px 2px var(--pkmn-dark);
+        display: none;
+      }
+      .pokemon-info-box.is-commanding {
+        box-shadow: 0 0 15px 5px var(--selection-highlight);
+        transform: scale(1.05);
+      }
+      .pokemon-info-box.is-targettable {
+        cursor: pointer;
+        border-color: var(--pkmn-red);
+      }
+      .pokemon-info-box.is-targettable:hover {
+        box-shadow: 0 0 10px 3px var(--pkmn-red);
+      }
+      .pokemon-info-box.is-fainted {
+        filter: grayscale(100%);
+        opacity: 0.6;
+      }
+
+      .sprite-wrapper {
+        position: relative;
+        width: 68px;
+        height: 56px;
+        margin: 0 auto 5px;
+      }
+      .pkmn-sprite {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        image-rendering: pixelated;
+      }
+      .name-attribute-icons {
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 5px;
+        line-height: 1;
+      }
+      .name-attribute-icon {
+        width: 18px;
+        height: 18px;
+        vertical-align: middle;
+      }
+      .move-icon,
+      .item-icon {
+        width: 20px;
+        height: 20px;
+        vertical-align: -5px;
+        margin-right: 5px;
+        image-rendering: pixelated;
+      }
+      .submenu-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: flex-start;
+        text-align: left;
+        padding-left: 10px;
+        padding-right: 10px;
+      }
+
+      .info-line-1 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .pkmn-name-container {
+        display: flex;
+        align-items: center;
+      }
+      .pkmn-name {
+        vertical-align: middle;
+      }
+      .hp-bar-container {
+        width: 100%;
+        height: 12px;
+        background-color: #ccc;
+        border: 2px solid var(--pkmn-dark);
+        border-radius: 4px;
+        margin: 4px 0;
+      }
+      .hp-bar {
+        height: 100%;
+        transition: width 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      }
+      .hp-green {
+        background: linear-gradient(to right, #70f8a8, #30b850);
+      }
+      .hp-yellow {
+        background: linear-gradient(to right, #f8f870, #f8d030);
+      }
+      .hp-red {
+        background: linear-gradient(to right, #f88880, #f85030);
+      }
+      .info-details {
+        font-size: 10px;
+        color: #555;
+      }
+      .status-badge {
+        color: white;
+        padding: 1px 4px;
+        border-radius: 4px;
+        font-size: 10px;
+      }
+      .status-psn {
+        background-color: #a040a0;
+      } /* 中毒 Poison */
+      .status-par {
+        background-color: #f8d030;
+        color: var(--pkmn-dark);
+      } /* 麻痹 Paralysis */
+      .status-slp {
+        background-color: #888888;
+      } /* 睡眠 Sleep */
+      .status-brn {
+        background-color: #f08030;
+      } /* 烧伤 Burn */
+      .status-frz {
+        background-color: #98d8d8;
+        color: var(--pkmn-dark);
+      } /* 冰冻 Freeze */
+      .log-panel {
+        flex-grow: 1;
+        background-color: var(--pkmn-dark);
+        color: var(--pkmn-white);
+        padding: 15px;
+        border-bottom: 4px solid var(--pkmn-dark);
+        overflow-y: auto;
+        line-height: 1.8;
+        font-size: 14px;
+        white-space: pre-wrap;
+        min-height: 150px;
+        max-height: 300px;
+      }
+      .log-system-feedback {
+        color: var(--color-system-msg);
+        font-style: italic;
+        transition: opacity 0.5s ease;
+      }
+      .action-panel {
+        background-color: #3d3d3d;
+        border-top: 4px solid var(--pkmn-dark);
+        display: grid;
+        grid-template-columns: 1fr;
+        flex-shrink: 0;
+      }
+      .left-panel-wrapper {
+        position: relative;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .field-status-panel,
+      .pokemon-details-panel,
+      #pending-actions-panel {
+        background-color: var(--pkmn-white);
+        padding: 10px;
+        margin: 0;
+        border: 4px solid var(--pkmn-dark);
+        border-radius: 8px;
+        font-size: 12px;
+        position: relative;
+      }
+      #pending-actions-panel {
+        display: none;
+      }
+      #pending-actions-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        font-size: 11px;
+        line-height: 1.8;
+      }
+      #pending-actions-list li.is-selecting {
+        font-weight: bold;
+        color: var(--pkmn-red);
+      }
+      .field-status-panel h4,
+      .pokemon-details-panel h4,
+      #pending-actions-panel h4 {
+        font-size: 12px;
+        margin: 0 0 8px 0;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 4px;
+      }
+      .field-status-content,
+      .pokemon-details-content {
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .pokemon-details-content {
+        flex: 1;
+        overflow-y: auto;
+      }
+      .stat-change {
+        padding: 2px 4px;
+        border-radius: 4px;
+        color: white;
+        margin-right: 4px;
+        font-weight: bold;
+      }
+      .stat-buff {
+        background-color: var(--color-buff);
+      }
+      .stat-debuff {
+        background-color: var(--color-debuff);
+      }
+      .pokemon-details-panel {
+        display: none;
+        flex-direction: column;
+      }
+      .details-pkmn-hp-bar-container {
+        width: 100%;
+        height: 8px;
+        background-color: #ccc;
+        border: 1px solid var(--pkmn-dark);
+        border-radius: 4px;
+        margin: 4px 0;
+      }
+      .details-pkmn-hp-bar {
+        height: 100%;
+      }
+      #details-pkmn-moves {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+        font-size: 11px;
+      }
+      #details-pkmn-moves li {
+        padding: 3px;
+        border-radius: 3px;
+        margin-bottom: 3px;
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+      #btn-switch-in {
+        margin-top: auto;
+        font-family: var(--font-pixel);
+        font-size: 12px;
+        padding: 8px;
+      }
+
+      .controls-wrapper {
+        background-color: var(--pkmn-red);
+        padding: 10px;
+        border-top: 4px solid var(--pkmn-dark);
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .main-controls,
+      .submenu-controls {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+        height: 100%;
+      }
+      .submenu-controls {
+        display: none;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .submenu-controls.active {
+        display: flex;
+      }
+      .turn-action-controls {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+      .turn-action-controls.grid-2-cols {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .mechanics-controls {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+        border-top: 2px solid var(--pkmn-grey);
+        padding-top: 8px;
+      }
+      .mechanic-btn {
+        font-family: var(--font-pixel);
+        font-size: 10px;
+        padding: 8px;
+        background-color: var(--mechanic-color);
+        flex-grow: 1;
+      }
+      .mechanic-btn.armed {
+        box-shadow: 0 0 10px 4px var(--selection-highlight);
+        border-color: var(--pkmn-white);
+      }
+      .special-cmd-btn {
+        background-color: var(--special-cmd-color);
+      }
+
+      .btn,
+      .submenu-btn {
+        font-family: var(--font-pixel);
+        font-size: 14px;
+        color: var(--pkmn-dark);
+        background-color: var(--pkmn-white);
+        border: 3px solid var(--pkmn-dark);
+        border-radius: 8px;
+        padding: 12px 8px;
+        text-align: center;
+        cursor: pointer;
+        box-shadow: 0 4px var(--pkmn-dark);
+        transition: all 0.1s ease;
+        white-space: nowrap;
+      }
+      .btn:active,
+      .submenu-btn:active {
+        transform: translateY(4px);
+        box-shadow: 0 0 var(--pkmn-dark);
+      }
+      .btn.disabled,
+      .submenu-btn.disabled {
+        background-color: var(--pkmn-grey);
+        color: #666;
+        cursor: not-allowed;
+        box-shadow: 0 4px #666;
+      }
+      .submenu-btn.back-btn {
+        grid-column: 1 / -1;
+        background-color: #ffc107;
+      }
+      .submenu-btn.confirm-btn {
+        grid-column: 1 / -1;
+        background-color: var(--color-buff);
+      }
+      .submenu-btn.cancel-btn {
+        grid-column: 1 / -1;
+        background-color: var(--pkmn-grey);
+        color: var(--pkmn-dark);
+      }
+      .submenu-btn.selected {
+        border-color: var(--pkmn-red);
+      }
+
+      body.night-mode {
+        background-color: var(--bg-dark-mode);
+      }
+      body.night-mode #theme-toggle,
+      body.night-mode .pokemon-info-box,
+      body.night-mode .field-status-panel,
+      body.night-mode .pokemon-details-panel,
+      body.night-mode #pending-actions-panel,
+      body.night-mode .result-custom-input {
+        background-color: #34495e;
+        border-color: #7f8c8d;
+        color: var(--pkmn-white);
+      }
+      body.night-mode .info-details {
+        color: #bdc3c7;
+      }
+      body.night-mode details#battle-wrapper {
+        background: var(--bg-dark-mode);
+        border-color: #7f8c8d;
+      }
+      body.night-mode summary#battle-summary,
+      body.night-mode .log-panel,
+      body.night-mode .action-panel {
+        background-color: #212121;
+      }
+      body.night-mode details[open] > summary#battle-summary,
+      body.night-mode .info-panel,
+      body.night-mode .log-panel,
+      body.night-mode .controls-wrapper,
+      body.night-mode .mechanics-controls {
+        border-color: #7f8c8d;
+      }
+      body.night-mode .info-panel {
+        background-color: rgba(255, 255, 255, 0.05);
+      }
+      body.night-mode .field-status-panel h4,
+      body.night-mode .pokemon-details-panel h4,
+      body.night-mode #pending-actions-panel h4 {
+        border-bottom-color: #555;
+      }
+      body.night-mode .btn,
+      body.night-mode .submenu-btn {
+        background-color: #34495e;
+        color: var(--pkmn-white);
+        border-color: #7f8c8d;
+        box-shadow: 0 4px #1a1a1a;
+      }
+      body.night-mode .btn:active,
+      body.night-mode .submenu-btn:active {
+        box-shadow: 0 0 #1a1a1a;
+      }
+      body.night-mode .btn.disabled,
+      body.night-mode .submenu-btn.disabled {
+        background-color: #2a2a2a;
+        color: #666;
+        box-shadow: 0 4px #111;
+      }
+      body.night-mode #details-pkmn-moves li {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+      body.night-mode .mechanic-btn.armed {
+        box-shadow: 0 0 10px 4px var(--selection-highlight);
+        border-color: var(--mechanic-color);
+      }
+      body.night-mode .special-cmd-btn {
+        background-color: #1976d2;
+      }
+
+      @media (min-width: 769px) {
+        .info-panel {
+          flex-direction: column;
+          align-items: center;
+        }
+        .action-panel {
+          grid-template-columns: 1fr 1fr;
+        }
+        .controls-wrapper {
+          border-left: 4px solid var(--pkmn-dark);
+          border-top: none;
+        }
+        body.night-mode .controls-wrapper {
+          border-left-color: #7f8c8d;
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 5px;
+        }
+        .info-panel {
+          flex-direction: column;
+        }
+        .side-container {
+          flex-direction: column;
+          align-items: stretch;
+          width: 100%;
+          gap: 5px;
+        }
+        .pokemon-info-box {
+          max-width: none;
+        }
+        .log-panel {
+          font-size: 12px;
+        }
+        .btn,
+        .submenu-btn {
+          font-size: 13px;
+          padding: 10px;
+        }
+        summary#battle-summary {
+          font-size: 14px;
+        }
+        .turn-action-controls.grid-2-cols {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="battle-data-container">$1</div>
+
+    <template id="pkmn-info-box-template">
+      <div class="pokemon-info-box">
+        <div class="sprite-wrapper">
+          <img class="pkmn-sprite" src="" alt="" />
+        </div>
+        <div class="pkmn-mechanic-indicator"></div>
+        <div class="info-line-1">
+          <div class="pkmn-name-container">
+            <div class="name-attribute-icons"></div>
+            <span class="pkmn-name"></span>
+          </div>
+          <span>Lv.<span class="pkmn-level"></span></span>
+        </div>
+        <div class="hp-bar-container"><div class="hp-bar"></div></div>
+        <div class="info-details pkmn-status-line">状态: <span class="pkmn-status-text">健康</span></div>
+        <div class="info-details hp-text-details">
+          HP: <span class="pkmn-hp-current"></span> / <span class="pkmn-hp-max"></span>
+        </div>
+        <div class="info-details">属性: <span class="pkmn-types"></span></div>
+        <div class="info-details trainer-details">训练家: <span class="pkmn-trainer"></span></div>
+        <div class="info-details ability-details">特性: <span class="pkmn-ability"></span></div>
+        <div class="info-details nature-details">性格: <span class="pkmn-nature"></span></div>
+        <div class="info-details item-details">道具: <span class="pkmn-item"></span></div>
+        <div class="info-details affection-details">亲密度: <span class="pkmn-affection"></span></div>
+      </div>
+    </template>
+
+    <details id="battle-wrapper" open>
+      <summary id="battle-summary">正在战斗中</summary>
+      <div class="battle-container">
+        <div class="info-panel" id="info-panel">
+          <div class="side-container" id="opponent-side-container"></div>
+          <div class="side-container" id="player-side-container"></div>
+        </div>
+        <div class="log-panel" id="battle-log"></div>
+        <div class="action-panel">
+          <div class="left-panel-wrapper">
+            <button id="theme-toggle">🌙</button>
+            <div class="field-status-panel" id="field-status-panel">
+              <h4>战场状态</h4>
+              <div class="field-status-content">
+                <div>天气: <span id="field-weather">无</span></div>
+                <div>场地: <span id="field-terrain">无</span></div>
+                <div style="margin-top: 5px">我方场地: <span id="player-side-effects">无</span></div>
+                <div>敌方场地: <span id="opponent-side-effects">无</span></div>
+                <div style="margin-top: 5px; line-height: 1.4">
+                  我方能力:<br /><span id="player-stat-changes-summary">无</span>
+                </div>
+                <div style="margin-top: 3px; line-height: 1.4">
+                  敌方能力:<br /><span id="opponent-stat-changes-summary">无</span>
+                </div>
+              </div>
+            </div>
+            <div id="pending-actions-panel">
+              <h4>本回合指令</h4>
+              <ul id="pending-actions-list"></ul>
+            </div>
+            <div class="pokemon-details-panel" id="pokemon-details-panel">
+              <h4>宝可梦详情</h4>
+              <div class="pokemon-details-content">
+                <div id="details-pkmn-name" style="font-weight: bold"></div>
+                <div class="details-pkmn-hp-bar-container">
+                  <div class="hp-bar details-pkmn-hp-bar" id="details-pkmn-hp-bar"></div>
+                </div>
+                <div id="details-pkmn-hp-text" style="font-size: 10px"></div>
+                <div>属性: <span id="details-pkmn-types"></span></div>
+                <div>状态: <span id="details-pkmn-status"></span></div>
+                <div>特性: <span id="details-pkmn-ability"></span></div>
+                <div>性格: <span id="details-pkmn-nature"></span></div>
+                <div>道具: <span id="details-pkmn-item"></span></div>
+                <div>亲密度: <span id="details-pkmn-affection"></span></div>
+                <ul id="details-pkmn-moves"></ul>
+              </div>
+              <button class="submenu-btn" id="btn-switch-in">上场</button>
+            </div>
+          </div>
+          <div class="controls-wrapper" id="controls-wrapper">
+            <div class="main-controls" id="main-controls">
+              <button class="btn" id="btn-fight">战斗</button>
+              <button class="btn" id="btn-bag">背包</button>
+              <button class="btn" id="btn-pokemon">宝可梦</button>
+              <button class="btn" id="btn-run">逃跑</button>
+            </div>
+            <div class="submenu-controls" id="submenu-controls"></div>
+          </div>
+        </div>
+      </div>
+    </details>
+
+    <div class="battle-result-overlay" id="battle-result-overlay">
+      <div class="result-panel">
+        <h2 class="result-title" id="result-title">战斗结束</h2>
+        <p class="result-description" id="result-description">你获得了胜利！</p>
+        <textarea
+          id="result-custom-message"
+          class="result-custom-input"
+          placeholder="可以在此输入额外信息 (例如战后总结、剧情对话等)"
+        ></textarea
+        ><button class="result-button" id="result-button">发送战斗结果</button>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // [MODIFICATION] Storing TavernHelper in a variable for easier access and checking its existence.
+        const TavernHelper = window.parent.TavernHelper;
+
+        async function sendGameActionRequest(message) {
+          try {
+            if (window.SillyTavernAPI && window.SillyTavernAPI.sendMessage) {
+              await window.SillyTavernAPI.sendMessage(message);
+              return true;
+            }
+            if (window.extensionAPI && window.extensionAPI.sendMessage) {
+              await window.extensionAPI.sendMessage(message);
+              return true;
+            }
+            let textarea = null,
+              sendButton = null;
+            const textareaSelectors = [
+              '#send_textarea',
+              'textarea[name="send_textarea"]',
+              '#chat-input',
+              'textarea.chat-input',
+              '#user-input',
+              'textarea#send_textarea',
+              'textarea',
+            ];
+            const buttonSelectors = [
+              '#send_but',
+              'button#send_but',
+              'input[type="submit"]',
+              '.send_button',
+              'button[type="submit"]',
+            ];
+            if (window.parent !== window) {
+              for (const selector of textareaSelectors)
+                try {
+                  textarea = window.parent.document.querySelector(selector);
+                  if (textarea) break;
+                } catch (e) {}
+              for (const selector of buttonSelectors)
+                try {
+                  sendButton = window.parent.document.querySelector(selector);
+                  if (sendButton) break;
+                } catch (e) {}
+            }
+            if (textarea && sendButton) {
+              textarea.value = message;
+              textarea.dispatchEvent(new Event('input', { bubbles: true }));
+              sendButton.click();
+              return true;
+            }
+            if (window.parent !== window) {
+              window.parent.postMessage({ type: 'send_message', message: message }, '*');
+              return true;
+            }
+            try {
+              await navigator.clipboard.writeText(message);
+              logSystemMessage('自动发送失败，消息已复制到剪贴板，请手动粘贴发送');
+              return false;
+            } catch (clipboardError) {
+              const tempTextarea = document.createElement('textarea');
+              tempTextarea.value = message;
+              tempTextarea.style.cssText =
+                'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:10001;padding:10px;border:2px solid var(--pkmn-red);background-color:var(--pkmn-white);color:var(--pkmn-dark);width:80%;max-width:500px;height:100px; font-family: var(--font-pixel);';
+              document.body.appendChild(tempTextarea);
+              tempTextarea.select();
+              logSystemMessage('自动发送失败，请手动复制上方文本框中的内容并发送');
+              setTimeout(() => document.body.removeChild(tempTextarea), 5000);
+              return false;
+            }
+          } catch (error) {
+            logSystemMessage(`发送失败: ${error.message}`);
+            return false;
+          }
+        }
+
+        const URL_BASES = {
+          pokemon: 'https://play.pokemonshowdown.com/sprites/ani/',
+          pokemonShiny: 'https://play.pokemonshowdown.com/sprites/ani-shiny/',
+          items: 'https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/items/',
+          attributes: 'https://raw.githubusercontent.com/msikma/pokesprite/master/misc/special-attribute/',
+          types: 'https://raw.githubusercontent.com/msikma/pokesprite/master/misc/types/gen8/',
+          categories: 'https://raw.githubusercontent.com/msikma/pokesprite/master/misc/seals/gen8/',
+        };
+        const TYPE_MAP = {
+          普通: 'normal',
+          火: 'fire',
+          水: 'water',
+          草: 'grass',
+          电: 'electric',
+          冰: 'ice',
+          格斗: 'fighting',
+          毒: 'poison',
+          地面: 'ground',
+          飞行: 'flying',
+          超能力: 'psychic',
+          虫: 'bug',
+          岩石: 'rock',
+          幽灵: 'ghost',
+          龙: 'dragon',
+          钢: 'steel',
+          妖精: 'fairy',
+          恶: 'dark',
+        };
+        const CATEGORY_MAP = { 物理: 'move-physical', 特殊: 'move-special', 变化: 'move-status' };
+        const ATTRIBUTE_ICON_MAP = {
+          mega: 'mega-evolution-sigil-hires.png',
+          gmax: 'gigantamax-icon.png',
+          alpha: 'alpha-icon.png',
+          shiny: 'shiny-stars.png',
+        };
+        const STATUS_CLASS_MAP = {
+          中毒: 'status-psn',
+          麻痹: 'status-par',
+          睡眠: 'status-slp',
+          烧伤: 'status-brn',
+          冰冻: 'status-frz',
+        };
+
+        let gameState = {};
+        let isActionInProgress = false;
+        let pendingActions = [];
+        let actionSelectionStep = 0;
+        let currentSelectionPhase = 'none';
+        let tempActionPayload = {};
+        let turnState = { armedMechanic: null, armedSpecialCommand: null };
+        let forcedSwitchState = { isForced: false, slotIndex: -1 };
+        let specialCommandUses = 0;
+        const MAX_SPECIAL_COMMAND_USES = 3;
+
+        // [MODIFICATION] New helper function to find the latest message with the battle UI.
+        async function findLatestBattleMessageId() {
+          if (!TavernHelper) return null;
+          const lastMessageId = await TavernHelper.getLastMessageId();
+          if (lastMessageId === null) return null;
+
+          for (let i = lastMessageId; i >= 0; i--) {
+            try {
+              const msg = (await TavernHelper.getChatMessages(i, { include_swipes: false }))[0];
+              if (msg && msg.message && msg.message.includes('[BATTLE_STATE_START]')) {
+                return i;
+              }
+            } catch (error) {
+              // Ignore errors for messages that might not exist
+            }
+          }
+          return null;
+        }
+
+        // [MODIFICATION] New function to persist the game state back to the chat message.
+        async function persistGameState() {
+          if (!TavernHelper) {
+            logSystemMessage('错误: TavernHelper API不可用，无法保存进度。');
+            return;
+          }
+
+          const battleMessageId = await findLatestBattleMessageId();
+          if (battleMessageId === null) {
+            logSystemMessage('严重错误: 找不到战斗UI所在的消息，无法保存进度！');
+            return;
+          }
+
+          try {
+            const currentGameStateString = JSON.stringify(gameState, null, 2);
+            const newStateBlock = `[BATTLE_STATE_START]${currentGameStateString}[BATTLE_STATE_END]`;
+
+            const existingMessage = (await TavernHelper.getChatMessages(battleMessageId, { include_swipes: false }))[0];
+            if (!existingMessage) {
+              logSystemMessage('严重错误: 无法读取战斗消息，无法保存进度！');
+              return;
+            }
+
+            const regex = /\[BATTLE_STATE_START\][\s\S]*?\[BATTLE_STATE_END\]/s;
+            const newContent = existingMessage.message.replace(regex, newStateBlock);
+
+            await TavernHelper.setChatMessages([{ message_id: battleMessageId, message: newContent }], {
+              refresh: 'none',
+            });
+
+            console.log(`[Pokemon Battle] Game state successfully persisted to message ID: ${battleMessageId}`);
+          } catch (error) {
+            console.error('[Pokemon Battle] Failed to persist game state:', error);
+            logSystemMessage('错误: 保存战斗进度失败。详情请查看控制台。');
+          }
+        }
+
+        function updateGameState(newState) {
+          if (newState.playerPokemon && !newState.playerActive) newState.playerActive = [newState.playerPokemon];
+          if (newState.opponentPokemon && !newState.opponentActive)
+            newState.opponentActive = [newState.opponentPokemon];
+          if (!newState.usedMechanics)
+            newState.usedMechanics = { mega: false, zMove: false, dynamax: false, tera: false };
+          if (gameState.opponentTrainer !== newState.opponentTrainer) {
+            specialCommandUses = 0;
+          }
+          gameState = newState;
+          renderAll();
+        }
+
+        async function animateAndApplyStateUpdate(newGameState) {
+          const animationPromises = [];
+
+          const processSide = (side, oldActive, newActive) => {
+            (newActive || []).forEach((newPkmn, i) => {
+              const oldPkmn = (oldActive || [])[i];
+              if (!oldPkmn || !newPkmn || oldPkmn.currentHp === newPkmn.currentHp) return;
+              const box = document.getElementById(`${side}-slot-${i}`);
+              if (!box) return;
+              const hpBar = box.querySelector('.hp-bar');
+              const promise = new Promise(resolve => {
+                hpBar.addEventListener('transitionend', resolve, { once: true });
+                setTimeout(resolve, 900);
+              });
+              animationPromises.push(promise);
+              const newHpPercent = (newPkmn.currentHp / newPkmn.maxHp) * 100;
+              const newHpColorClass = newHpPercent > 50 ? 'hp-green' : newHpPercent > 20 ? 'hp-yellow' : 'hp-red';
+              hpBar.className = 'hp-bar ' + newHpColorClass;
+              hpBar.style.width = newHpPercent + '%';
+            });
+          };
+          processSide('player', gameState.playerActive, newGameState.playerActive);
+          processSide('opponent', gameState.opponentActive, newGameState.opponentActive);
+
+          if (animationPromises.length > 0) {
+            await Promise.all(animationPromises);
+          }
+
+          updateGameState(newGameState);
+
+          // [MODIFICATION] Persist the state after updating it.
+          await persistGameState();
+
+          isActionInProgress = false;
+          toggleControls(true);
+          const playerInputRequired = checkForcedAction();
+          if (!playerInputRequired) {
+            showMainMenu();
+          }
+        }
+
+        function checkForcedAction() {
+          if (gameState.battleResult && gameState.battleResult.status) {
+            showResultScreen(gameState.battleResult);
+            return true;
+          }
+          if (gameState.forceSwitchRequest) {
+            document.getElementById('pending-actions-panel').style.display = 'none';
+            document.getElementById('pokemon-details-panel').style.display = 'none';
+            document.getElementById('main-controls').style.display = 'none';
+            const submenu = document.getElementById('submenu-controls');
+            submenu.innerHTML = '';
+            submenu.style.display = 'flex';
+            submenu.classList.add('active');
+
+            const { slotIndex, reason } = gameState.forceSwitchRequest;
+            const pkmnName = gameState.playerActive[slotIndex]?.name || `位置 ${slotIndex + 1} 的宝可梦`;
+            logSystemMessage(reason || `${pkmnName}需要被换下！`);
+            forcedSwitchState = { isForced: true, slotIndex: slotIndex };
+            showPartyListForSwitch(true, slotIndex);
+            gameState.forceSwitchRequest = null;
+            return true;
+          }
+          return hasFaintedPokemonRequiringSwitch();
+        }
+
+        function hasFaintedPokemonRequiringSwitch() {
+          const faintedPlayerSlots = (gameState.playerActive || [])
+            .map((p, i) => (p && p.currentHp <= 0 ? i : -1))
+            .filter(i => i !== -1);
+          if (faintedPlayerSlots.length > 0) {
+            return gameState.party.some(p => {
+              if (!p) return false;
+              const isEgg = p.name && (p.name.toLowerCase().includes('egg') || p.name === '蛋');
+              const isActive = (gameState.playerActive || []).some(ap => ap && ap.name === p.name);
+              return p.currentHp > 0 && !isEgg && !isActive;
+            });
+          }
+          return false;
+        }
+
+        function showResultScreen(result) {
+          const overlay = document.getElementById('battle-result-overlay');
+          const titleEl = document.getElementById('result-title');
+          const descEl = document.getElementById('result-description');
+          const buttonEl = document.getElementById('result-button');
+          if (!overlay || !titleEl || !descEl || !buttonEl) return;
+          titleEl.textContent = result.status;
+          descEl.textContent = result.description || '战斗已分出胜负。';
+
+          const newButton = buttonEl.cloneNode(true);
+          buttonEl.parentNode.replaceChild(newButton, buttonEl);
+
+          newButton.addEventListener('click', async () => {
+            newButton.disabled = true;
+            newButton.textContent = '发送中...';
+
+            let messageToSend = '';
+            const opponentName = gameState.opponentTrainer === '野生' ? `野生的宝可梦` : gameState.opponentTrainer;
+
+            if (result.status === '捕捉成功') {
+              const capturedName =
+                gameState.opponentActive && gameState.opponentActive.length > 0
+                  ? gameState.opponentActive[0].name
+                  : '宝可梦';
+              messageToSend = `成功捕捉 ${capturedName}！`;
+            } else {
+              messageToSend = `和${opponentName}的战斗结果：${result.status}。`;
+            }
+
+            messageToSend += '\n\n--- 队伍状态和经验总结 ---';
+            const expGained = result.experienceGained;
+
+            (gameState.party || []).forEach((pkmn, index) => {
+              if (!pkmn) return;
+              let pkmnLine = `\n${index + 1}. ${pkmn.name} (Lv.${pkmn.level}) - HP: ${pkmn.currentHp}/${pkmn.maxHp} - 状态: ${pkmn.status || '健康'}`;
+              if (expGained && expGained[index] !== undefined && expGained[index] !== null) {
+                pkmnLine += ` | 获得经验: ${expGained[index]}`;
+              }
+              messageToSend += pkmnLine;
+            });
+
+            const customMessageInput = document.getElementById('result-custom-message');
+            const customMessage = customMessageInput ? customMessageInput.value.trim() : '';
+            if (customMessage) {
+              messageToSend += `\n\n--- 额外记录 ---\n${customMessage}`;
+            }
+
+            logSystemMessage(`正在发送战斗结果...`);
+            const success = await sendGameActionRequest(messageToSend);
+
+            if (success) {
+              newButton.textContent = '发送成功 ✓';
+              setTimeout(() => {
+                overlay.classList.remove('visible');
+              }, 1500);
+            } else {
+              newButton.textContent = '自动发送失败';
+              setTimeout(() => {
+                newButton.textContent = '发送战斗结果';
+                newButton.disabled = false;
+              }, 3000);
+            }
+          });
+
+          overlay.classList.add('visible');
+          toggleControls(false);
+        }
+
+        function initializeBattle(initialState) {
+          if (!initialState || typeof initialState !== 'object') {
+            document.body.innerHTML = '...';
+            return;
+          }
+          console.log('Battle UI Initializing with state:', initialState);
+          updateGameState(initialState);
+          bindEventListeners();
+          if (!checkForcedAction()) {
+            showMainMenu();
+          }
+        }
+        function renderAll() {
+          if (!gameState || !gameState.playerActive) return;
+          renderInfoPanel();
+          renderLogPanel();
+          renderFieldStatusPanel();
+        }
+        function renderInfoPanel() {
+          const opponentContainer = document.getElementById('opponent-side-container');
+          const playerContainer = document.getElementById('player-side-container');
+          const template = document.getElementById('pkmn-info-box-template');
+          opponentContainer.innerHTML = '';
+          playerContainer.innerHTML = '';
+          const createPkmnBox = (p, side, slotIndex) => {
+            const clone = template.content.cloneNode(true);
+            const box = clone.querySelector('.pokemon-info-box');
+            box.id = `${side}-slot-${slotIndex}`;
+            box.dataset.side = side;
+            box.dataset.slotIndex = slotIndex;
+            const spriteImg = box.querySelector('.pkmn-sprite');
+            const attributeContainer = box.querySelector('.name-attribute-icons');
+            if (p.idName) {
+              let finalSpriteId = p.idName;
+              let suffix = p.formSuffix || '';
+              if (!suffix && !p.idName.includes('-') && Array.isArray(p.specialAttributes)) {
+                if (p.specialAttributes.includes('gmax')) {
+                  suffix = '-gmax';
+                } else if (p.specialAttributes.includes('mega')) {
+                  const normalizedName = p.name.toUpperCase().replace(/\s+/g, '');
+                  if (
+                    normalizedName.endsWith('X') ||
+                    normalizedName.includes('MEGAX') ||
+                    normalizedName.includes('X形态')
+                  ) {
+                    suffix = '-megax';
+                  } else if (
+                    normalizedName.endsWith('Y') ||
+                    normalizedName.includes('MEGAY') ||
+                    normalizedName.includes('Y形态')
+                  ) {
+                    suffix = '-megay';
+                  } else {
+                    suffix = '-mega';
+                  }
+                }
+              }
+              finalSpriteId += suffix;
+              const baseUrl = p.isShiny ? URL_BASES.pokemonShiny : URL_BASES.pokemon;
+              spriteImg.src = `${baseUrl}${finalSpriteId}.gif`;
+              spriteImg.alt = p.name;
+            } else if (p.name && (p.name.toLowerCase().includes('egg') || p.name === '蛋')) {
+              spriteImg.src = `${URL_BASES.items}mystery-egg.png`;
+              spriteImg.alt = '蛋';
+            } else {
+              spriteImg.src = `${URL_BASES.items}poke-ball.png`;
+              spriteImg.alt = '?';
+            }
+            attributeContainer.innerHTML = '';
+            (p.specialAttributes || []).forEach(attr => {
+              if (ATTRIBUTE_ICON_MAP[attr]) {
+                attributeContainer.innerHTML += `<img src="${URL_BASES.attributes}${ATTRIBUTE_ICON_MAP[attr]}" class="name-attribute-icon" title="${attr}">`;
+              }
+            });
+            box.querySelector('.pkmn-mechanic-indicator').style.display = 'none';
+            const hpPercent = (p.currentHp / p.maxHp) * 100;
+            const hpBar = box.querySelector('.hp-bar');
+            hpBar.style.width = hpPercent + '%';
+            hpBar.className = 'hp-bar ' + (hpPercent > 50 ? 'hp-green' : hpPercent > 20 ? 'hp-yellow' : 'hp-red');
+            box.querySelector('.pkmn-name').textContent = p.name || '???';
+            box.querySelector('.pkmn-level').textContent = p.level || '?';
+            box.querySelector('.pkmn-types').textContent = p.types.join('/');
+            const statusTextSpan = box.querySelector('.pkmn-status-text');
+            if (p.status && p.status !== '无' && p.status !== '健康') {
+              const statusClass = STATUS_CLASS_MAP[p.status] || '';
+              statusTextSpan.innerHTML = `<span class="status-badge ${statusClass}">${p.status}</span>`;
+            } else {
+              statusTextSpan.textContent = '健康';
+            }
+            if (p.currentHp <= 0) box.classList.add('is-fainted');
+            if (side === 'player') {
+              box.querySelector('.pkmn-hp-current').textContent = p.currentHp;
+              box.querySelector('.pkmn-hp-max').textContent = p.maxHp;
+              box.querySelector('.pkmn-ability').textContent = p.ability || '无';
+              box.querySelector('.pkmn-nature').textContent = p.nature || '无';
+              box.querySelector('.pkmn-item').textContent = p.item || '无';
+              box.querySelector('.pkmn-affection').textContent = p.affection || '0';
+              box.querySelector('.trainer-details').style.display = 'none';
+            } else {
+              box.querySelector('.hp-text-details').style.display = 'none';
+              box.querySelector('.ability-details').style.display = 'none';
+              box.querySelector('.nature-details').style.display = 'none';
+              box.querySelector('.item-details').style.display = 'none';
+              box.querySelector('.affection-details').style.display = 'none';
+              const trainerLine = box.querySelector('.trainer-details');
+              if (trainerLine) {
+                trainerLine.style.display = 'block';
+                trainerLine.querySelector('.pkmn-trainer').textContent = gameState.opponentTrainer || '野生';
+              }
+            }
+            return box;
+          };
+          (gameState.opponentActive || []).forEach((p, i) =>
+            opponentContainer.appendChild(createPkmnBox(p, 'opponent', i)),
+          );
+          (gameState.playerActive || []).forEach((p, i) => playerContainer.appendChild(createPkmnBox(p, 'player', i)));
+        }
+        function renderLogPanel() {
+          const logPanel = document.getElementById('battle-log');
+          logPanel.innerHTML = (gameState.battleLog || ['战斗开始！']).join('<br>');
+          logPanel.scrollTop = logPanel.scrollHeight;
+        }
+        function renderFieldStatusPanel() {
+          document.getElementById('field-weather').textContent = gameState.field.weather || '无';
+          document.getElementById('field-terrain').textContent = gameState.field.terrain || '无';
+          renderSideEffects(gameState.field.playerSideEffects, 'player-side-effects');
+          renderSideEffects(gameState.field.opponentSideEffects, 'opponent-side-effects');
+          const renderStatChangeSummary = (activePokemon, elementId) => {
+            const container = document.getElementById(elementId);
+            if (!activePokemon) {
+              container.textContent = '无';
+              return;
+            }
+            const summaries = activePokemon
+              .map(p => {
+                if (!p || !p.statChanges || Object.keys(p.statChanges).length === 0) return null;
+                const changes = Object.entries(p.statChanges)
+                  .filter(([, val]) => val !== 0)
+                  .map(
+                    ([stat, val]) =>
+                      `<span class="stat-change ${val > 0 ? 'stat-buff' : 'stat-debuff'}" style="font-size: 9px; padding: 1px 3px;">${stat}${val > 0 ? '+' : ''}${val}</span>`,
+                  )
+                  .join(' ');
+                return changes ? `${p.name}: ${changes}` : null;
+              })
+              .filter(s => s !== null);
+            container.innerHTML = summaries.length > 0 ? summaries.join('<br>') : '无';
+          };
+          renderStatChangeSummary(gameState.playerActive, 'player-stat-changes-summary');
+          renderStatChangeSummary(gameState.opponentActive, 'opponent-stat-changes-summary');
+        }
+        function renderSideEffects(effects, elementId) {
+          const container = document.getElementById(elementId);
+          if (!effects || effects.length === 0) {
+            container.textContent = '无';
+            return;
+          }
+          const effectStrings = effects
+            .map(effect => {
+              if (typeof effect === 'string') return effect;
+              if (typeof effect === 'object' && effect.name) {
+                let str = effect.name;
+                if (effect.layers) str += ` (x${effect.layers})`;
+                if (effect.turnsLeft) str += ` (${effect.turnsLeft}回合)`;
+                return str;
+              }
+              return '';
+            })
+            .filter(str => str);
+          container.textContent = effectStrings.length > 0 ? effectStrings.join(', ') : '无';
+        }
+        function resetActionSelection() {
+          pendingActions = [];
+          actionSelectionStep = 0;
+          currentSelectionPhase = 'none';
+          tempActionPayload = {};
+          turnState = { armedMechanic: null, armedSpecialCommand: null };
+          forcedSwitchState = { isForced: false, slotIndex: -1 };
+          document
+            .querySelectorAll('.is-commanding, .is-targettable, .mechanic-btn.armed')
+            .forEach(el => el.classList.remove('is-commanding', 'is-targettable', 'armed'));
+          document.querySelectorAll('.pkmn-mechanic-indicator').forEach(el => (el.style.display = 'none'));
+        }
+        function startActionSelection() {
+          resetActionSelection();
+          pendingActions = new Array((gameState.playerActive || []).length).fill(null);
+          document.getElementById('field-status-panel').style.display = 'none';
+          document.getElementById('pending-actions-panel').style.display = 'block';
+          renderPendingActions();
+          logSystemMessage('开始选择指令...');
+          promptForAction(0);
+        }
+
+        function renderPendingActions() {
+          const list = document.getElementById('pending-actions-list');
+          list.innerHTML = '';
+          gameState.playerActive.forEach((p, index) => {
+            if (!p) return;
+            const action = pendingActions[index];
+            let summary = '等待指令...';
+            if (index === actionSelectionStep) summary = '正在选择...';
+
+            if (action) {
+              const getTargetName = target => {
+                const side = target.side === 'player' ? gameState.playerActive : gameState.opponentActive;
+                return side[target.slot]?.name || '目标';
+              };
+              let specialCmdText = '';
+              if (action.specialCommand) {
+                const cmdName = action.specialCommand === 'dodge' ? '快闪开' : '要挺住';
+                specialCmdText = `<span style="color: var(--special-cmd-color)">[${cmdName}]</span> + `;
+              }
+              switch (action.type) {
+                case 'use_move':
+                  summary = `${specialCmdText}${action.move.name} → ${getTargetName(action.target)}`;
+                  break;
+                case 'use_item':
+                  summary = `使用 ${action.payload.name} → ${getTargetName(action.target)}`;
+                  break;
+                case 'switch_pokemon':
+                  summary = `换上 ${gameState.party[action.payload.partyIndex]?.name || '宝可梦'}`;
+                  break;
+              }
+            }
+            const li = document.createElement('li');
+            if (index === actionSelectionStep) li.className = 'is-selecting';
+            li.innerHTML = `<strong>${p.name}:</strong> ${summary}`;
+            list.appendChild(li);
+          });
+        }
+
+        function promptForAction(slotIndex) {
+          if (slotIndex >= gameState.playerActive.length) {
+            promptForConfirmation();
+            return;
+          }
+          const pokemon = gameState.playerActive[slotIndex];
+          if (!pokemon || pokemon.currentHp <= 0) {
+            actionSelectionStep++;
+            promptForAction(actionSelectionStep);
+            return;
+          }
+          document.getElementById('pokemon-details-panel').style.display = 'none';
+          currentSelectionPhase = 'action';
+          actionSelectionStep = slotIndex;
+          if (pendingActions[slotIndex] === null) {
+            tempActionPayload = {};
+          }
+          renderPendingActions();
+          document.querySelectorAll('.is-commanding').forEach(el => el.classList.remove('is-commanding'));
+          document.getElementById(`player-slot-${slotIndex}`).classList.add('is-commanding');
+          logSystemMessage(`为 ${pokemon.name} 选择行动。`);
+          const submenu = document.getElementById('submenu-controls');
+          submenu.innerHTML = `<div class="turn-action-controls grid-2-cols"><button class="submenu-btn" data-action-type="prompt_for_move">战斗</button><button class="submenu-btn" data-action-type="prompt_for_bag">背包</button><button class="submenu-btn" data-action-type="prompt_for_switch">宝可梦</button><button class="submenu-btn cancel-btn" data-action-type="cancel_turn">取消回合</button></div><div class="mechanics-controls"></div>`;
+          const mechanicsContainer = submenu.querySelector('.mechanics-controls');
+          const mechMap = { Mega进化: 'mega', Z招式: 'zMove', 极巨化: 'dynamax', 太晶化: 'tera' };
+          (pokemon.availableMechanics || []).forEach(name => {
+            const type = mechMap[name];
+            if (!type) return;
+            const isUsed = gameState.usedMechanics[type];
+            const isArmedByThisPokemon =
+              turnState.armedMechanic &&
+              turnState.armedMechanic.slot === slotIndex &&
+              turnState.armedMechanic.type === type;
+            const isAnotherMechanicArmed = turnState.armedMechanic && !isArmedByThisPokemon;
+            const isDisabled = isUsed || isAnotherMechanicArmed;
+            mechanicsContainer.innerHTML += `<button class="btn mechanic-btn ${isDisabled ? 'disabled' : ''} ${isArmedByThisPokemon ? 'armed' : ''}" data-action-type="toggle_mechanic" data-mechanic-type="${type}">${name}</button>`;
+          });
+          const commandsLeft = MAX_SPECIAL_COMMAND_USES - specialCommandUses;
+          const specialCmdDisabled =
+            commandsLeft <= 0 || (turnState.armedSpecialCommand && turnState.armedSpecialCommand.slot !== slotIndex);
+          const isDodgeArmed =
+            turnState.armedSpecialCommand &&
+            turnState.armedSpecialCommand.slot === slotIndex &&
+            turnState.armedSpecialCommand.type === 'dodge';
+          const isEndureArmed =
+            turnState.armedSpecialCommand &&
+            turnState.armedSpecialCommand.slot === slotIndex &&
+            turnState.armedSpecialCommand.type === 'endure';
+          mechanicsContainer.innerHTML += `<button class="btn mechanic-btn special-cmd-btn ${specialCmdDisabled && !isDodgeArmed ? 'disabled' : ''} ${isDodgeArmed ? 'armed' : ''}" data-action-type="toggle_special_command" data-command-type="dodge">快闪开 (${commandsLeft})</button>`;
+          mechanicsContainer.innerHTML += `<button class="btn mechanic-btn special-cmd-btn ${specialCmdDisabled && !isEndureArmed ? 'disabled' : ''} ${isEndureArmed ? 'armed' : ''}" data-action-type="toggle_special_command" data-command-type="endure">要挺住 (${commandsLeft})</button>`;
+          showSubmenu();
+        }
+        function showPokemonDetails(partyIndex, slotToSwitch) {
+          const pkmn = gameState.party[partyIndex];
+          if (!pkmn) return;
+          document.querySelectorAll('#submenu-controls .submenu-btn[data-party-index]').forEach(btn => {
+            btn.classList.toggle('selected', btn.dataset.partyIndex == partyIndex);
+          });
+          document.getElementById('details-pkmn-name').textContent = `${pkmn.name} (Lv.${pkmn.level})`;
+          const hpPercent = pkmn.maxHp > 0 ? (pkmn.currentHp / pkmn.maxHp) * 100 : 0;
+          const hpBar = document.getElementById('details-pkmn-hp-bar');
+          hpBar.style.width = hpPercent + '%';
+          hpBar.className =
+            'hp-bar details-pkmn-hp-bar ' + (hpPercent > 50 ? 'hp-green' : hpPercent > 20 ? 'hp-yellow' : 'hp-red');
+          document.getElementById('details-pkmn-hp-text').textContent = `HP: ${pkmn.currentHp} / ${pkmn.maxHp}`;
+          document.getElementById('details-pkmn-types').textContent = pkmn.types.join('/');
+          document.getElementById('details-pkmn-status').textContent = pkmn.status || '无';
+          document.getElementById('details-pkmn-ability').textContent = pkmn.ability || '无';
+          document.getElementById('details-pkmn-nature').textContent = pkmn.nature || '无';
+          document.getElementById('details-pkmn-item').textContent = pkmn.item || '无';
+          document.getElementById('details-pkmn-affection').textContent = pkmn.affection || '0';
+          const movesList = document.getElementById('details-pkmn-moves');
+          movesList.innerHTML = (pkmn.moves || []).map(m => `<li>${m.name}</li>`).join('');
+          const switchBtn = document.getElementById('btn-switch-in');
+          const isEgg = pkmn.name && (pkmn.name.toLowerCase().includes('egg') || pkmn.name === '蛋');
+          const activeNames = (gameState.playerActive || []).map(p => (p ? p.name : null));
+          const isActive = activeNames.includes(pkmn.name);
+          const isDisabled = pkmn.currentHp <= 0 || isEgg || isActive;
+          switchBtn.disabled = isDisabled;
+          if (!isDisabled) {
+            switchBtn.dataset.actionType = 'select_switch_in';
+            switchBtn.dataset.partyIndex = partyIndex;
+          } else {
+            switchBtn.removeAttribute('data-action-type');
+          }
+        }
+        function handleMechanicToggle(type) {
+          const indicator = document.querySelector(`#player-slot-${actionSelectionStep} .pkmn-mechanic-indicator`);
+          const isCurrentlyArmed =
+            turnState.armedMechanic &&
+            turnState.armedMechanic.slot === actionSelectionStep &&
+            turnState.armedMechanic.type === type;
+          if (isCurrentlyArmed) {
+            tempActionPayload.mechanic = null;
+            turnState.armedMechanic = null;
+            indicator.style.display = 'none';
+          } else {
+            tempActionPayload.mechanic = { type: type };
+            turnState.armedMechanic = { type: type, slot: actionSelectionStep };
+            indicator.textContent = `[${type.charAt(0).toUpperCase()}]`;
+            indicator.style.display = 'block';
+          }
+          promptForAction(actionSelectionStep);
+        }
+        function handleSpecialCommandToggle(type) {
+          const isCurrentlyArmed =
+            turnState.armedSpecialCommand &&
+            turnState.armedSpecialCommand.slot === actionSelectionStep &&
+            turnState.armedSpecialCommand.type === type;
+          if (isCurrentlyArmed) {
+            turnState.armedSpecialCommand = null;
+          } else {
+            turnState.armedSpecialCommand = { type: type, slot: actionSelectionStep };
+          }
+          promptForAction(actionSelectionStep);
+        }
+        function handleAction(action) {
+          if (turnState.armedMechanic && turnState.armedMechanic.slot === actionSelectionStep) {
+            action.mechanic = { type: turnState.armedMechanic.type };
+          }
+          if (turnState.armedSpecialCommand && turnState.armedSpecialCommand.slot === actionSelectionStep) {
+            action.specialCommand = turnState.armedSpecialCommand.type;
+          }
+          pendingActions[actionSelectionStep] = action;
+          moveToNextActionOrConfirm();
+        }
+        function moveToNextActionOrConfirm() {
+          let nextStep = actionSelectionStep + 1;
+          while (
+            nextStep < gameState.playerActive.length &&
+            (!gameState.playerActive[nextStep] || gameState.playerActive[nextStep].currentHp <= 0)
+          ) {
+            nextStep++;
+          }
+          if (nextStep < gameState.playerActive.length) {
+            promptForAction(nextStep);
+          } else {
+            promptForConfirmation();
+          }
+        }
+        function promptForConfirmation() {
+          currentSelectionPhase = 'confirmation';
+          renderPendingActions();
+          logSystemMessage('所有指令已选择完毕。');
+          const menuHTML = `<div class="turn-action-controls grid-2-cols"><button class="submenu-btn confirm-btn" data-action-type="confirm_turn">确认回合</button><button class="submenu-btn back-btn">重新选择</button></div>`;
+          showSubmenu(menuHTML);
+        }
+        function showSubmenu(content = null) {
+          const mainControls = document.getElementById('main-controls');
+          const submenuControls = document.getElementById('submenu-controls');
+          mainControls.style.display = 'none';
+          if (content) submenuControls.innerHTML = content;
+          submenuControls.style.display = 'flex';
+          submenuControls.classList.add('active');
+        }
+
+        function showMainMenu() {
+          if (checkForcedAction()) {
+            logSystemMessage('必须先完成必要操作！');
+            return;
+          }
+          document.getElementById('main-controls').style.display = 'grid';
+          document.getElementById('submenu-controls').classList.remove('active');
+          document.getElementById('submenu-controls').style.display = 'none';
+          document.getElementById('field-status-panel').style.display = 'block';
+          document.getElementById('pending-actions-panel').style.display = 'none';
+          document.getElementById('pokemon-details-panel').style.display = 'none';
+          resetActionSelection();
+        }
+
+        function toggleControls(enable) {
+          document.querySelectorAll('.btn, .submenu-btn').forEach(b => (b.disabled = !enable));
+        }
+        function logSystemMessage(message) {
+          const logPanel = document.getElementById('battle-log');
+          const entry = document.createElement('div');
+          entry.className = 'log-system-feedback';
+          entry.textContent = `>> ${message}`;
+          logPanel.appendChild(entry);
+          logPanel.scrollTop = logPanel.scrollHeight;
+          setTimeout(() => {
+            entry.style.opacity = '0';
+            setTimeout(() => {
+              if (entry.parentNode) entry.parentNode.removeChild(entry);
+            }, 500);
+          }, 4000);
+        }
+
+        function bindEventListeners() {
+          document.getElementById('theme-toggle').addEventListener('click', () => {
+            document.body.classList.toggle('night-mode');
+            document.getElementById('theme-toggle').textContent = document.body.classList.contains('night-mode')
+              ? '☀️'
+              : '🌙';
+          });
+          document.getElementById('btn-fight').addEventListener('click', startActionSelection);
+
+          document.getElementById('btn-bag').addEventListener('click', () => {
+            if (isActionInProgress) return;
+            const bagIsEmpty =
+              !gameState.bag ||
+              (Object.keys(gameState.bag.items || {}).length === 0 &&
+                Object.keys(gameState.bag.pokeballs || {}).length === 0);
+            if (bagIsEmpty) {
+              logSystemMessage('背包是空的！');
+              return;
+            }
+            startActionSelection();
+            currentSelectionPhase = 'bag_category';
+            showSubmenu(
+              `<div class='turn-action-controls grid-2-cols'><button class='submenu-btn' data-category='items'>道具</button><button class='submenu-btn' data-category='pokeballs'>精灵球</button></div><button class='submenu-btn back-btn'>返回</button>`,
+            );
+          });
+
+          document.getElementById('btn-pokemon').addEventListener('click', () => {
+            if (isActionInProgress) return;
+            const canSwitch = gameState.party.some(p => {
+              if (!p) return false;
+              const isEgg = p.name && (p.name.toLowerCase().includes('egg') || p.name === '蛋');
+              const isActive = (gameState.playerActive || []).some(ap => ap && ap.name === p.name);
+              return p.currentHp > 0 && !isEgg && !isActive;
+            });
+            if (!canSwitch) {
+              logSystemMessage('没有可以交换的宝可梦！');
+              return;
+            }
+            startActionSelection();
+            document.getElementById('pending-actions-panel').style.display = 'none';
+            showPartyListForSwitch(false, actionSelectionStep);
+          });
+
+          document.getElementById('btn-run').addEventListener('click', () => {
+            if (gameState.canRun) {
+              handlePlayerAction({ type: 'run' });
+            } else {
+              logSystemMessage('现在无法逃跑！');
+            }
+          });
+          document.addEventListener('click', event => {
+            const target = event.target.closest('button, .pokemon-info-box.is-targettable');
+            if (!target || target.disabled) return;
+            if (
+              target.matches('.pokemon-info-box.is-targettable') &&
+              (currentSelectionPhase === 'target' || currentSelectionPhase === 'item_target')
+            ) {
+              const tSide = target.dataset.side,
+                tSlot = target.dataset.slotIndex;
+              const action =
+                currentSelectionPhase === 'item_target'
+                  ? {
+                      type: 'use_item',
+                      source: { side: 'player', slot: actionSelectionStep },
+                      payload: tempActionPayload.item,
+                      target: { side: tSide, slot: tSlot },
+                    }
+                  : {
+                      type: 'use_move',
+                      source: { side: 'player', slot: actionSelectionStep },
+                      move: tempActionPayload.move,
+                      target: { side: tSide, slot: tSlot },
+                    };
+              document.querySelectorAll('.is-targettable').forEach(el => el.classList.remove('is-targettable'));
+              handleAction(action);
+              return;
+            }
+            if (!target.matches('button')) return;
+            if (target.classList.contains('back-btn')) {
+              if (currentSelectionPhase === 'confirmation') startActionSelection();
+              else if (
+                ['move', 'bag_item', 'bag_category', 'switch', 'target', 'item_target'].includes(currentSelectionPhase)
+              )
+                promptForAction(actionSelectionStep);
+              else showMainMenu();
+              return;
+            }
+            const { actionType, actionValue, category, partyIndex, mechanicType, commandType } = target.dataset;
+            switch (actionType) {
+              case 'cancel_turn':
+                showMainMenu();
+                break;
+              case 'toggle_mechanic':
+                handleMechanicToggle(mechanicType);
+                break;
+              case 'toggle_special_command':
+                handleSpecialCommandToggle(commandType);
+                break;
+              case 'prompt_for_move':
+                currentSelectionPhase = 'move';
+                let moveHTML = '';
+                gameState.playerActive[actionSelectionStep].moves.forEach(m => {
+                  let iconsHTML = '';
+                  const typeFileName = TYPE_MAP[m.type];
+                  const categoryFileName = CATEGORY_MAP[m.category];
+                  if (typeFileName)
+                    iconsHTML += `<img src="${URL_BASES.types}${typeFileName}.png" class="move-icon" title="${m.type}">`;
+                  if (categoryFileName)
+                    iconsHTML += `<img src="${URL_BASES.categories}${categoryFileName}.png" class="move-icon" title="${m.category}">`;
+                  moveHTML += `<button class='submenu-btn' data-action-type='select_move' data-action-value='${JSON.stringify(m)}'>${iconsHTML}${m.name}</button>`;
+                });
+                showSubmenu(
+                  `<div class='turn-action-controls grid-2-cols'>${moveHTML}</div><button class='submenu-btn back-btn'>返回</button>`,
+                );
+                break;
+              case 'prompt_for_bag':
+                currentSelectionPhase = 'bag_category';
+                showSubmenu(
+                  `<div class='turn-action-controls grid-2-cols'><button class='submenu-btn' data-category='items'>道具</button><button class='submenu-btn' data-category='pokeballs'>精灵球</button></div><button class='submenu-btn back-btn'>返回</button>`,
+                );
+                break;
+              case 'prompt_for_switch':
+                document.getElementById('pending-actions-panel').style.display = 'none';
+                showPartyListForSwitch(false, actionSelectionStep);
+                break;
+              case 'select_move':
+                tempActionPayload.move = JSON.parse(actionValue);
+                currentSelectionPhase = 'target';
+                promptForTarget(false);
+                break;
+              case 'select_item':
+                tempActionPayload.item = { category: category || 'items', name: actionValue };
+                currentSelectionPhase = 'item_target';
+                promptForTarget(true);
+                break;
+              case 'select_switch_in':
+                const slot =
+                  currentSelectionPhase === 'forced_switch' ? forcedSwitchState.slotIndex : actionSelectionStep;
+                const action = {
+                  type: 'switch_pokemon',
+                  payload: { partyIndex: parseInt(partyIndex), switchToSlot: slot },
+                };
+                if (forcedSwitchState.isForced) {
+                  handlePlayerAction(action);
+                } else {
+                  document.getElementById('pending-actions-panel').style.display = 'block';
+                  handleAction(action);
+                }
+                break;
+              case 'confirm_turn':
+                if (turnState.armedMechanic) gameState.usedMechanics[turnState.armedMechanic.type] = true;
+                handlePlayerAction({ type: 'multi_turn', payload: pendingActions.filter(a => a !== null) });
+                break;
+              default:
+                if (category) {
+                  if (category === 'pokeballs') {
+                    const isWildBattle = gameState.opponentTrainer === '野生';
+                    if (!isWildBattle) {
+                      logSystemMessage('不能在与训练家的对战中使用精灵球！');
+                      promptForAction(actionSelectionStep);
+                      return;
+                    }
+                    const activeOpponentsCount = (gameState.opponentActive || []).filter(
+                      p => p && p.currentHp > 0,
+                    ).length;
+                    if (activeOpponentsCount > 1) {
+                      logSystemMessage('必须只剩下一只宝可梦时才能投掷精灵球！');
+                      promptForAction(actionSelectionStep);
+                      return;
+                    }
+                  }
+
+                  currentSelectionPhase = 'bag_item';
+                  let itemHTML = '';
+                  const items = gameState.bag[category] || {};
+                  for (const [name, itemData] of Object.entries(items)) {
+                    const count = typeof itemData === 'number' ? itemData.count : itemData.count || 0;
+                    const isDisabled = count <= 0;
+                    const idName = itemData.idName || name.toLowerCase().replace(' ', '-');
+                    let iconFileName = idName.startsWith('tm') || idName.startsWith('hm') ? 'tm-normal' : idName;
+                    const iconHTML = `<img src="${URL_BASES.items}${iconFileName}.png" class="item-icon" alt="${name}">`;
+                    itemHTML += `<button class='submenu-btn ${isDisabled ? 'disabled' : ''}' data-action-type='select_item' data-category='${category}' data-action-value='${name}'>${iconHTML} ${name} (x${count})</button>`;
+                  }
+                  showSubmenu(
+                    `<div class='turn-action-controls'>${itemHTML || '无此类物品'}</div><button class='submenu-btn back-btn'>返回</button>`,
+                  );
+                }
+                break;
+            }
+            if (partyIndex && ['switch', 'forced_switch'].includes(currentSelectionPhase)) {
+              showPokemonDetails(
+                parseInt(partyIndex),
+                currentSelectionPhase === 'forced_switch' ? forcedSwitchState.slotIndex : actionSelectionStep,
+              );
+            }
+          });
+        }
+
+        async function handlePlayerAction(action) {
+          if (isActionInProgress) return;
+          isActionInProgress = true;
+          toggleControls(false);
+
+          if (action.type === 'multi_turn') {
+            action.payload.forEach((turnAction, index) => {
+              if (!turnAction.specialCommand) return;
+              specialCommandUses++;
+              const pkmn = gameState.playerActive[index];
+              const affection = pkmn.affection || 0;
+              const successChance = (2 + affection / 50) / 100;
+              const isSuccess = Math.random() < successChance;
+              const cmdName = turnAction.specialCommand === 'dodge' ? '快闪开' : '要挺住';
+
+              if (isSuccess) {
+                let overrideText = '';
+                if (turnAction.specialCommand === 'dodge') {
+                  const opponent = gameState.opponentActive[0];
+                  overrideText = `${pkmn.name} 接受到了训练家的命令，成功躲开了${opponent ? opponent.name : '对手'}的攻击！`;
+                } else {
+                  overrideText = `${pkmn.name} 感受到了训练家的心意，挺住没有倒下！但只剩下1点HP了！`;
+                }
+                turnAction.specialCommandOverride = overrideText;
+                logSystemMessage(`${cmdName} 判定成功！`);
+              } else {
+                logSystemMessage(`${cmdName} 判定失败...`);
+                delete turnAction.specialCommand;
+              }
+            });
+          }
+
+          logSystemMessage(`发送指令...`);
+          const prompt = `You are a meticulous and fair Pokémon Battle Game Host. Your primary function is to process game actions and return a complete, updated game state. Follow all instructions with precision.\n\n[CRITICAL_RULES]\n1. STATE CONTINUITY: You MUST use the provided \`[CURRENT_STATE]\` as the absolute source of truth. Your response must be an *update* to this state. Do NOT arbitrarily reset HP, status, or other values. Every change must be a direct consequence of the action.\n2. FAINTING IS MANDATORY: If an opponent's Pokémon's HP is reduced to 0, you MUST simulate them switching to a valid, non-fainted Pokémon from their party in the same turn resolution. The battle cannot proceed if a fainted Pokémon remains active. Update the \`opponentActive\` array accordingly.\n3. ADHERE TO TURN ORDER: Strictly follow the turn-based nature of the battle. Resolve the player's action and decide on a logical counter-action for the opponent, then narrate the results in the battle log.\n\n[PLAYER_ACTION_CONTEXT]\nIn the PLAYER_ACTION block below, an action for a Pokémon might contain a 'specialCommandOverride' field. This field contains a text description of a special event that has already been determined to be successful. You MUST treat this event as fact. It overrides the normal flow of battle. For example, a 'dodge' override means the Pokémon avoids damage from an opponent's attack this turn. An 'endure' override means the Pokémon survives an attack that would have knocked it out, with 1 HP remaining. You must integrate this event into your turn calculation and the subsequent battle log.\n[/PLAYER_ACTION_CONTEXT]\n\n[CURRENT_STATE]\n${JSON.stringify(gameState, null, 2)}\n[/CURRENT_STATE]\n\n[PLAYER_ACTION]\n${JSON.stringify(action, null, 2)}\n[/PLAYER_ACTION]\n\nYour task: Calculate the outcome of the turn based on all the above information and return the *complete*, updated battle state as a single JSON object inside <battle_state>...</battle_state> tags. Do not add any other text outside these tags.`;
+          try {
+            if (!TavernHelper || typeof TavernHelper.generate !== 'function') {
+              throw new Error('TavernHelper.generate is not available.');
+            }
+            const responseText = await TavernHelper.generate({
+              user_input: '',
+              injects: [{ role: 'system', content: prompt, position: 'before_prompt', depth: 0, should_scan: false }],
+              overrides: { chat_history: { prompts: [] }, world_info_before: '', world_info_after: '' },
+            });
+            handleAIResponse(responseText);
+          } catch (error) {
+            console.error('Error during AI generation:', error);
+            logSystemMessage(`错误: ${error.message}，行动发送失败，请重试。`);
+            isActionInProgress = false;
+            toggleControls(true);
+            if (forcedSwitchState.isForced) {
+              showPartyListForSwitch(true, forcedSwitchState.slotIndex);
+            } else {
+              showMainMenu();
+            }
+          }
+        }
+
+        function handleAIResponse(responseText) {
+          console.log('Received AI response:', responseText);
+          const validJsonString = extractValidBattleStateBlock(responseText);
+
+          if (validJsonString) {
+            try {
+              const newGameState = JSON.parse(validJsonString);
+              logSystemMessage('收到有效状态更新，播放动画并刷新界面...');
+              animateAndApplyStateUpdate(newGameState);
+            } catch (e) {
+              console.error('Failed to parse extracted JSON:', e, '\nExtracted JSON:', validJsonString);
+              logSystemMessage('错误：AI返回的状态数据格式无效。请返回并重试您的操作。');
+              isActionInProgress = false;
+              toggleControls(true);
+            }
+          } else {
+            console.error('AI response did not contain a valid <battle_state> block.');
+            logSystemMessage('错误：AI未返回有效的战斗状态。请返回并重试您的操作。');
+            isActionInProgress = false;
+            toggleControls(true);
+          }
+        }
+
+        function extractValidBattleStateBlock(text) {
+          if (!text || typeof text !== 'string') return null;
+          const tagMatch = text.match(/<battle_state>([\s\S]*?)<\/battle_state>/);
+          if (tagMatch && tagMatch[1]) {
+            const content = tagMatch[1].trim();
+            try {
+              JSON.parse(content);
+              return content;
+            } catch (e) {
+              console.warn('Content inside <battle_state> is not valid JSON. Fallback search.', e);
+            }
+          }
+          let firstBrace = text.indexOf('{');
+          if (firstBrace === -1) return null;
+          let braceLevel = 0;
+          for (let i = firstBrace; i < text.length; i++) {
+            if (text[i] === '{') braceLevel++;
+            else if (text[i] === '}') braceLevel--;
+            if (braceLevel === 0) {
+              const potentialJson = text.substring(firstBrace, i + 1);
+              try {
+                JSON.parse(potentialJson);
+                return potentialJson;
+              } catch (e) {
+                let nextBrace = text.indexOf('{', firstBrace + 1);
+                if (nextBrace === -1) return null;
+                firstBrace = nextBrace;
+                i = firstBrace - 1;
+                braceLevel = 0;
+              }
+            }
+          }
+          return null;
+        }
+
+        const dataContainer = document.querySelector('.battle-data-container');
+        if (!dataContainer || !dataContainer.textContent.trim()) {
+          document.body.innerHTML =
+            '<h2 style="color:red; text-align:center; margin-top: 50px;">错误：未找到战斗数据！</h2>';
+          return;
+        }
+        try {
+          const initialJson = JSON.parse(dataContainer.textContent.trim());
+          initializeBattle(initialJson);
+        } catch (e) {
+          document.body.innerHTML = `<h2 style="color:red; text-align:center; margin-top: 50px;">错误：战斗数据JSON格式错误！</h2><p style="text-align:center;">${e.message}</p>`;
+          console.error('Error parsing initial JSON:', e, dataContainer.textContent.trim());
+        }
+
+        promptForTarget = isItem => {
+          const phase = isItem ? 'item_target' : 'target';
+          currentSelectionPhase = phase;
+          const name = isItem ? tempActionPayload.item.name : tempActionPayload.move.name;
+          logSystemMessage(`为 ${name} 选择目标。`);
+          let found = false;
+          const targetType = isItem
+            ? tempActionPayload.item.category === 'pokeballs'
+              ? 'single_opponent'
+              : 'userOrAlly'
+            : tempActionPayload.move.targetType || 'any';
+          const getSlots = (s, c = () => true) =>
+            ((s === 'player' ? gameState.playerActive : gameState.opponentActive) || [])
+              .map((p, i) => (p && p.currentHp > 0 && c(i) ? i : -1))
+              .filter(i => i !== -1);
+          const highlight = (s, slots) => {
+            slots.forEach(i => {
+              document.getElementById(`${s}-slot-${i}`).classList.add('is-targettable');
+              found = true;
+            });
+          };
+          switch (targetType) {
+            case 'user':
+              highlight('player', [actionSelectionStep]);
+              break;
+            case 'userOrAlly':
+              highlight('player', getSlots('player'));
+              break;
+            case 'ally':
+              highlight(
+                'player',
+                getSlots('player', i => i !== actionSelectionStep),
+              );
+              break;
+            case 'allOpponents':
+              highlight('opponent', getSlots('opponent'));
+              break;
+            case 'single_opponent':
+            case 'normal':
+              highlight('opponent', getSlots('opponent'));
+              break;
+            default:
+              highlight(
+                'player',
+                getSlots('player', i => i !== actionSelectionStep),
+              );
+              highlight('opponent', getSlots('opponent'));
+              break;
+          }
+          if (!found) {
+            logSystemMessage('没有有效的目标，行动取消。');
+            promptForAction(actionSelectionStep);
+          } else {
+            showSubmenu(
+              `<div class='turn-action-controls'></div><button class='submenu-btn back-btn'>取消选择</button>`,
+            );
+          }
+        };
+        showPartyListForSwitch = (isForced, slotToSwitch) => {
+          currentSelectionPhase = isForced ? 'forced_switch' : 'switch';
+          if (!isForced) logSystemMessage(`选择要替换 ${gameState.playerActive[slotToSwitch].name} 的宝可梦。`);
+          document.getElementById('pokemon-details-panel').style.display = 'flex';
+          let menuHTML = '';
+          const activeNames = (gameState.playerActive || []).map(p => (p ? p.name : null));
+          (gameState.party || []).forEach((pkmn, partyIdx) => {
+            if (!pkmn) return;
+            const isEgg = pkmn.name && (pkmn.name.toLowerCase().includes('egg') || pkmn.name === '蛋');
+            const isActive = activeNames.includes(pkmn.name);
+            const isDisabled = pkmn.currentHp <= 0 || isEgg || isActive;
+            menuHTML += `<button class="submenu-btn ${isDisabled ? 'disabled' : ''}" data-party-index="${partyIdx}">${pkmn.name} (Lv.${pkmn.level})</button>`;
+          });
+          const backButtonHTML = isForced ? '' : `<button class="submenu-btn back-btn">返回</button>`;
+          showSubmenu(`<div class='turn-action-controls grid-2-cols'>${menuHTML}</div>${backButtonHTML}`);
+          const firstAvail = (gameState.party || []).findIndex(p => {
+            if (!p) return false;
+            const isEgg = p.name && (p.name.toLowerCase().includes('egg') || p.name === '蛋');
+            const isActive = activeNames.includes(p.name);
+            return p.currentHp > 0 && !isEgg && !isActive;
+          });
+          if (firstAvail !== -1) showPokemonDetails(firstAvail, slotToSwitch);
+        };
+      });
+    </script>
+  </body>
+</html>

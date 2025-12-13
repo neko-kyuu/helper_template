@@ -67,7 +67,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const metaLabels: { [key: string]: string } = {
     relationship: '关系',
     favorability: '好感度',
-    favorabilityTowardsNPCs: '与NPC好感度',
+    favorabilityTowardsNPCs: '对NPC好感度',
     description: '概要',
     title: '称号',
   };
@@ -96,8 +96,8 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const equipmentLabels: { [key: string]: string } = {
     leftHand: '左手',
     rightHand: '右手',
-    outfit: '身体套装Id',
-    outfitContent: '身体套装内容',
+    outfit: '套装Id',
+    outfitContent: '套装内容',
   };
 
   // 检查经验值是否足够
