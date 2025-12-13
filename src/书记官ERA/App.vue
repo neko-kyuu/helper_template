@@ -68,7 +68,12 @@
 
     <ModalDialog v-model="showModal" :title="modalTitle" @confirm="handleConfirm">
       <template #default>
-        <component :is="modalContent" ref="modalComponentRef" @point-selected="handlePointSelected" />
+        <component
+          :is="modalContent"
+          ref="modalComponentRef"
+          :outfit-id="editingOutfitId"
+          @point-selected="handlePointSelected"
+        />
       </template>
       <template #footer>
         <!-- <button @click="showModal = false">关闭</button> -->
@@ -98,6 +103,7 @@ const modalTitle = ref('');
 const modalContent = shallowRef<any>(null);
 const selectedPointName = ref('');
 const modalComponentRef = ref<any>(null);
+const editingOutfitId = ref<string | null>(null);
 
 const openMapModal = () => {
   modalTitle.value = '世界地图';
@@ -106,8 +112,9 @@ const openMapModal = () => {
   showModal.value = true;
 };
 
-const openOutfitModal = () => {
-  modalTitle.value = '今日穿搭';
+const openOutfitModal = (outfitId?: string) => {
+  editingOutfitId.value = outfitId || null;
+  modalTitle.value = outfitId ? '编辑套装' : '新增套装';
   modalContent.value = OutfitSelector;
   showModal.value = true;
 };
@@ -123,15 +130,22 @@ const handleConfirm = () => {
     console.log('已确认选择地点:', region, location);
   } else if (modalContent.value === OutfitSelector) {
     const outfitData = modalComponentRef.value?.getOutfitData();
+    let event;
     if (outfitData) {
-      console.log('获取到的套装数据:', outfitData);
-      // 调用 handleMvuUpdate 来保存套装数据
-      let wardrobe = Object.keys(mvu.value.Wardrobe.ownedOutfits);
-      let increasableIndex = wardrobe.length ? Number(wardrobe[wardrobe.length - 1].slice(1)) + 1 : 1;
-      let outfitKey = `O${increasableIndex}`;
+      let outfitKey = editingOutfitId.value;
+      event = !outfitKey ? 'insertByObject' : 'updateByObject';
+      if (!outfitKey) {
+        const wardrobeKeys = Object.keys(mvu.value.Wardrobe.ownedOutfits);
+        const maxId = wardrobeKeys.reduce((max, key) => {
+          const idNum = parseInt(key.slice(1), 10);
+          return idNum > max ? idNum : max;
+        }, 0);
+        outfitKey = `O${maxId + 1}`;
+      }
+
       handleMvuUpdate([
         {
-          event: 'insertByObject',
+          event: event,
           detail: {
             Wardrobe: {
               ownedOutfits: {

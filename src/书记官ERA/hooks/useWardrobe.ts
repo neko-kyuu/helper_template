@@ -4,7 +4,7 @@ import { calculateClothingAttributes } from '../clothingConstants';
 import { QualityType, SlotType, TierType } from '../itemConstants';
 import { MvuData, Slots } from '../types';
 
-export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => void) {
+export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update', outfitId?: string) => void) {
   const slotNames: { [key: string]: string } = {
     head: '头部',
     bodyInner: '内衬',
@@ -20,33 +20,45 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => v
     extra: '额外',
   };
 
-  const selectedOutfitId = ref(mvu.value.Wardrobe.currentOutfit);
+  const selectedOutfitId = ref('');
 
-  watch(
-    () => mvu.value.Wardrobe.currentOutfit,
-    newOutfitId => {
-      selectedOutfitId.value = newOutfitId;
-    },
-  );
+  const hydrateOutfit = (outfitData: any) => {
+    if (!outfitData) return null;
+
+    const hydratedSlots: any = {};
+    const inventory = mvu.value.PlayerDynamicData.inventory;
+
+    for (const slotKey in outfitData.slots) {
+      const slotName = slotKey as keyof Slots;
+      if (slotName === 'extra') {
+        const itemIds = (outfitData.slots[slotName] || []) as string[];
+        hydratedSlots[slotName] = itemIds.map(id => (inventory[id] ? { ...inventory[id], id } : null)).filter(Boolean);
+      } else {
+        const itemId = outfitData.slots[slotName];
+        if (itemId && inventory[itemId]) {
+          hydratedSlots[slotName] = { ...inventory[itemId], id: itemId };
+        } else {
+          hydratedSlots[slotName] = null;
+        }
+      }
+    }
+
+    return { ...outfitData, slots: hydratedSlots };
+  };
 
   const selectedOutfit = computed(() => {
-    return mvu.value.Wardrobe.ownedOutfits[selectedOutfitId.value];
+    const outfitData = mvu.value.Wardrobe.ownedOutfits[selectedOutfitId.value];
+    return hydrateOutfit(outfitData);
   });
 
-  const currentEquippedOutfit = computed(() => {
-    return mvu.value.Wardrobe.ownedOutfits[mvu.value.Wardrobe.currentOutfit];
-  });
-
-  const equipOutfit = (outfitId: string) => {
-    // TODO: This should trigger an MVU update to persist the change.
-    // For now, just updating local state for UI demonstration.
-    mvu.value.Wardrobe.currentOutfit = outfitId;
+  const editOutfit = (outfitId: string) => {
+    emit('open-update', outfitId);
   };
 
   // 侦听当前服装变化, 自动重新计算总属性
   watch(
-    currentEquippedOutfit,
-    currentOutfit => {
+    selectedOutfit,
+    outfit => {
       const newAttributes = {
         defense: 0,
         comfort: 0,
@@ -55,9 +67,9 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => v
         weight: 0,
       };
 
-      if (currentOutfit) {
-        for (const slot in currentOutfit.slots) {
-          const item = currentOutfit.slots[slot as keyof Slots];
+      if (outfit) {
+        for (const slot in outfit.slots) {
+          const item = outfit.slots[slot as keyof Slots];
           if (item && !Array.isArray(item)) {
             try {
               const itemAttributes = calculateClothingAttributes({
@@ -78,7 +90,6 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => v
       }
 
       // TODO: This should trigger an MVU update to persist the change？
-      mvu.value.PlayerDynamicData.clothingAttributes = newAttributes;
     },
     { immediate: true },
   );
@@ -91,8 +102,7 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update') => v
     slotNames,
     selectedOutfitId,
     selectedOutfit,
-    currentEquippedOutfit,
-    equipOutfit,
+    editOutfit,
     openUpdateOutfit,
   };
 }

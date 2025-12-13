@@ -10,43 +10,39 @@
         v-for="(outfit, outfitId) in mvu.Wardrobe.ownedOutfits"
         :key="outfitId"
         class="outfit-item"
-        :class="{ active: outfitId === mvu.Wardrobe.currentOutfit, selected: outfitId === selectedOutfitId }"
+        :class="{ selected: outfitId === selectedOutfitId }"
         @click="selectedOutfitId = outfitId"
       >
         {{ outfit.name }}
-        <span v-if="outfitId === mvu.Wardrobe.currentOutfit" class="current-tag">(当前)</span>
       </div>
     </div>
     <div class="outfit-details">
       <template v-if="selectedOutfit">
         <div class="outfit-header">
           <div class="section-title">{{ selectedOutfit.name }}</div>
-          <button @click="equipOutfit(selectedOutfitId)" :disabled="selectedOutfitId === mvu.Wardrobe.currentOutfit">
-            装备
-          </button>
+          <button @click="editOutfit(selectedOutfitId)">编辑</button>
         </div>
 
         <div class="equipment-slots">
-          <template v-for="(item, slotKey) in selectedOutfit.slots" :key="slotKey">
-            <div class="slot-item" v-if="!Array.isArray(item) && item">
-              <span class="slot-name">{{ slotNames[slotKey] || item.slot }}</span>
-              <span class="item-name"
-                >{{ item.name }} <span class="item-details">({{ item.quality }}, {{ item.material }})</span></span
-              >
-            </div>
-            <div class="slot-item" v-else-if="slotKey !== 'extra'">
-              <span class="slot-name">{{ slotNames[slotKey] }}</span>
-              <span class="item-name-empty">--</span>
-            </div>
-            <template v-if="slotKey === 'extra' && Array.isArray(item) && item.length > 0">
-              <div v-for="(extraItem, index) in item" :key="`extra-${index}`" class="slot-item">
-                <span class="slot-name">{{ slotNames.extra || '额外' }}</span>
-                <span class="item-name"
-                  >{{ extraItem.name }}
-                  <span class="item-details">({{ extraItem.quality }}, {{ extraItem.material }})</span></span
-                >
+          <template v-for="(slotName, slotKey) in slotNames" :key="slotKey">
+            <template v-if="slotKey !== 'extra'">
+              <div class="slot-item">
+                <span class="slot-name">{{ slotName }}</span>
+                <span v-if="selectedOutfit.slots[slotKey]" class="item-name">
+                  {{ selectedOutfit.slots[slotKey].name }}
+                  <span class="item-details">({{ selectedOutfit.slots[slotKey].quality }})</span>
+                </span>
+                <span v-else class="item-name-empty">--</span>
               </div>
             </template>
+          </template>
+          <template v-if="selectedOutfit.slots.extra && selectedOutfit.slots.extra.length > 0">
+            <div v-for="(extraItem, index) in selectedOutfit.slots.extra" :key="`extra-${index}`" class="slot-item">
+              <span class="slot-name">{{ slotNames.extra || '额外' }}</span>
+              <span class="item-name">
+                {{ extraItem.name }} <span class="item-details">({{ extraItem.quality }})</span>
+              </span>
+            </div>
           </template>
         </div>
 
@@ -77,9 +73,10 @@
 import { useMvuData } from '../hooks/useMvuData';
 import { useWardrobe } from '../hooks/useWardrobe';
 
-const emit = defineEmits(['open-update']);
+const emit = defineEmits<{
+  (e: 'open-update', outfitId?: string): void;
+}>();
 
 const { mvu, rawMvuData, handleMvuUpdate, initialize } = useMvuData();
-const { slotNames, selectedOutfitId, selectedOutfit, currentEquippedOutfit, equipOutfit, openUpdateOutfit } =
-  useWardrobe(mvu, emit);
+const { slotNames, selectedOutfitId, selectedOutfit, editOutfit, openUpdateOutfit } = useWardrobe(mvu, emit);
 </script>

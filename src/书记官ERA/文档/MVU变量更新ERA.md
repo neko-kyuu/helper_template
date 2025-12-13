@@ -55,10 +55,10 @@ BestiaryEntry:
     knownInfo:   # String: 已知信息。
     killCount:   # Number: （若为敌对性生物）击杀数量。
 AnecdoteEntry:
- description: 旅途趣闻条目
+ description: 旅途轶事条目
  fields:
-   name:               # String: 趣闻名称。
-   description:        # String: 趣闻描述。
+   name:               # String: 轶事名称。
+   description:        # String: 轶事描述。
    location:           # String: 发生地点。
    charactersInvolved: # String: 相关人物。
    knownInfo:          # String: 已知信息。
@@ -87,6 +87,7 @@ PlayerData: # Object: 玩家静态数据根对象
     race:     {{ERA:PlayerData.character.race}} # String: 种族 (只读)
   status:     {{ERA:PlayerData.status}} # Object: 角色状态 (health, mood, arousal)
   attributes: {{ERA:PlayerData.attributes}} # Object: 角色属性信息 (只读)
+  equipment: {{ERA:PlayerData.equipment}} # Object: 角色穿戴信息 (只读)
   progress:   # Object: 进度信息
     questPhase:      "{{ERA:PlayerData.progress.questPhase}}" # String: 当前激活任务的阶段描述
     partyExperience:
@@ -105,7 +106,7 @@ PlayerData: # Object: 玩家静态数据根对象
     nearbyNPC:       {{ERA:PlayerData.settings.nearbyNPC}} # Object: NpcData, 场景内的NPC，包括友善、中立、敌对。NPC信息可以随玩家对其的了解程度更新。
     factionPrestige: {{ERA:PlayerData.settings.factionPrestige}} # Object: FactionData, 阵营声望
     bestiary:        {{ERA:PlayerData.settings.bestiary}} # Object: BestiaryEntry, 生物图鉴
-    anecdotes:       {{ERA:PlayerData.settings.anecdotes}} # Object: AnecdoteEntry, 旅途趣闻，可以记录特产、风俗等各类有趣轶事
+    anecdotes:       {{ERA:PlayerData.settings.anecdotes}} # Object: AnecdoteEntry, 旅途轶事，记录体验到的特产、风俗、地点等概念性条目
 PlayerDynamicData: # Object: 玩家动态数据
   inventory: {{ERA:PlayerDynamicData.inventory}} # Object: InventoryItem, 小队的物品，包括跟随NPC的物品
   gold:      {{ERA:PlayerDynamicData.gold}} # Number: 玩家拥有的金币

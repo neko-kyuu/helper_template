@@ -6,7 +6,7 @@
     </div>
 
     <div class="master-detail-body reverse">
-      <div class="scene-detail-item">
+      <div class="scene-detail-item" style="border: 1px solid var(--border_color)">
         <div
           v-for="(npc, index) in mvu.PlayerData.settings.nearbyNPC"
           :key="index"
@@ -31,7 +31,7 @@
             <div class="column-content" v-for="(value, key) in selectedNpc.character" :key="key">
               <span>{{ characterLabels[key as keyof typeof selectedNpc.character] || key }}</span> {{ value }}
             </div>
-            <div class="column-content" style="grid-column: 1 / -1" v-for="(value, key) in selectedNpc.meta" :key="key">
+            <div class="column-content grid-col-span-full" v-for="(value, key) in selectedNpc.meta" :key="key">
               <span>{{ metaLabels[key as keyof typeof selectedNpc.meta] || key }}</span>
               <span v-if="key === 'favorabilityTowardsNPCs'">
                 <div v-for="(fav, npcName) in value" :key="npcName">{{ npcName }}: {{ fav }}</div>

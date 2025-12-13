@@ -29,7 +29,7 @@
           >
             {{ entry.name }}
           </div>
-          <div style="grid-column: 1 / -1"></div>
+          <div class="grid-col-span-full"></div>
           <div
             class="master-grid-item"
             v-for="(entry, index) in archivedEntries"

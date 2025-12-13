@@ -16,6 +16,13 @@
               <label for="outfit-description">描述</label>
               <textarea id="outfit-description" v-model="editingOutfit.description"></textarea>
             </div>
+            <div class="form-group">
+              <label for="outfit-wearer">穿戴者</label>
+              <select v-model="editingOutfit.wearer">
+                <option v-for="(char, key) in party" :key="key" :value="key">{{ char.character.name }}</option>
+              </select>
+              <!-- <input id="outfit-wearer" v-model="editingOutfit.wearer" type="text" /> -->
+            </div>
           </div>
         </div>
       </div>
@@ -66,12 +73,18 @@
 
 <script setup lang="ts">
 import _ from 'lodash';
-import { computed, defineExpose, ref, watch } from 'vue';
+import { computed, defineExpose, defineProps, ref, watch } from 'vue';
 import { useMvuData } from '../hooks/useMvuData';
+import { useParty } from '../hooks/useParty';
 import { qualityLabels, slotLabels, tierLabels, type InventoryItem, type SlotType } from '../itemConstants';
 import { type OutfitData, type Slots } from '../types';
 
-const { mvu } = useMvuData();
+const props = defineProps<{
+  outfitId: string | null;
+}>();
+
+const { mvu, rawMvuData, handleMvuUpdate } = useMvuData();
+const { party } = useParty(mvu, rawMvuData, handleMvuUpdate);
 const selectedSlot = ref<SlotType | null>(null);
 
 const defaultSlots: Slots = {
@@ -93,24 +106,32 @@ const defaultOutfitTemplate: OutfitData = {
   name: '初始套装',
   type: 'casual',
   description: '[套装描述]',
+  wearer: null,
   slots: _.cloneDeep(defaultSlots),
 };
 
 const editingOutfit = ref<OutfitData>(_.cloneDeep(defaultOutfitTemplate));
 
 watch(
-  () => mvu.value.Wardrobe.currentOutfit,
+  () => props.outfitId,
   newOutfitId => {
-    const newOutfitData = newOutfitId && newOutfitId !== 'none' ? mvu.value.Wardrobe.ownedOutfits[newOutfitId] : null;
+    const newOutfitData = newOutfitId ? mvu.value.Wardrobe.ownedOutfits[newOutfitId] : null;
     if (newOutfitData) {
       const hydratedSlots: Slots = _.cloneDeep(defaultSlots);
+      const itemInventory = mvu.value.PlayerDynamicData.inventory;
+
       for (const slotKey in newOutfitData.slots) {
         if (Object.prototype.hasOwnProperty.call(newOutfitData.slots, slotKey)) {
           const slotName = slotKey as keyof Slots;
-          if (slotName !== 'extra') {
+          if (slotName === 'extra') {
+            const itemIds = (newOutfitData.slots as any)[slotName] as string[];
+            (hydratedSlots as any)[slotName] = itemIds
+              .map(id => (itemInventory[id] ? { ...itemInventory[id], id } : null))
+              .filter(Boolean);
+          } else {
             const itemId = (newOutfitData.slots as any)[slotName];
-            if (typeof itemId === 'string' && mvu.value.PlayerDynamicData.inventory[itemId]) {
-              (hydratedSlots as any)[slotName] = mvu.value.PlayerDynamicData.inventory[itemId];
+            if (typeof itemId === 'string' && itemInventory[itemId]) {
+              (hydratedSlots as any)[slotName] = { ...itemInventory[itemId], id: itemId };
             } else {
               (hydratedSlots as any)[slotName] = null;
             }
@@ -149,16 +170,20 @@ function isEquipped(item: InventoryItem): boolean {
 }
 
 defineExpose({
-  getOutfitData: (): OutfitData => {
-    const dehydrated = _.cloneDeep(editingOutfit.value);
-    for (const slot of Object.keys(dehydrated.slots)) {
-      if (slot === 'extra') continue;
-      const item = dehydrated.slots[slot as keyof Omit<Slots, 'extra'>];
-      if (item && typeof item === 'object' && 'id' in item) {
-        (dehydrated.slots as any)[slot] = item.id;
+  getOutfitData: () => {
+    const outfitToSave = _.cloneDeep(editingOutfit.value);
+    const dehydratedSlots: any = {};
+    for (const key in outfitToSave.slots) {
+      const slotKey = key as keyof Slots;
+      if (slotKey === 'extra') {
+        dehydratedSlots[slotKey] = ((outfitToSave.slots[slotKey] || []) as { id: string }[]).map(item => item.id);
+      } else {
+        const item = outfitToSave.slots[slotKey] as InventoryItem | null;
+        dehydratedSlots[slotKey] = item ? item.id : null;
       }
     }
-    return dehydrated;
+    outfitToSave.slots = dehydratedSlots;
+    return outfitToSave;
   },
 });
 

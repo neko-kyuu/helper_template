@@ -250,6 +250,12 @@ const defaultMvuData: any = JSON.parse(`{
             "social": 0,
             "intellectual": 0
         },
+        "equipment": {
+            "leftHand": "none",
+            "rightHand": "none",
+            "outfit": "none",
+            "outfitContent": "none"
+        },
         "progress": {
             "$meta": {
                 "necessary": "self",
@@ -442,11 +448,6 @@ const defaultMvuData: any = JSON.parse(`{
                 }
             }
         },
-        "equipment": {
-            "leftHand": "none",
-            "rightHand": "none",
-            "outfit": "none"
-        },
         "clothingAttributes": {
             "$meta": {
                 "necessary": "all",
@@ -515,6 +516,12 @@ const defaultMvuData: any = JSON.parse(`{
                 "social": 0,
                 "intellectual": 0
             },
+            "equipment": {
+              "leftHand": "none",
+              "rightHand": "none",
+              "outfit": "none",
+              "outfitContent": "none"
+            },
             "meta": {
                 "relationship": "同伴",
                 "favorability": 50,
@@ -539,6 +546,7 @@ const defaultMvuData: any = JSON.parse(`{
                 "name": "初始套装",
                 "type": "casual",
                 "description": "[套装描述]",
+                "wearer": null,
                 "slots": {
                     "head": null,
                     "bodyInner": null,
@@ -557,8 +565,7 @@ const defaultMvuData: any = JSON.parse(`{
                     "updatable": true
                 }
             }
-        },
-        "currentOutfit": null
+        }
     },
     "ArchivedData":{
         "factionPrestige": {

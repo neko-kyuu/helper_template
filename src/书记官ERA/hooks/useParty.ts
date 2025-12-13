@@ -14,20 +14,23 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const isAssigningAttributes = computed(() => (mvu.value.PlayerData.progress.partyAttrPoints || 0) > 0);
 
   const party = computed(() => {
-    const followerNPCs = Object.keys(mvu.value.FollowerNPCData || {}).map((name: string) => {
-      // const defaultNpcData = { ...npcConst.get(name) };
-      const mvuNpcData = rawMvuData.value?.FollowerNPCData?.[name];
-      return mvuNpcData;
-
-      // return mvuNpcData ? _.merge(defaultNpcData, mvuNpcData) : defaultNpcData;
-    });
-    return [{ ...mvu.value.PlayerData }, ...followerNPCs];
+    const partyAsObject: Record<string, any> = {
+      F0: { ...mvu.value.PlayerData },
+    };
+    const followerNpcKeys = Object.keys(mvu.value.FollowerNPCData || {});
+    for (const key of followerNpcKeys) {
+      const mvuNpcData = rawMvuData.value?.FollowerNPCData?.[key];
+      if (mvuNpcData) {
+        partyAsObject[key] = mvuNpcData;
+      }
+    }
+    return partyAsObject;
   });
 
   const totalSpentPoints = computed(() => {
     if (!isAssigningAttributes.value) return 0;
     return _.sum(
-      party.value.map(char => {
+      Object.values(party.value).map(char => {
         const state = partyUpgradeState.value[char.character.name];
         if (!state) return 0;
         return _.sum(Object.values(state.tempAttributes)) - _.sum(Object.values(state.initialAttributes));
@@ -37,7 +40,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
 
   watchEffect(() => {
     if (isAssigningAttributes.value) {
-      party.value.forEach(char => {
+      Object.values(party.value).forEach(char => {
         const charName = char.character.name;
         if (!partyUpgradeState.value[charName]) {
           partyUpgradeState.value[charName] = {
@@ -90,6 +93,13 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     arousal: '性欲',
   };
 
+  const equipmentLabels: { [key: string]: string } = {
+    leftHand: '左手',
+    rightHand: '右手',
+    outfit: '身体套装Id',
+    outfitContent: '身体套装内容',
+  };
+
   // 检查经验值是否足够
   function validateExperience(): boolean {
     if (mvu.value.PlayerData.progress.partyExperience.current < mvu.value.PlayerData.progress.partyExperience.max) {
@@ -103,26 +113,24 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   function calculateLevelUpData(char: any) {
     const currentExp = mvu.value.PlayerData.progress.partyExperience.current;
     const maxExp = mvu.value.PlayerData.progress.partyExperience.max;
-    const levelsToGain = Math.floor(currentExp / maxExp);
+    const levelsToGain = 1;
     const pointsToGain = levelsToGain;
 
     return {
       charName: char.character.name,
       newLevel: char.character.level + levelsToGain,
-      newExp: currentExp % maxExp,
+      newExp: currentExp - maxExp,
       levelsToGain,
       newPartyAttrPoints: (mvu.value.PlayerData.progress.partyAttrPoints || 0) + pointsToGain,
     };
   }
 
   // 获取角色数据路径
-  function getCharacterPath(index: number): string {
-    if (index === 0) {
+  function getCharacterPath(key: string): string {
+    if (key === 'F0') {
       return 'PlayerData';
     }
-    const followerIds = Object.keys(mvu.value.FollowerNPCData || {});
-    const npcId = followerIds[index - 1];
-    return `FollowerNPCData.${npcId}`;
+    return `FollowerNPCData.${key}`;
   }
 
   // 生成升级命令
@@ -140,11 +148,11 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   }
 
   // 统一的升级逻辑
-  async function levelUp(char: any, index: number) {
+  async function levelUp(char: any, key: string) {
     if (!validateExperience()) return;
 
     const { charName, newLevel, newExp, levelsToGain, newPartyAttrPoints } = calculateLevelUpData(char);
-    const basePath = getCharacterPath(index);
+    const basePath = getCharacterPath(key);
     const commands = generateLevelUpCommand(basePath, newLevel, newExp, newPartyAttrPoints);
 
     await handleMvuUpdate(commands, () => {
@@ -186,7 +194,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   }
 
   // 统一的提交属性逻辑
-  async function commitAttributes(char: any, index: number) {
+  async function commitAttributes(char: any, key: string) {
     const charName = char.character.name;
     const state = partyUpgradeState.value[charName];
     if (!state) return;
@@ -204,7 +212,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     }
 
     const newPartyAttrPoints = (mvu.value.PlayerData.progress.partyAttrPoints || 0) - pointsSpent;
-    const basePath = getCharacterPath(index);
+    const basePath = getCharacterPath(key);
     const commands = generateAttributeCommands(
       basePath,
       state.tempAttributes,
@@ -228,7 +236,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     });
   }
 
-  function incrementAttribute(char: any, index: number, attrKey: string) {
+  function incrementAttribute(char: any, key: string, attrKey: string) {
     const charName = char.character.name;
     const state = partyUpgradeState.value[charName];
     if (state) {
@@ -238,7 +246,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     }
   }
 
-  function decrementAttribute(char: any, index: number, attrKey: string) {
+  function decrementAttribute(char: any, key: string, attrKey: string) {
     const charName = char.character.name;
     const state = partyUpgradeState.value[charName];
     if (state && state.tempAttributes[attrKey] > state.initialAttributes[attrKey]) {
@@ -247,16 +255,61 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   }
 
   const selectedChar = ref<PartyMember | null>(null);
-  const selectedCharIndex = ref<number | null>(null);
+  const selectedCharKey = ref<string | null>(null);
 
-  function selectChar(char: any, index: number) {
-    if (selectedCharIndex.value === index) {
+  function selectChar(char: any, key: string) {
+    if (selectedCharKey.value === key) {
       selectedChar.value = null;
-      selectedCharIndex.value = null;
+      selectedCharKey.value = null;
     } else {
       selectedChar.value = char;
-      selectedCharIndex.value = index;
+      selectedCharKey.value = key;
     }
+  }
+
+  const characterOutfits = computed(() => {
+    if (!selectedCharKey.value) return {};
+    return _.pickBy(mvu.value.Wardrobe.ownedOutfits, outfit => outfit.wearer === selectedCharKey.value);
+  });
+
+  async function updateOutfit(newOutfitId: string) {
+    if (!selectedCharKey.value) return;
+
+    let outfitContent = '';
+    if (newOutfitId && mvu.value.Wardrobe.ownedOutfits[newOutfitId]) {
+      const outfitData = mvu.value.Wardrobe.ownedOutfits[newOutfitId];
+      const inventory = mvu.value.PlayerDynamicData.inventory;
+      const itemNames: string[] = [];
+
+      for (const slotKey in outfitData.slots) {
+        const itemIds = (outfitData.slots as any)[slotKey];
+        if (!itemIds) continue;
+
+        const ids = Array.isArray(itemIds) ? itemIds : [itemIds];
+        for (const id of ids) {
+          if (inventory[id]) {
+            itemNames.push(inventory[id].name);
+          }
+        }
+      }
+      outfitContent = itemNames.join(',');
+    }
+
+    const basePath = getCharacterPath(selectedCharKey.value);
+    const commands = [
+      {
+        event: 'updateByPath',
+        detail: { path: `${basePath}.equipment.outfit`, value: newOutfitId },
+      },
+      {
+        event: 'updateByPath',
+        detail: { path: `${basePath}.equipment.outfitContent`, value: outfitContent },
+      },
+    ];
+
+    await handleMvuUpdate(commands, () => {
+      toastr.success('套装已更新!');
+    });
   }
 
   return {
@@ -266,6 +319,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     metaLabels,
     attributeLabels,
     statusLabels,
+    equipmentLabels,
     isAssigningAttributes,
     totalSpentPoints,
     levelUp,
@@ -274,6 +328,8 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     decrementAttribute,
     selectChar,
     selectedChar,
-    selectedCharIndex,
+    selectedCharKey,
+    characterOutfits,
+    updateOutfit,
   };
 }

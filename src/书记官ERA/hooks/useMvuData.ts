@@ -45,6 +45,12 @@ const defaultMvuData = {
       social: 0,
       intellectual: 0,
     },
+    equipment: {
+      leftHand: 'none',
+      rightHand: 'none',
+      outfit: 'none',
+      outfitContent: 'none',
+    },
     progress: {
       questPhase: '',
       partyExperience: {
@@ -71,11 +77,6 @@ const defaultMvuData = {
   },
   PlayerDynamicData: {
     inventory: {} as Record<string, InventoryItem>,
-    equipment: {
-      leftHand: 'none',
-      rightHand: 'none',
-      body: 'none',
-    },
     clothingAttributes: {
       defense: 0,
       comfort: 0,
@@ -88,7 +89,6 @@ const defaultMvuData = {
   FollowerNPCData: {},
   Wardrobe: {
     ownedOutfits: {} as Record<string, OutfitData>,
-    currentOutfit: 'none',
     //todo 随从的outfit
   },
   ArchivedData: {

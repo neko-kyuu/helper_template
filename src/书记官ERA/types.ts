@@ -32,6 +32,7 @@ export interface OutfitData {
   name: string;
   type: string;
   description: string;
+  wearer: string | null;
   slots: Slots;
 }
 
@@ -65,6 +66,12 @@ export interface NpcData {
     mood: { current: number; max: number };
     arousal: { current: number; max: number };
   };
+  equipment?: {
+    leftHand: string;
+    rightHand: string;
+    outfit: string;
+    outfitContent: string;
+  };
 }
 
 export interface MvuData {
@@ -85,6 +92,12 @@ export interface MvuData {
       arousal: { current: number; max: number };
     };
     attributes: Record<string, number>;
+    equipment: {
+      leftHand: string;
+      rightHand: string;
+      outfit: string;
+      outfitContent: string;
+    };
     progress: {
       questPhase: string;
       partyExperience: { current: number; max: number };
@@ -108,11 +121,6 @@ export interface MvuData {
   };
   PlayerDynamicData: {
     inventory: Record<string, InventoryItem>;
-    equipment: {
-      leftHand: string;
-      rightHand: string;
-      body: string;
-    };
     clothingAttributes: {
       defense: number;
       comfort: number;
@@ -125,7 +133,6 @@ export interface MvuData {
   FollowerNPCData: Record<string, NpcData>;
   Wardrobe: {
     ownedOutfits: OwnedOutfits;
-    currentOutfit: string;
   };
   ArchivedData: {
     factionPrestige: Record<string, any>;
