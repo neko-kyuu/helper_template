@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import { ref, watch } from 'vue';
 import { InventoryItem } from '../itemConstants';
-import { NpcData, OutfitData } from '../types';
+import { NpcData, OutfitData, factionPrestige } from '../types';
 
 // 默认的 MVU 数据结构
 const defaultMvuData = {
@@ -70,7 +70,7 @@ const defaultMvuData = {
       currentRegion: '',
       currentLocation: '',
       nearbyNPC: {} as Record<string, NpcData>,
-      factionPrestige: {},
+      factionPrestige: {} as Record<string, factionPrestige>,
       bestiary: {},
       anecdotes: {},
     },
@@ -92,7 +92,7 @@ const defaultMvuData = {
     //todo 随从的outfit
   },
   ArchivedData: {
-    factionPrestige: {},
+    factionPrestige: {} as Record<string, factionPrestige>,
     bestiary: {},
     anecdotes: {},
   },

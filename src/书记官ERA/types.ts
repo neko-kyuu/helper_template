@@ -74,6 +74,12 @@ export interface NpcData {
   };
 }
 
+export interface factionPrestige {
+  name: string;
+  description: string;
+  prestige: number;
+}
+
 export interface MvuData {
   PlayerData: {
     character: {
@@ -114,7 +120,7 @@ export interface MvuData {
       currentRegion: string;
       currentLocation: string;
       nearbyNPC: Record<string, NpcData>;
-      factionPrestige: Record<string, any>;
+      factionPrestige: Record<string, factionPrestige>;
       bestiary: Record<string, any>;
       anecdotes: Record<string, any>;
     };
@@ -135,7 +141,7 @@ export interface MvuData {
     ownedOutfits: OwnedOutfits;
   };
   ArchivedData: {
-    factionPrestige: Record<string, any>;
+    factionPrestige: Record<string, factionPrestige>;
     bestiary: Record<string, any>;
     anecdotes: Record<string, any>;
   };

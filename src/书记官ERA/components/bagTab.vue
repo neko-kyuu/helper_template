@@ -35,7 +35,7 @@
           <div v-if="!isEditing">
             <div class="item-name flex-between">
               {{ selectedItem.name }}
-              <div>
+              <div style="flex-shrink: 0">
                 <i
                   class="fa-solid fa-pencil"
                   @click="startEditing"

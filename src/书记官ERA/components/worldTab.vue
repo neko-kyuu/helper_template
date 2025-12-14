@@ -28,9 +28,12 @@
           >
           </i>
           <div class="column">
+            <div class="section-title grid-col-span-full">基础信息</div>
             <div class="column-content" v-for="(value, key) in selectedNpc.character" :key="key">
               <span>{{ characterLabels[key as keyof typeof selectedNpc.character] || key }}</span> {{ value }}
             </div>
+
+            <div class="section-title grid-col-span-full">元信息</div>
             <div class="column-content grid-col-span-full" v-for="(value, key) in selectedNpc.meta" :key="key">
               <span>{{ metaLabels[key as keyof typeof selectedNpc.meta] || key }}</span>
               <span v-if="key === 'favorabilityTowardsNPCs'">
@@ -39,6 +42,8 @@
               <span v-else> {{ value }} </span>
             </div>
           </div>
+
+          <div class="section-title grid-col-span-full">属性</div>
           <div class="attributes">
             <div class="attr" v-for="(value, key) in selectedNpc.attributes" :key="key">
               <span>{{ attributeLabels[key as keyof typeof selectedNpc.attributes] || key }}</span>
