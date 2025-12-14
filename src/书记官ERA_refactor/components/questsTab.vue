@@ -1,0 +1,103 @@
+<template>
+  <div class="quest-container">
+    <div class="master-tabs">
+      <button @click="activeQuestTab = 'currentQuests'" :class="{ active: activeQuestTab === 'currentQuests' }">
+        进行中任务
+      </button>
+      <button @click="activeQuestTab = 'nextQuests'" :class="{ active: activeQuestTab === 'nextQuests' }">
+        可接取任务
+      </button>
+      <button @click="activeQuestTab = 'pendingQuests'" :class="{ active: activeQuestTab === 'pendingQuests' }">
+        挂起任务
+      </button>
+      <button @click="activeQuestTab = 'completedQuests'" :class="{ active: activeQuestTab === 'completedQuests' }">
+        已完成任务
+      </button>
+    </div>
+
+    <template v-if="activeQuestTab === 'currentQuests'">
+      <div v-if="Object.keys(currentQuests).length === 0" class="data-empty">自由探索中</div>
+      <div class="quest-item-container" v-else>
+        <div
+          class="quest-item"
+          v-for="(quest, index) in currentQuests"
+          :key="index"
+          :class="{ 'side-quest': !quest.isMain }"
+        >
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="deleteQuest(index as unknown as string, 'currentQuest')">删除</button>
+          </div>
+          <div class="quest-description">{{ quest.description }}</div>
+        </div>
+      </div>
+    </template>
+
+    <template v-if="activeQuestTab === 'nextQuests'">
+      <div v-if="Object.keys(nextQuests).length === 0" class="data-empty">自由探索中</div>
+      <div class="quest-item-container" v-else>
+        <div
+          class="quest-item"
+          v-for="(quest, questId) in nextQuests"
+          :key="questId"
+          :class="{ 'side-quest': !quest.isMain }"
+        >
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <div>
+              <button @click="activeQuest(questId as unknown as string)" style="margin-right: 6px">激活</button>
+              <button @click="deleteQuest(questId as unknown as string, 'nextQuest')">删除</button>
+            </div>
+          </div>
+          <div class="quest-description">{{ quest.description }}</div>
+        </div>
+      </div>
+    </template>
+
+    <template v-if="activeQuestTab === 'pendingQuests'">
+      <div v-if="Object.keys(pendingQuests).length === 0" class="data-empty">自由探索中</div>
+      <div class="quest-item-container" v-else>
+        <div
+          class="quest-item"
+          v-for="(quest, index) in pendingQuests"
+          :key="index"
+          :class="{ 'side-quest': !quest.isMain }"
+        >
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="deleteQuest(index as unknown as string, 'pendingQuest')">删除</button>
+          </div>
+          <div class="quest-description">{{ quest.description }}</div>
+        </div>
+      </div>
+    </template>
+
+    <template v-if="activeQuestTab === 'completedQuests'">
+      <div v-if="Object.keys(completedQuests).length === 0" class="data-empty">自由探索中</div>
+      <div class="quest-item-container" v-else>
+        <div
+          class="quest-item"
+          v-for="(quest, index) in completedQuests"
+          :key="index"
+          :class="{ 'side-quest': !quest.isMain }"
+        >
+          <div class="quest-title">
+            {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
+            <button @click="deleteQuest(index as unknown as string, 'completedQuest')">删除</button>
+          </div>
+          <div class="quest-description">{{ quest.description }}</div>
+        </div>
+      </div>
+    </template>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { useMvuData } from '../hooks/useMvuData';
+import { useQuests } from '../hooks/useQuests';
+
+const { mvu, handleMvuUpdate } = useMvuData();
+
+const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTab, activeQuest, deleteQuest } =
+  useQuests(mvu, handleMvuUpdate);
+</script>
