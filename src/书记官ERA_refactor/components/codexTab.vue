@@ -3,7 +3,7 @@
     <div class="master-tabs">
       <button @click="activeCodexTab = 'bestiary'" :class="{ active: activeCodexTab === 'bestiary' }">生物图鉴</button>
       <button @click="activeCodexTab = 'anecdotes'" :class="{ active: activeCodexTab === 'anecdotes' }">
-        旅途趣闻
+        旅途轶事
       </button>
     </div>
     <div class="master-detail-body">
@@ -21,7 +21,7 @@
         </template>
         <template v-if="activeCodexTab === 'anecdotes'">
           <template v-if="Object.keys(anecdoteEntries).length">
-            <div class="section-title grid-col-span-full">逸闻</div>
+            <div class="section-title grid-col-span-full">轶事</div>
             <div
               class="master-grid-item"
               v-for="(entry, index) in anecdoteEntries"
