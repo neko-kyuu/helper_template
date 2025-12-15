@@ -51,39 +51,9 @@ const defaultMvuData = {
       outfit: 'none',
       outfitContent: 'none',
     },
-    progress: {
-      questPhase: '',
-      partyExperience: {
-        current: 0,
-        max: 100,
-      },
-      partyAttrPoints: 0,
-      currentQuest: {},
-      nextQuest: {},
-      pendingQuest: {},
-      completedQuest: {},
-    },
-    settings: {
-      date: '',
-      time: '',
-      weather: '',
-      currentRegion: '',
-      currentLocation: '',
-      nearbyNPC: {} as Record<string, NpcData>,
-      factionPrestige: {} as Record<string, factionPrestige>,
-      bestiary: {},
-      anecdotes: {},
-    },
   },
   PlayerDynamicData: {
     inventory: {} as Record<string, InventoryItem>,
-    clothingAttributes: {
-      defense: 0,
-      comfort: 0,
-      warmth: 0,
-      social: 0,
-      weight: 0,
-    },
     gold: 100,
   },
   FollowerNPCData: {},
@@ -98,6 +68,29 @@ const defaultMvuData = {
   },
   System: {
     mainStoryMode: true,
+  },
+  worldInfo: {
+    date: '',
+    time: '',
+    weather: '',
+    currentRegion: '',
+    currentLocation: '',
+    nearbyNPC: {} as Record<string, NpcData>,
+    factionPrestige: {} as Record<string, factionPrestige>,
+    bestiary: {},
+    anecdotes: {},
+  },
+  progressData: {
+    questPhase: '',
+    partyExperience: {
+      current: 0,
+      max: 100,
+    },
+    partyAttrPoints: 0,
+    currentQuest: {},
+    nextQuest: {},
+    pendingQuest: {},
+    completedQuest: {},
   },
 };
 
@@ -191,12 +184,12 @@ export function useMvuData() {
 
     // 使用 statWithoutMeta 来更新 UI，它是不包含 ERA 内部字段的纯净数据
     rawMvuData.value = detail.statWithoutMeta;
-    const currentRegion = rawMvuData.value?.PlayerData?.settings?.currentRegion;
+    const currentRegion = rawMvuData.value?.worldInfo?.currentRegion;
     let currentQuests: string[] = [];
 
     if (mvu.value.System.mainStoryMode) {
       // 处理世界书蓝绿灯
-      const quest = rawMvuData.value?.PlayerData?.progress?.currentQuest || {};
+      const quest = rawMvuData.value?.progressData?.currentQuest || {};
       // const currentQuests:string[] = Object.values(quest)
       //   .filter((item:any) => item.name)
       //   .map((item:any) => item.name);

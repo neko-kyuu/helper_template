@@ -11,7 +11,7 @@ level: |
   - 41-55: 王国之栋梁 / 行走的天灾
   - 56-60: 近神者 / 神话领域
 attributes: |
-  属性: NPC（包括怪物）的属性应基于其自身设定，禁止参考玩家属性进行动态调整。通常来说，3-4是大多数普通人的常态。
+  属性: 通常来说，**2-3是绝大多数人的常态，5-6则证明可从事该领域职业了**。属性曲线是非线性的，越高的属性提升越陡峭，因此相同差值下，低属性间的差距没有高属性间那么大。
   - 0-8: 凡人领域
   - 8-12: 一方巧匠
   - 13-15: 天赋异禀
@@ -88,25 +88,25 @@ PlayerData: # Object: 玩家静态数据根对象
   status:     {{ERA:PlayerData.status}} # Object: 角色状态 (health, mood, arousal)
   attributes: {{ERA:PlayerData.attributes}} # Object: 角色属性信息 (只读)
   equipment: {{ERA:PlayerData.equipment}} # Object: 角色穿戴信息 (只读)
-  progress:   # Object: 进度信息
-    questPhase:      "{{ERA:PlayerData.progress.questPhase}}" # String: 当前激活任务的阶段描述
-    partyExperience:
-      current: {{ERA:PlayerData.progress.partyExperience.current}} # Number: 经验值，单调递增，不主动清零升级，可以超过最大值
-      max:     {{ERA:PlayerData.progress.partyExperience.max}} # Number: 最大经验值
-    currentQuest:    {{ERA:PlayerData.progress.currentQuest}} # Object: QuestData, 当前已接受并进行中的任务
-    nextQuest:       {{ERA:PlayerData.progress.nextQuest}} # Object: QuestData, 可接受的任务
-    pendingQuest:    {{ERA:PlayerData.progress.pendingQuest}} # Object: QuestData, 已接取但未追踪的任务
-    completedQuest:  {{ERA:PlayerData.progress.completedQuest}} # Object: QuestData, 已完成任务，如果任务分阶段则须完成最终阶段 (只增不删)
-  settings:   # Object: 元数据
-    date:            {{ERA:PlayerData.settings.date}} # String: 当前日期，格式参考<world_background>中的历法，如 "1149DR 奈托9日"
-    time:            {{ERA:PlayerData.settings.time}} # String: 模糊时间，如 "下午"
-    weather:         {{ERA:PlayerData.settings.weather}} # String: 天气状况
-    currentRegion:   {{ERA:PlayerData.settings.currentRegion}} # String: 当前大区域，最细到城市
-    currentLocation: {{ERA:PlayerData.settings.currentLocation}} # String: 当前地点
-    nearbyNPC:       {{ERA:PlayerData.settings.nearbyNPC}} # Object: NpcData, 场景内的NPC，包括友善、中立、敌对。NPC信息可以随玩家对其的了解程度更新。
-    factionPrestige: {{ERA:PlayerData.settings.factionPrestige}} # Object: FactionData, 阵营声望
-    bestiary:        {{ERA:PlayerData.settings.bestiary}} # Object: BestiaryEntry, 生物图鉴
-    anecdotes:       {{ERA:PlayerData.settings.anecdotes}} # Object: AnecdoteEntry, 旅途轶事，记录体验到的特产、风俗、地点等概念性条目
+worldInfo:   # Object: 世界信息
+  date:            {{ERA:worldInfo.date}} # String: 当前日期，格式参考<world_background>中的历法，如 "1149DR 奈托9日"
+  time:            {{ERA:worldInfo.time}} # String: 模糊时间，如 "下午"
+  weather:         {{ERA:worldInfo.weather}} # String: 天气状况
+  currentRegion:   {{ERA:worldInfo.currentRegion}} # String: 当前大区域，最细到城市
+  currentLocation: {{ERA:worldInfo.currentLocation}} # String: 当前地点
+  nearbyNPC:       {{ERA:worldInfo.nearbyNPC}} # Object: NpcData, 场景内的NPC，包括友善、中立、敌对。NPC信息可以随玩家对其的了解程度更新。
+  factionPrestige: {{ERA:worldInfo.factionPrestige}} # Object: FactionData, 阵营声望
+  bestiary:        {{ERA:worldInfo.bestiary}} # Object: BestiaryEntry, 生物图鉴
+  anecdotes:       {{ERA:worldInfo.anecdotes}} # Object: AnecdoteEntry, 旅途轶事，记录体验到的特产、风俗、地点等概念性条目
+progressData:   # Object: 进度信息
+  questPhase:      "{{ERA:progressData.questPhase}}" # String: 当前激活任务的阶段描述
+  partyExperience:
+    current: {{ERA:progressData.partyExperience.current}} # Number: 经验值，单调递增，不主动清零升级，可以超过最大值
+    max:     {{ERA:progressData.partyExperience.max}} # Number: 最大经验值
+  currentQuest:    {{ERA:progressData.currentQuest}} # Object: QuestData, 当前已接受并进行中的任务
+  nextQuest:       {{ERA:progressData.nextQuest}} # Object: QuestData, 可接受的任务
+  pendingQuest:    {{ERA:progressData.pendingQuest}} # Object: QuestData, 已接取但未追踪的任务
+  completedQuest:  {{ERA:progressData.completedQuest}} # Object: QuestData, 已完成任务，如果任务分阶段则须完成最终阶段 (只增不删)
 PlayerDynamicData: # Object: 玩家动态数据
   inventory: {{ERA:PlayerDynamicData.inventory}} # Object: InventoryItem, 小队的物品，包括跟随NPC的物品
   gold:      {{ERA:PlayerDynamicData.gold}} # Number: 玩家拥有的金币

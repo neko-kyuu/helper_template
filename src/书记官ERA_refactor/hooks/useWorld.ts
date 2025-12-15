@@ -38,7 +38,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
   };
 
   const deleteNPC = (npcKey: string) => {
-    const itemToDelete = mvu.value.PlayerData.settings.nearbyNPC[npcKey];
+    const itemToDelete = mvu.value.worldInfo.nearbyNPC[npcKey];
     if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
       selectNpc(null, '');
     }
@@ -46,11 +46,9 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'deleteByObject',
         detail: {
-          PlayerData: {
-            settings: {
-              nearbyNPC: {
-                [npcKey]: {},
-              },
+          worldInfo: {
+            nearbyNPC: {
+              [npcKey]: {},
             },
           },
         },

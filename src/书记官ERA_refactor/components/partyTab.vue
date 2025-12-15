@@ -13,14 +13,12 @@
             <span class="char-name">{{ char.character.name }} (Lv. {{ char.character.level }})</span>
             <div class="right-btns">
               <div v-if="isAssigningAttributes">
-                <span>团队属性点: {{ mvu.PlayerData.progress.partyAttrPoints - totalSpentPoints }}</span>
+                <span>团队属性点: {{ mvu.progressData.partyAttrPoints - totalSpentPoints }}</span>
                 <button @click="commitAttributes(char, charKey)">保存</button>
               </div>
               <button
                 @click="levelUp(char, charKey)"
-                :disabled="
-                  mvu.PlayerData.progress.partyExperience.current < mvu.PlayerData.progress.partyExperience.max
-                "
+                :disabled="mvu.progressData.partyExperience.current < mvu.progressData.partyExperience.max"
               >
                 升级
               </button>
@@ -43,12 +41,12 @@
                   <div
                     class="fill"
                     :style="{
-                      width: `${Math.min(100, (mvu.PlayerData.progress.partyExperience.current / mvu.PlayerData.progress.partyExperience.max) * 100)}%`,
+                      width: `${Math.min(100, (mvu.progressData.partyExperience.current / mvu.progressData.partyExperience.max) * 100)}%`,
                     }"
                   ></div>
                 </div>
-                {{ mvu.PlayerData.progress.partyExperience.current }} /
-                {{ mvu.PlayerData.progress.partyExperience.max }}
+                {{ mvu.progressData.partyExperience.current }} /
+                {{ mvu.progressData.partyExperience.max }}
               </div>
             </div>
             <!-- 属性 -->
@@ -70,7 +68,7 @@
                   <button
                     class="small"
                     @click="incrementAttribute(char, charKey, attrKey as unknown as string)"
-                    :disabled="mvu.PlayerData.progress.partyAttrPoints <= totalSpentPoints"
+                    :disabled="mvu.progressData.partyAttrPoints <= totalSpentPoints"
                   >
                     +
                   </button>

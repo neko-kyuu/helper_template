@@ -59,179 +59,179 @@
       "rightHand": "none",
       "outfit": "none",
       "outfitContent": "none"
+    }
+  },
+  "progressData": {
+    "$meta": {
+      "necessary": "self",
+      "updatable": true
     },
-    "progress": {
+    "questPhase": "",
+    "currentQuest": {
+      "$meta": {
+        "updatable": true
+      },
+      "$template": {
+        "name": "[任务名称]",
+        "description": "",
+        "isMain": false,
+        "$meta": {
+          "updatable": true
+        }
+      },
+      "MQ1": {
+        "name": "节日的插曲",
+        "description": "你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。",
+        "isMain": true
+      }
+    },
+    "nextQuest": {
       "$meta": {
         "necessary": "self",
         "updatable": true
       },
-      "questPhase": "",
-      "currentQuest": {
+      "$template": {
+        "name": "[任务名称]",
+        "description": "",
+        "isMain": false,
         "$meta": {
           "updatable": true
-        },
-        "$template": {
-          "name": "[任务名称]",
-          "description": "",
-          "isMain": false,
-          "$meta": {
-            "updatable": true
-          }
-        },
-        "MQ1": {
-          "name": "节日的插曲",
-          "description": "你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。",
-          "isMain": true
         }
-      },
-      "nextQuest": {
-        "$meta": {
-          "necessary": "self",
-          "updatable": true
-        },
-        "$template": {
-          "name": "[任务名称]",
-          "description": "",
-          "isMain": false,
-          "$meta": {
-            "updatable": true
-          }
-        }
-      },
-      "pendingQuest": {
-        "$meta": {
-          "necessary": "self",
-          "updatable": true
-        },
-        "$template": {
-          "name": "[任务名称]",
-          "description": "",
-          "isMain": false,
-          "$meta": {
-            "updatable": true
-          }
-        }
-      },
-      "completedQuest": {
-        "$meta": {
-          "necessary": "self",
-          "updatable": true
-        },
-        "$template": {
-          "name": "[任务名称]",
-          "description": "",
-          "isMain": false,
-          "$meta": {
-            "updatable": true
-          }
-        }
-      },
-      "partyExperience": {
-        "current": 0,
-        "max": 100
-      },
-      "partyAttrPoints": 0
+      }
     },
-    "settings": {
+    "pendingQuest": {
       "$meta": {
         "necessary": "self",
         "updatable": true
       },
-      "date": "1468DR 奈托月19日",
-      "time": "傍晚",
-      "weather": "飘雪",
-      "currentRegion": "巴拉德雷",
-      "currentLocation": "羽笔与酒杯旅店附近",
-      "nearbyNPC": {
+      "$template": {
+        "name": "[任务名称]",
+        "description": "",
+        "isMain": false,
         "$meta": {
           "updatable": true
+        }
+      }
+    },
+    "completedQuest": {
+      "$meta": {
+        "necessary": "self",
+        "updatable": true
+      },
+      "$template": {
+        "name": "[任务名称]",
+        "description": "",
+        "isMain": false,
+        "$meta": {
+          "updatable": true
+        }
+      }
+    },
+    "partyExperience": {
+      "current": 0,
+      "max": 100
+    },
+    "partyAttrPoints": 0
+  },
+  "worldInfo": {
+    "$meta": {
+      "necessary": "self",
+      "updatable": true
+    },
+    "date": "1468DR 奈托月19日",
+    "time": "傍晚",
+    "weather": "飘雪",
+    "currentRegion": "巴拉德雷",
+    "currentLocation": "羽笔与酒杯旅店附近",
+    "nearbyNPC": {
+      "$meta": {
+        "updatable": true
+      },
+      "$template": {
+        "character": {
+          "name": "[角色名称]",
+          "level": "[角色等级]",
+          "gender": "[性别]",
+          "race": "[种族]",
+          "height": "[身高]",
+          "build": "[体型]",
+          "appearance": "[外貌]",
+          "personality": "[性格]"
         },
-        "$template": {
-          "character": {
-            "name": "[角色名称]",
-            "level": "[角色等级]",
-            "gender": "[性别]",
-            "race": "[种族]",
-            "height": "[身高]",
-            "build": "[体型]",
-            "appearance": "[外貌]",
-            "personality": "[性格]"
+        "attributes": {
+          "$meta": {
+            "necessary": "all",
+            "updatable": true
           },
-          "attributes": {
+          "shooting": 0,
+          "melee": 0,
+          "construction": 0,
+          "mining": 0,
+          "cooking": 0,
+          "planting": 0,
+          "animals": 0,
+          "crafting": 0,
+          "artistic": 0,
+          "medical": 0,
+          "social": 0,
+          "intellectual": 0
+        },
+        "meta": {
+          "relationship": "陌生人",
+          "favorability": 0,
+          "favorabilityTowardsNPCs": {
             "$meta": {
-              "necessary": "all",
               "updatable": true
-            },
-            "shooting": 0,
-            "melee": 0,
-            "construction": 0,
-            "mining": 0,
-            "cooking": 0,
-            "planting": 0,
-            "animals": 0,
-            "crafting": 0,
-            "artistic": 0,
-            "medical": 0,
-            "social": 0,
-            "intellectual": 0
+            }
           },
-          "meta": {
-            "relationship": "陌生人",
-            "favorability": 0,
-            "favorabilityTowardsNPCs": {
-              "$meta": {
-                "updatable": true
-              }
-            },
-            "description": "[简要描述]"
-          },
-          "$meta": {
-            "updatable": true
-          }
-        }
-      },
-      "factionPrestige": {
+          "description": "[简要描述]"
+        },
         "$meta": {
           "updatable": true
-        },
-        "$template": {
-          "name": "[阵营名称]",
-          "description": "[简要描述]",
-          "prestige": 0,
-          "$meta": {
-            "updatable": true
-          }
         }
+      }
+    },
+    "factionPrestige": {
+      "$meta": {
+        "updatable": true
       },
-      "bestiary": {
+      "$template": {
+        "name": "[阵营名称]",
+        "description": "[简要描述]",
+        "prestige": 0,
         "$meta": {
           "updatable": true
-        },
-        "$template": {
-          "name": "[异怪名称]",
-          "description": "[异怪描述]",
-          "habitat": "[栖息地]",
-          "weaknesses": "[已知弱点]",
-          "knownInfo": "[已知信息]",
-          "killCount": 0,
-          "$meta": {
-            "updatable": true
-          }
         }
+      }
+    },
+    "bestiary": {
+      "$meta": {
+        "updatable": true
       },
-      "anecdotes": {
+      "$template": {
+        "name": "[异怪名称]",
+        "description": "[异怪描述]",
+        "habitat": "[栖息地]",
+        "weaknesses": "[已知弱点]",
+        "knownInfo": "[已知信息]",
+        "killCount": 0,
         "$meta": {
           "updatable": true
-        },
-        "$template": {
-          "name": "[趣闻名称]",
-          "description": "[趣闻描述]",
-          "location": "[发生地点]",
-          "charactersInvolved": "[相关人物]",
-          "knownInfo": "[已知信息]",
-          "$meta": {
-            "updatable": true
-          }
+        }
+      }
+    },
+    "anecdotes": {
+      "$meta": {
+        "updatable": true
+      },
+      "$template": {
+        "name": "[趣闻名称]",
+        "description": "[趣闻描述]",
+        "location": "[发生地点]",
+        "charactersInvolved": "[相关人物]",
+        "knownInfo": "[已知信息]",
+        "$meta": {
+          "updatable": true
         }
       }
     }
@@ -256,17 +256,6 @@
           "updatable": true
         }
       }
-    },
-    "clothingAttributes": {
-      "$meta": {
-        "necessary": "all",
-        "updatable": true
-      },
-      "defense": 18,
-      "comfort": 7.5,
-      "warmth": 5.4,
-      "social": 10.5,
-      "weight": 9
     },
     "gold": 100
   },

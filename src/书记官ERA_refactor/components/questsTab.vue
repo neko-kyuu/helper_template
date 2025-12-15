@@ -22,7 +22,7 @@
           class="quest-item"
           v-for="(quest, index) in currentQuests"
           :key="index"
-          :class="{ 'side-quest': !quest.isMain }"
+          :class="{ 'side-quest': !quest.isMain, 'main-quest': quest.isMain }"
         >
           <div class="quest-title">
             {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
@@ -40,7 +40,7 @@
           class="quest-item"
           v-for="(quest, questId) in nextQuests"
           :key="questId"
-          :class="{ 'side-quest': !quest.isMain }"
+          :class="{ 'side-quest': !quest.isMain, 'main-quest': quest.isMain }"
         >
           <div class="quest-title">
             {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
@@ -61,7 +61,7 @@
           class="quest-item"
           v-for="(quest, index) in pendingQuests"
           :key="index"
-          :class="{ 'side-quest': !quest.isMain }"
+          :class="{ 'side-quest': !quest.isMain, 'main-quest': quest.isMain }"
         >
           <div class="quest-title">
             {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
@@ -79,7 +79,7 @@
           class="quest-item"
           v-for="(quest, index) in completedQuests"
           :key="index"
-          :class="{ 'side-quest': !quest.isMain }"
+          :class="{ 'side-quest': !quest.isMain, 'main-quest': quest.isMain }"
         >
           <div class="quest-title">
             {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}

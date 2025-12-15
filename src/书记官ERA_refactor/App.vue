@@ -9,16 +9,14 @@
     <div class="scene-section">
       <div class="scene-details">
         <div class="scene-left">
-          <div class="location">
-            🏰 {{ mvu.PlayerData.settings.currentRegion }} - {{ mvu.PlayerData.settings.currentLocation }}
-          </div>
+          <div class="location">🏰 {{ mvu.worldInfo.currentRegion }} - {{ mvu.worldInfo.currentLocation }}</div>
         </div>
         <div class="scene-right">
           <div class="meta-info">
-            时间: <span>{{ mvu.PlayerData.settings.date }} {{ mvu.PlayerData.settings.time }}</span>
+            时间: <span>{{ mvu.worldInfo.date }} {{ mvu.worldInfo.time }}</span>
           </div>
           <div class="meta-info">
-            天气: <span>{{ mvu.PlayerData.settings.weather }}</span>
+            天气: <span>{{ mvu.worldInfo.weather }}</span>
           </div>
         </div>
       </div>

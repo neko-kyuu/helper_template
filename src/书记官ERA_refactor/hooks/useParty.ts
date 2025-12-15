@@ -11,7 +11,7 @@ type UpgradeState = {
 export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdate: Function) {
   const partyUpgradeState = ref<{ [charName: string]: UpgradeState }>({});
 
-  const isAssigningAttributes = computed(() => (mvu.value.PlayerData.progress.partyAttrPoints || 0) > 0);
+  const isAssigningAttributes = computed(() => (mvu.value.progressData.partyAttrPoints || 0) > 0);
 
   const party = computed(() => {
     const partyAsObject: Record<string, any> = {
@@ -102,7 +102,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
 
   // 检查经验值是否足够
   function validateExperience(): boolean {
-    if (mvu.value.PlayerData.progress.partyExperience.current < mvu.value.PlayerData.progress.partyExperience.max) {
+    if (mvu.value.progressData.partyExperience.current < mvu.value.progressData.partyExperience.max) {
       toastr.warning('经验值不足, 无法升级');
       return false;
     }
@@ -111,8 +111,8 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
 
   // 计算升级后的数据
   function calculateLevelUpData(char: any) {
-    const currentExp = mvu.value.PlayerData.progress.partyExperience.current;
-    const maxExp = mvu.value.PlayerData.progress.partyExperience.max;
+    const currentExp = mvu.value.progressData.partyExperience.current;
+    const maxExp = mvu.value.progressData.partyExperience.max;
     const levelsToGain = 1;
     const pointsToGain = levelsToGain;
 
@@ -121,7 +121,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       newLevel: char.character.level + levelsToGain,
       newExp: currentExp - maxExp,
       levelsToGain,
-      newPartyAttrPoints: (mvu.value.PlayerData.progress.partyAttrPoints || 0) + pointsToGain,
+      newPartyAttrPoints: (mvu.value.progressData.partyAttrPoints || 0) + pointsToGain,
     };
   }
 
@@ -142,8 +142,8 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   ): any[] {
     return [
       { event: 'updateByPath', detail: { path: `${basePath}.character.level`, value: newLevel } },
-      { event: 'updateByPath', detail: { path: 'PlayerData.progress.partyExperience.current', value: newExp } },
-      { event: 'updateByPath', detail: { path: 'PlayerData.progress.partyAttrPoints', value: newPartyAttrPoints } },
+      { event: 'updateByPath', detail: { path: 'progressData.partyExperience.current', value: newExp } },
+      { event: 'updateByPath', detail: { path: 'progressData.partyAttrPoints', value: newPartyAttrPoints } },
     ];
   }
 
@@ -170,7 +170,6 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const commands: any[] = [];
     for (const key in tempAttributes) {
       if (tempAttributes[key] !== initialAttributes[key]) {
-        // commands.push(`_.set('${basePath}.attributes.${key}', ${tempAttributes[key]});`);
         commands.push({
           event: 'updateByPath',
           detail: { path: `${basePath}.attributes.${key}`, value: tempAttributes[key] },
@@ -178,10 +177,9 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       }
     }
     if (commands.length > 0) {
-      // commands.push(`_.set('PlayerData.progress.partyAttrPoints', ${newPartyAttrPoints});`);
       commands.push({
         event: 'updateByPath',
-        detail: { path: 'PlayerData.progress.partyAttrPoints', value: newPartyAttrPoints },
+        detail: { path: 'progressData.partyAttrPoints', value: newPartyAttrPoints },
       });
     }
     return commands;
@@ -211,7 +209,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       return;
     }
 
-    const newPartyAttrPoints = (mvu.value.PlayerData.progress.partyAttrPoints || 0) - pointsSpent;
+    const newPartyAttrPoints = (mvu.value.progressData.partyAttrPoints || 0) - pointsSpent;
     const basePath = getCharacterPath(key);
     const commands = generateAttributeCommands(
       basePath,
@@ -240,7 +238,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const charName = char.character.name;
     const state = partyUpgradeState.value[charName];
     if (state) {
-      if ((mvu.value.PlayerData.progress.partyAttrPoints || 0) > totalSpentPoints.value) {
+      if ((mvu.value.progressData.partyAttrPoints || 0) > totalSpentPoints.value) {
         state.tempAttributes[attrKey]++;
       }
     }

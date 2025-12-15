@@ -291,7 +291,10 @@
     border-radius: 2px;
 
     &.side-quest {
-      border-left-color: rgba(108, 108, 108, 1);
+      border-left-color: rgb(86, 57, 137);
+    }
+    &.main-quest{
+      border-left-color: rgb(137, 136, 57);
     }
 
     .quest-title {

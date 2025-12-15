@@ -3,25 +3,25 @@ import { computed, ref } from 'vue';
 
 export function useQuests(mvu: any, handleMvuUpdate: any) {
   const currentQuests = computed(() => {
-    return mvu.value.PlayerData.progress.currentQuest;
+    return mvu.value.progressData.currentQuest;
   });
 
   const nextQuests = computed(() => {
-    return mvu.value.PlayerData.progress.nextQuest;
+    return mvu.value.progressData.nextQuest;
   });
 
   const pendingQuests = computed(() => {
-    return mvu.value.PlayerData.progress.pendingQuest;
+    return mvu.value.progressData.pendingQuest;
   });
 
   const completedQuests = computed(() => {
-    return mvu.value.PlayerData.progress.completedQuest;
+    return mvu.value.progressData.completedQuest;
   });
 
   const activeQuestTab = ref('currentQuests');
 
   const activeQuest = (questId: string) => {
-    const questToActivate = mvu.value.PlayerData.progress.nextQuest[questId];
+    const questToActivate = mvu.value.progressData.nextQuest[questId];
 
     if (questToActivate) {
       const quest = _.cloneDeep(questToActivate);
@@ -30,11 +30,9 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
         {
           event: 'insertByObject',
           detail: {
-            PlayerData: {
-              progress: {
-                currentQuest: {
-                  [questId]: quest,
-                },
+            progressData: {
+              currentQuest: {
+                [questId]: quest,
               },
             },
           },
@@ -44,11 +42,9 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
         {
           event: 'deleteByObject',
           detail: {
-            PlayerData: {
-              progress: {
-                nextQuest: {
-                  [questId]: {},
-                },
+            progressData: {
+              nextQuest: {
+                [questId]: {},
               },
             },
           },
@@ -61,18 +57,16 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
     questId: string,
     questType: 'currentQuest' | 'nextQuest' | 'pendingQuest' | 'completedQuest',
   ) => {
-    const questToDelete = mvu.value.PlayerData.progress[questType]?.[questId];
+    const questToDelete = mvu.value.progressData[questType]?.[questId];
     if (questToDelete) {
       toastr.success(`成功删除 ${questToDelete.name}`);
       handleMvuUpdate([
         {
           event: 'deleteByObject',
           detail: {
-            PlayerData: {
-              progress: {
-                [questType]: {
-                  [questId]: {},
-                },
+            progressData: {
+              [questType]: {
+                [questId]: {},
               },
             },
           },

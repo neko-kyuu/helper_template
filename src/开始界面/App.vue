@@ -255,177 +255,177 @@ const defaultMvuData: any = JSON.parse(`{
             "rightHand": "none",
             "outfit": "none",
             "outfitContent": "none"
-        },
-        "progress": {
-            "$meta": {
-                "necessary": "self",
-                "updatable": true
-            },
-            "questPhase": "",
-            "currentQuest": {
-                "$meta": {
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[任务名称]",
-                    "description": "",
-                    "isMain": false,
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "nextQuest": {
-                "$meta": {
-                    "necessary": "self",
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[任务名称]",
-                    "description": "",
-                    "isMain": false,
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "pendingQuest": {
-                "$meta": {
-                    "necessary": "self",
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[任务名称]",
-                    "description": "",
-                    "isMain": false,
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "completedQuest": {
-                "$meta": {
-                    "necessary": "self",
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[任务名称]",
-                    "description": "",
-                    "isMain": false,
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "partyExperience": {
-                "current": 0,
-                "max": 100
-            },
-            "partyAttrPoints": 0
-        },
-        "settings": {
-            "$meta": {
-                "necessary": "self",
-                "updatable": true
-            },
-            "date": "",
-            "time": "",
-            "weather": "",
-            "currentRegion": "",
-            "currentLocation": "",
-            "nearbyNPC": {
-                "$meta": {
-                    "updatable": true
-                },
-                "$template": {
-                    "character": {
-                        "name": "[角色名称]",
-                        "level": "[角色等级]",
-                        "gender": "[性别]",
-                        "race": "[种族]",
-                        "height": "[身高]",
-                        "build": "[体型]",
-                        "appearance": "[外貌]",
-                        "personality": "[性格]"
-                    },
-                    "attributes": {
-                        "$meta": {
-                            "necessary": "all",
-                            "updatable": true
-                        },
-                        "shooting": 0,
-                        "melee": 0,
-                        "construction": 0,
-                        "mining": 0,
-                        "cooking": 0,
-                        "planting": 0,
-                        "animals": 0,
-                        "crafting": 0,
-                        "artistic": 0,
-                        "medical": 0,
-                        "social": 0,
-                        "intellectual": 0
-                    },
-                    "meta": {
-                        "relationship": "陌生人",
-                        "favorability": 0,
-                        "favorabilityTowardsNPCs": {
-                            "$meta": {
-                                "updatable": true
-                            }
-                        },
-                        "description": "[简要描述]"
-                    },
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "factionPrestige": {
-                "$meta": {
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[阵营名称]",
-                    "description": "[简要描述]",
-                    "favorability": 0,
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "bestiary": {
-                "$meta": {
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[异怪名称]",
-                    "description": "[异怪描述]",
-                    "habitat": "[栖息地]",
-                    "weaknesses": "[已知弱点]",
-                    "knownInfo": "[已知信息]",
-                    "killCount": 0,
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            },
-            "anecdotes": {
-                "$meta": {
-                    "updatable": true
-                },
-                "$template": {
-                    "name": "[趣闻名称]",
-                    "description": "[趣闻描述]",
-                    "location": "[发生地点]",
-                    "charactersInvolved": "[相关人物]",
-                    "knownInfo": "[已知信息]",
-                    "$meta": {
-                        "updatable": true
-                    }
-                }
-            }
         }
+    },
+    "worldInfo": {
+      "$meta": {
+        "necessary": "self",
+        "updatable": true
+      },
+      "date": "",
+      "time": "",
+      "weather": "",
+      "currentRegion": "",
+      "currentLocation": "",
+      "nearbyNPC": {
+        "$meta": {
+          "updatable": true
+        },
+        "$template": {
+          "character": {
+            "name": "[角色名称]",
+            "level": "[角色等级]",
+            "gender": "[性别]",
+            "race": "[种族]",
+            "height": "[身高]",
+            "build": "[体型]",
+            "appearance": "[外貌]",
+            "personality": "[性格]"
+          },
+          "attributes": {
+            "$meta": {
+              "necessary": "all",
+              "updatable": true
+            },
+            "shooting": 0,
+            "melee": 0,
+            "construction": 0,
+            "mining": 0,
+            "cooking": 0,
+            "planting": 0,
+            "animals": 0,
+            "crafting": 0,
+            "artistic": 0,
+            "medical": 0,
+            "social": 0,
+            "intellectual": 0
+          },
+          "meta": {
+            "relationship": "陌生人",
+            "favorability": 0,
+            "favorabilityTowardsNPCs": {
+              "$meta": {
+                "updatable": true
+              }
+            },
+            "description": "[简要描述]"
+          },
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "factionPrestige": {
+        "$meta": {
+          "updatable": true
+        },
+        "$template": {
+          "name": "[阵营名称]",
+          "description": "[简要描述]",
+          "favorability": 0,
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "bestiary": {
+        "$meta": {
+          "updatable": true
+        },
+        "$template": {
+          "name": "[异怪名称]",
+          "description": "[异怪描述]",
+          "habitat": "[栖息地]",
+          "weaknesses": "[已知弱点]",
+          "knownInfo": "[已知信息]",
+          "killCount": 0,
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "anecdotes": {
+        "$meta": {
+          "updatable": true
+        },
+        "$template": {
+          "name": "[趣闻名称]",
+          "description": "[趣闻描述]",
+          "location": "[发生地点]",
+          "charactersInvolved": "[相关人物]",
+          "knownInfo": "[已知信息]",
+          "$meta": {
+            "updatable": true
+          }
+        }
+      }
+    },
+    "progressData": {
+      "$meta": {
+        "necessary": "self",
+        "updatable": true
+      },
+      "questPhase": "",
+      "currentQuest": {
+        "$meta": {
+          "updatable": true
+        },
+        "$template": {
+          "name": "[任务名称]",
+          "description": "",
+          "isMain": false,
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "nextQuest": {
+        "$meta": {
+          "necessary": "self",
+          "updatable": true
+        },
+        "$template": {
+          "name": "[任务名称]",
+          "description": "",
+          "isMain": false,
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "pendingQuest": {
+        "$meta": {
+          "necessary": "self",
+          "updatable": true
+        },
+        "$template": {
+          "name": "[任务名称]",
+          "description": "",
+          "isMain": false,
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "completedQuest": {
+        "$meta": {
+          "necessary": "self",
+          "updatable": true
+        },
+        "$template": {
+          "name": "[任务名称]",
+          "description": "",
+          "isMain": false,
+          "$meta": {
+            "updatable": true
+          }
+        }
+      },
+      "partyExperience": {
+        "current": 0,
+        "max": 100
+      },
+      "partyAttrPoints": 0
     },
     "PlayerDynamicData": {
         "$meta": {
@@ -447,17 +447,6 @@ const defaultMvuData: any = JSON.parse(`{
                     "updatable": true
                 }
             }
-        },
-        "clothingAttributes": {
-            "$meta": {
-                "necessary": "all",
-                "updatable": true
-            },
-            "defense": 0,
-            "comfort": 0,
-            "warmth": 0,
-            "social": 0,
-            "weight": 0
         },
         "gold": 100
     },

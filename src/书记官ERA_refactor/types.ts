@@ -104,36 +104,9 @@ export interface MvuData {
       outfit: string;
       outfitContent: string;
     };
-    progress: {
-      questPhase: string;
-      partyExperience: { current: number; max: number };
-      partyAttrPoints: number;
-      currentQuest: Record<string, any>;
-      nextQuest: Record<string, any>;
-      pendingQuest: Record<string, any>;
-      completedQuest: Record<string, any>;
-    };
-    settings: {
-      date: string;
-      time: string;
-      weather: string;
-      currentRegion: string;
-      currentLocation: string;
-      nearbyNPC: Record<string, NpcData>;
-      factionPrestige: Record<string, factionPrestige>;
-      bestiary: Record<string, any>;
-      anecdotes: Record<string, any>;
-    };
   };
   PlayerDynamicData: {
     inventory: Record<string, InventoryItem>;
-    clothingAttributes: {
-      defense: number;
-      comfort: number;
-      warmth: number;
-      social: number;
-      weight: number;
-    };
     gold: number;
   };
   FollowerNPCData: Record<string, NpcData>;
@@ -144,6 +117,26 @@ export interface MvuData {
     factionPrestige: Record<string, factionPrestige>;
     bestiary: Record<string, any>;
     anecdotes: Record<string, any>;
+  };
+  worldInfo: {
+    date: string;
+    time: string;
+    weather: string;
+    currentRegion: string;
+    currentLocation: string;
+    nearbyNPC: Record<string, NpcData>;
+    factionPrestige: Record<string, factionPrestige>;
+    bestiary: Record<string, any>;
+    anecdotes: Record<string, any>;
+  };
+  progressData: {
+    questPhase: string;
+    partyExperience: { current: number; max: number };
+    partyAttrPoints: number;
+    currentQuest: Record<string, any>;
+    nextQuest: Record<string, any>;
+    pendingQuest: Record<string, any>;
+    completedQuest: Record<string, any>;
   };
 }
 

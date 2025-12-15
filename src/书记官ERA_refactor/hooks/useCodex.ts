@@ -29,11 +29,11 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const editableEntry = ref<CodexEntry | null>(null);
 
   const bestiaryEntries = computed(() => {
-    return mvu.value.PlayerData.settings.bestiary || {};
+    return mvu.value.worldInfo.bestiary || {};
   });
 
   const anecdoteEntries = computed(() => {
-    return mvu.value.PlayerData.settings.anecdotes || {};
+    return mvu.value.worldInfo.anecdotes || {};
   });
 
   const selectedTab = ref('');
@@ -54,8 +54,8 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const deleteEntry = (entryKey: string) => {
     const entryToDelete =
       activeCodexTab.value === 'bestiary'
-        ? mvu.value.PlayerData.settings.bestiary[entryKey]
-        : mvu.value.PlayerData.settings.anecdotes[entryKey];
+        ? mvu.value.worldInfo.bestiary[entryKey]
+        : mvu.value.worldInfo.anecdotes[entryKey];
 
     if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
       selectEntry(null, '', '');
@@ -67,11 +67,9 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'deleteByObject',
         detail: {
-          PlayerData: {
-            settings: {
-              [path]: {
-                [entryKey]: {},
-              },
+          worldInfo: {
+            [path]: {
+              [entryKey]: {},
             },
           },
         },
@@ -85,11 +83,9 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'updateByObject',
         detail: {
-          PlayerData: {
-            settings: {
-              [path]: {
-                [entryKey]: entry,
-              },
+          worldInfo: {
+            [path]: {
+              [entryKey]: entry,
             },
           },
         },
@@ -138,8 +134,8 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const archiveEntry = (entryKey: string) => {
     const entryToDelete =
       activeCodexTab.value === 'bestiary'
-        ? mvu.value.PlayerData.settings.bestiary[entryKey]
-        : mvu.value.PlayerData.settings.anecdotes[entryKey];
+        ? mvu.value.worldInfo.bestiary[entryKey]
+        : mvu.value.worldInfo.anecdotes[entryKey];
 
     if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
       selectEntry(null, '', '');
@@ -164,11 +160,9 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'deleteByObject',
         detail: {
-          PlayerData: {
-            settings: {
-              [path]: {
-                [entryKey]: {},
-              },
+          worldInfo: {
+            [path]: {
+              [entryKey]: {},
             },
           },
         },
@@ -192,11 +186,9 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'insertByObject',
         detail: {
-          PlayerData: {
-            settings: {
-              [path]: {
-                [entryKey]: entryToDelete,
-              },
+          worldInfo: {
+            [path]: {
+              [entryKey]: entryToDelete,
             },
           },
         },

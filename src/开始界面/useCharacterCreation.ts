@@ -1,5 +1,5 @@
 import { computed, reactive, ref, watch } from 'vue';
-import defaultEra from '../书记官ERA/default_ERA.json';
+import defaultEra from '../书记官ERA_refactor/default_ERA.json';
 
 export function useCharacterCreation(defaultMvuData: any) {
   const sys = reactive({
@@ -233,24 +233,22 @@ export function useCharacterCreation(defaultMvuData: any) {
     };
     if (sys.mainStoryMode) {
       const mainStoryInit = {
-        PlayerData: {
-          progress: {
-            currentQuest: {
-              MQ1: {
-                name: '节日的插曲',
-                description:
-                  '你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。',
-                isMain: true,
-              },
+        progressData: {
+          currentQuest: {
+            MQ1: {
+              name: '节日的插曲',
+              description:
+                '你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井-不同寻常的事件。',
+              isMain: true,
             },
           },
-          settings: {
-            date: '1468DR 奈托月19日',
-            time: '傍晚',
-            weather: '飘雪',
-            currentRegion: '巴拉德雷',
-            currentLocation: '羽笔与酒杯旅店附近',
-          },
+        },
+        worldInfo: {
+          date: '1468DR 奈托月19日',
+          time: '傍晚',
+          weather: '飘雪',
+          currentRegion: '巴拉德雷',
+          currentLocation: '羽笔与酒杯旅店附近',
         },
       };
       userSelection = _.merge(userSelection, mainStoryInit);
@@ -371,7 +369,7 @@ ${state.character.name}${state.followers.length > 1 ? '一行人' : state.follow
 
   eventOn('era:writeDone', detail => {
     if (!detail || !detail.statWithoutMeta) return;
-    if (!detail.statWithoutMeta.PlayerData.character.name) return;
+    if (!detail.statWithoutMeta.PlayerData || !detail.statWithoutMeta.PlayerData.character.name) return;
 
     createMessage();
   });

@@ -74,36 +74,34 @@
 ### 示例 2: 添加新 NPC
 ...（正文）...
 <VariableThink>
-1.  **意图分析**: 新角色 "Ralof" 出现，需加入 `PlayerData.settings.nearbyNPC`。
+1.  **意图分析**: 新角色 "Ralof" 出现，需加入 `worldInfo.nearbyNPC`。
 2.  **操作计划**: - 用 `<VariableInsert>` 添加，并创建新ID "C1"。
 </VariableThink>
 <VariableInsert>
 {
-  "PlayerData": {
-    "settings": {
-      "nearbyNPC": {
-        "C1": {
-          "character": {
-            "name": "Ralof",
-            "level": 1,
-            "gender": "男",
-            "race": "人类",
-            "height": "[身高]",
-            "build": "[体型]",
-            "appearance": "[外貌]",
-            "personality": "[性格]"
+  "worldInfo": {
+    "nearbyNPC": {
+      "C1": {
+        "character": {
+          "name": "Ralof",
+          "level": 1,
+          "gender": "男",
+          "race": "人类",
+          "height": "[身高]",
+          "build": "[体型]",
+          "appearance": "[外貌]",
+          "personality": "[性格]"
+        },
+        "attributes": {
+          // 仔细阅读 `<variable_system>` 中的数值合理性规则，生成合适的12项属性
+        },
+        "meta": {
+          "relationship": "陌生人",
+          "favorability": 0,
+          "favorabilityTowardsNPCs": {
+            "C2": 30
           },
-          "attributes": {
-            // 仔细阅读 `<variable_system>` 中的数值合理性规则，生成合适的12项属性
-          },
-          "meta": {
-            "relationship": "陌生人",
-            "favorability": 0,
-            "favorabilityTowardsNPCs":{
-              "C2": 30
-            }
-            "description": "[简要描述]"
-          }
+          "description": "[简要描述]"
         }
       }
     }
@@ -148,13 +146,11 @@
 </VariableThink>
 <VariableInsert>
 {
-  "PlayerData": {
-    "progress": {
-      "currentQuest": {
-        "Q1": {
-          "name": "任务名",
-          "description": "20字左右极简描述任务。"
-        }
+  "progressData": {
+    "currentQuest": {
+      "Q1": {
+        "name": "任务名",
+        "description": "20字左右极简描述任务。"
       }
     }
   }
@@ -169,13 +165,11 @@
 </VariableThink>
 <VariableInsert>
 {
-  "PlayerData": {
-    "settings": {
-      "nearbyNPC": {
-        "C1": {
-          "meta": {
-            "title": "秘银之心"
-          }
+  "worldInfo": {
+    "nearbyNPC": {
+      "C1": {
+        "meta": {
+          "title": "秘银之心"
         }
       }
     }
@@ -191,11 +185,9 @@
 </VariableThink>
 <VariableDelete>
 {
-  "PlayerData": {
-    "settings": {
-      "nearbyNPC": {
-        "C1": {}
-      }
+  "worldInfo": {
+    "nearbyNPC": {
+      "C1": {}
     }
   }
 }
@@ -212,24 +204,20 @@
 </VariableThink>
 <VariableDelete>
 {
-  "PlayerData": {
-    "progress": {
-      "currentQuest": {
-        "Q1": {}
-      }
+  "progressData": {
+    "currentQuest": {
+      "Q1": {}
     }
   }
 }
 </VariableDelete>
 <VariableInsert>
 {
-  "PlayerData": {
-    "progress": {
-      "completedQuest": {
-        "Q1": {
-          "name": "随机任务1",
-          "description": "随机任务1的描述"
-        }
+  "progressData": {
+    "completedQuest": {
+      "Q1": {
+        "name": "随机任务1",
+        "description": "随机任务1的描述"
       }
     }
   }
