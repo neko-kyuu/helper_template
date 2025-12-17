@@ -89,7 +89,6 @@ import QuestsTab from './components/questsTab.vue';
 import WardTab from './components/wardTab.vue';
 import WorldTab from './components/worldTab.vue';
 import { useMvuData } from './hooks/useMvuData';
-import { useTest } from './hooks/useTest';
 
 import MapSelector from './components/MapSelector.vue';
 import ModalDialog from './components/ModalDialog.vue';
@@ -161,8 +160,6 @@ const handleConfirm = () => {
 };
 
 const { mvu, rawMvuData, handleMvuUpdate, initialize } = useMvuData();
-
-const { testFunc } = useTest(mvu, handleMvuUpdate);
 
 onMounted(async () => {
   await initialize();
