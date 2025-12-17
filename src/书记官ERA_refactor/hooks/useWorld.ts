@@ -44,13 +44,9 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
     }
     handleMvuUpdate([
       {
-        event: 'deleteByObject',
+        event: 'deleteByPath',
         detail: {
-          worldInfo: {
-            nearbyNPC: {
-              [npcKey]: {},
-            },
-          },
+          path: `worldInfo.nearbyNPC.${npcKey}`,
         },
       },
     ]);

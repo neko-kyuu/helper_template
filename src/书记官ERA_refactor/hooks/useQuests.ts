@@ -28,26 +28,12 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
       toastr.success(`成功激活 ${questToActivate.name} `);
       handleMvuUpdate([
         {
-          event: 'insertByObject',
-          detail: {
-            progressData: {
-              currentQuest: {
-                [questId]: quest,
-              },
-            },
-          },
+          event: 'insertByPath',
+          detail: { path: `progressData.currentQuest.${questId}`, value: quest },
         },
-      ]);
-      handleMvuUpdate([
         {
-          event: 'deleteByObject',
-          detail: {
-            progressData: {
-              nextQuest: {
-                [questId]: {},
-              },
-            },
-          },
+          event: 'deleteByPath',
+          detail: { path: `progressData.nextQuest.${questId}` },
         },
       ]);
     }
@@ -62,13 +48,9 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
       toastr.success(`成功删除 ${questToDelete.name}`);
       handleMvuUpdate([
         {
-          event: 'deleteByObject',
+          event: 'deleteByPath',
           detail: {
-            progressData: {
-              [questType]: {
-                [questId]: {},
-              },
-            },
+            path: `progressData.${questType}.${questId}`,
           },
         },
       ]);

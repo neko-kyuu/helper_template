@@ -65,13 +65,9 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
 
     handleMvuUpdate([
       {
-        event: 'deleteByObject',
+        event: 'deleteByPath',
         detail: {
-          worldInfo: {
-            [path]: {
-              [entryKey]: {},
-            },
-          },
+          path: `worldInfo.${path}.${entryKey}`,
         },
       },
     ]);
@@ -81,13 +77,10 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     const path = activeCodexTab.value === 'bestiary' ? 'bestiary' : 'anecdotes';
     handleMvuUpdate([
       {
-        event: 'updateByObject',
+        event: 'updateByPath',
         detail: {
-          worldInfo: {
-            [path]: {
-              [entryKey]: entry,
-            },
-          },
+          path: `worldInfo.${path}.${entryKey}`,
+          value: entry,
         },
       },
     ]);
@@ -145,26 +138,16 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
 
     handleMvuUpdate([
       {
-        event: 'insertByObject',
+        event: 'insertByPath',
         detail: {
-          ArchivedData: {
-            [path]: {
-              [entryKey]: entryToDelete,
-            },
-          },
+          path: `ArchivedData.${path}.${entryKey}`,
+          value: entryToDelete,
         },
       },
-    ]);
-
-    handleMvuUpdate([
       {
-        event: 'deleteByObject',
+        event: 'deleteByPath',
         detail: {
-          worldInfo: {
-            [path]: {
-              [entryKey]: {},
-            },
-          },
+          path: `worldInfo.${path}.${entryKey}`,
         },
       },
     ]);
@@ -184,26 +167,16 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
 
     handleMvuUpdate([
       {
-        event: 'insertByObject',
+        event: 'insertByPath',
         detail: {
-          worldInfo: {
-            [path]: {
-              [entryKey]: entryToDelete,
-            },
-          },
+          path: `worldInfo.${path}.${entryKey}`,
+          value: entryToDelete,
         },
       },
-    ]);
-
-    handleMvuUpdate([
       {
-        event: 'deleteByObject',
+        event: 'deleteByPath',
         detail: {
-          ArchivedData: {
-            [path]: {
-              [entryKey]: {},
-            },
-          },
+          path: `ArchivedData.${path}.${entryKey}`,
         },
       },
     ]);

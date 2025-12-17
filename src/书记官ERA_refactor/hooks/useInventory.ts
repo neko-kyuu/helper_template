@@ -27,13 +27,9 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     }
     handleMvuUpdate([
       {
-        event: 'deleteByObject',
+        event: 'deleteByPath',
         detail: {
-          PlayerDynamicData: {
-            inventory: {
-              [itemKey]: {},
-            },
-          },
+          path: `PlayerDynamicData.inventory.${itemKey}`,
         },
       },
     ]);
@@ -42,13 +38,10 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const editItem = (itemKey: string, item: BaseInventoryItem) => {
     handleMvuUpdate([
       {
-        event: 'updateByObject',
+        event: 'updateByPath',
         detail: {
-          PlayerDynamicData: {
-            inventory: {
-              [itemKey]: item,
-            },
-          },
+          path: `PlayerDynamicData.inventory.${itemKey}`,
+          value: item,
         },
       },
     ]);
