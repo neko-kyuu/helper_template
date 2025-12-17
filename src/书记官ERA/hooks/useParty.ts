@@ -115,6 +115,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const maxExp = mvu.value.PlayerData.progress.partyExperience.max;
     const levelsToGain = 1;
     const pointsToGain = levelsToGain;
+    const hpGainPerLevel = 10; // 每个等级增加10点生命值
 
     return {
       charName: char.character.name,
@@ -122,6 +123,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       newExp: currentExp - maxExp,
       levelsToGain,
       newPartyAttrPoints: (mvu.value.PlayerData.progress.partyAttrPoints || 0) + pointsToGain,
+      newMaxHp: (char.status.health.max || 10) + hpGainPerLevel * levelsToGain,
     };
   }
 
@@ -139,9 +141,12 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     newLevel: number,
     newExp: number,
     newPartyAttrPoints: number,
+    newMaxHp: number,
   ): any[] {
     return [
       { event: 'updateByPath', detail: { path: `${basePath}.character.level`, value: newLevel } },
+      { event: 'updateByPath', detail: { path: `${basePath}.status.health.max`, value: newMaxHp } },
+      { event: 'updateByPath', detail: { path: `${basePath}.status.health.current`, value: newMaxHp } },
       { event: 'updateByPath', detail: { path: 'PlayerData.progress.partyExperience.current', value: newExp } },
       { event: 'updateByPath', detail: { path: 'PlayerData.progress.partyAttrPoints', value: newPartyAttrPoints } },
     ];
@@ -151,9 +156,9 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   async function levelUp(char: any, key: string) {
     if (!validateExperience()) return;
 
-    const { charName, newLevel, newExp, levelsToGain, newPartyAttrPoints } = calculateLevelUpData(char);
+    const { charName, newLevel, newExp, levelsToGain, newPartyAttrPoints, newMaxHp } = calculateLevelUpData(char);
     const basePath = getCharacterPath(key);
-    const commands = generateLevelUpCommand(basePath, newLevel, newExp, newPartyAttrPoints);
+    const commands = generateLevelUpCommand(basePath, newLevel, newExp, newPartyAttrPoints, newMaxHp);
 
     await handleMvuUpdate(commands, () => {
       toastr.success(`${charName} 升了 ${levelsToGain} 级! 等级 ${newLevel}, 获得 ${levelsToGain} 属性点.`);
