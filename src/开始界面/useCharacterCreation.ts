@@ -193,6 +193,13 @@ export function useCharacterCreation(defaultMvuData: any) {
   }
 
   function createCharacter() {
+    const partyAttrPoints = state.followers.reduce(
+      (acc: Record<string, number>, _, i) => {
+        acc[`F${i + 1}`] = 0;
+        return acc;
+      },
+      { F0: 0 },
+    );
     let userSelection = {
       PlayerData: {
         character: { ...state.character },
@@ -207,6 +214,7 @@ export function useCharacterCreation(defaultMvuData: any) {
             health: { current: 12, max: 12 },
             mood: { current: 50, max: 100 },
             arousal: { current: 50, max: 100 },
+            experience: { current: 0, max: 100 },
           },
           equipment: {
             leftHand: 'none',
@@ -229,6 +237,9 @@ export function useCharacterCreation(defaultMvuData: any) {
       }, {}),
       System: {
         mainStoryMode: sys.mainStoryMode,
+      },
+      progressData: {
+        partyAttrPoints,
       },
     };
     if (sys.mainStoryMode) {
@@ -370,6 +381,48 @@ ${state.character.name}${state.followers.length > 1 ? '一行人' : state.follow
   eventOn('era:writeDone', detail => {
     if (!detail || !detail.statWithoutMeta) return;
     if (!detail.statWithoutMeta.PlayerData || !detail.statWithoutMeta.PlayerData.character.name) return;
+
+    // 处理世界书蓝绿灯
+    let currentQuests: string[] = [];
+
+    if (sys.mainStoryMode) {
+      currentQuests = ['MQ1'];
+    }
+
+    updateWorldbookWith('奥弗萨斯', worldbook => {
+      const QUEST_KEYWORDS = ['主线', '支线'];
+      const STRATEGY_TYPE = {
+        CONSTANT: 'constant' as const,
+        SELECTIVE: 'selective' as const,
+      };
+
+      return worldbook.map(entry => {
+        const isQuestEntry = QUEST_KEYWORDS.some(keyword => entry.name.includes(keyword));
+
+        // 如果不是任务条目或缺少 strategy 属性，则直接返回原始条目，不做任何修改
+        if (!isQuestEntry || !entry.strategy) {
+          return entry;
+        }
+
+        // 判断需要激活的条目是否处于激活状态
+        const isQuestActive = currentQuests.some(quest => entry.strategy.keys.includes(quest));
+        const newStrategyType = isQuestActive ? STRATEGY_TYPE.CONSTANT : STRATEGY_TYPE.SELECTIVE;
+
+        // 如果策略类型无需改变，则直接返回原始条目，避免不必要的对象创建
+        if (entry.strategy.type === newStrategyType) {
+          return entry;
+        }
+
+        // 返回一个新的条目对象，其中包含更新后的 strategy
+        return {
+          ...entry,
+          strategy: {
+            ...entry.strategy, // 复制 strategy 的所有现有属性
+            type: newStrategyType, // 仅覆盖 type 属性
+          },
+        };
+      });
+    });
 
     createMessage();
   });

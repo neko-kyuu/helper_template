@@ -12,13 +12,13 @@
           <div class="char-header">
             <span class="char-name">{{ char.character.name }} (Lv. {{ char.character.level }})</span>
             <div class="right-btns">
-              <div v-if="isAssigningAttributes">
-                <span>团队属性点: {{ mvu.progressData.partyAttrPoints - totalSpentPoints }}</span>
+              <div v-if="isAssigningAttributes[charKey]">
+                <span>属性点: {{ (mvu.progressData.partyAttrPoints[charKey] || 0) - getSpentPoints(char) }}</span>
                 <button @click="commitAttributes(char, charKey)">保存</button>
               </div>
               <button
                 @click="levelUp(char, charKey)"
-                :disabled="mvu.progressData.partyExperience.current < mvu.progressData.partyExperience.max"
+                :disabled="!char.status.experience || char.status.experience.current < char.status.experience.max"
               >
                 升级
               </button>
@@ -35,25 +35,12 @@
                 </div>
                 {{ stat.current }} / {{ stat.max }}
               </div>
-              <div class="stat">
-                小队经验
-                <div class="bar">
-                  <div
-                    class="fill"
-                    :style="{
-                      width: `${Math.min(100, (mvu.progressData.partyExperience.current / mvu.progressData.partyExperience.max) * 100)}%`,
-                    }"
-                  ></div>
-                </div>
-                {{ mvu.progressData.partyExperience.current }} /
-                {{ mvu.progressData.partyExperience.max }}
-              </div>
             </div>
             <!-- 属性 -->
             <div class="attributes">
               <div class="attr" v-for="(value, attrKey) in char.attributes" :key="attrKey">
                 <span>{{ attributeLabels[attrKey] || attrKey }}</span>
-                <div class="attr-value-controls" v-if="isAssigningAttributes">
+                <div class="attr-value-controls" v-if="isAssigningAttributes[charKey]">
                   <button
                     class="small"
                     @click="decrementAttribute(char, charKey, attrKey as unknown as string)"
@@ -68,7 +55,7 @@
                   <button
                     class="small"
                     @click="incrementAttribute(char, charKey, attrKey as unknown as string)"
-                    :disabled="mvu.progressData.partyAttrPoints <= totalSpentPoints"
+                    :disabled="(mvu.progressData.partyAttrPoints[charKey] || 0) <= getSpentPoints(char)"
                   >
                     +
                   </button>
@@ -140,7 +127,7 @@ const {
   incrementAttribute,
   decrementAttribute,
   isAssigningAttributes,
-  totalSpentPoints,
+  getSpentPoints,
   selectChar,
   selectedChar,
   selectedCharKey,

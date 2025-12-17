@@ -65,6 +65,7 @@ export interface NpcData {
     health: { current: number; max: number };
     mood: { current: number; max: number };
     arousal: { current: number; max: number };
+    experience: { current: number; max: number };
   };
   equipment?: {
     leftHand: string;
@@ -96,6 +97,7 @@ export interface MvuData {
       health: { current: number; max: number };
       mood: { current: number; max: number };
       arousal: { current: number; max: number };
+      experience: { current: number; max: number };
     };
     attributes: Record<string, number>;
     equipment: {
@@ -131,8 +133,7 @@ export interface MvuData {
   };
   progressData: {
     questPhase: string;
-    partyExperience: { current: number; max: number };
-    partyAttrPoints: number;
+    partyAttrPoints: Record<string, number>;
     currentQuest: Record<string, any>;
     nextQuest: Record<string, any>;
     pendingQuest: Record<string, any>;

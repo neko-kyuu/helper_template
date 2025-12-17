@@ -230,6 +230,10 @@ const defaultMvuData: any = JSON.parse(`{
             "arousal": {
                 "current": 50,
                 "max": 100
+            },
+            "experience": {
+              "current": 0,
+              "max": 100
             }
         },
         "attributes": {
@@ -421,11 +425,7 @@ const defaultMvuData: any = JSON.parse(`{
           }
         }
       },
-      "partyExperience": {
-        "current": 0,
-        "max": 100
-      },
-      "partyAttrPoints": 0
+      "partyAttrPoints": {}
     },
     "PlayerDynamicData": {
         "$meta": {
@@ -485,6 +485,10 @@ const defaultMvuData: any = JSON.parse(`{
                 "arousal": {
                     "current": 50,
                     "max": 100
+                },
+                "experience": {
+                  "current": 0,
+                  "max": 100
                 }
             },
             "attributes": {

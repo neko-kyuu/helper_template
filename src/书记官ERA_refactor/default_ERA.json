@@ -34,6 +34,10 @@
       "arousal": {
         "current": 50,
         "max": 100
+      },
+      "experience": {
+        "current": 0,
+        "max": 100
       }
     },
     "attributes": {
@@ -127,11 +131,10 @@
         }
       }
     },
-    "partyExperience": {
-      "current": 0,
-      "max": 100
-    },
-    "partyAttrPoints": 0
+    "partyAttrPoints": {
+      "F0": 0,
+      "F1": 0
+    }
   },
   "worldInfo": {
     "$meta": {
@@ -294,6 +297,10 @@
         "arousal": {
           "current": 50,
           "max": 100
+        },
+        "experience": {
+          "current": 0,
+          "max": 100
         }
       },
       "attributes": {
@@ -364,6 +371,10 @@
         },
         "arousal": {
           "current": 50,
+          "max": 100
+        },
+        "experience": {
+          "current": 0,
           "max": 100
         }
       },

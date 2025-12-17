@@ -85,7 +85,7 @@ PlayerData: # Object: 玩家静态数据根对象
     level:    {{ERA:PlayerData.character.level}} # Number: 角色等级 (只读)
     gender:   {{ERA:PlayerData.character.gender}} # String: 性别 (只读)
     race:     {{ERA:PlayerData.character.race}} # String: 种族 (只读)
-  status:     {{ERA:PlayerData.status}} # Object: 角色状态 (health, mood, arousal)
+  status:     {{ERA:PlayerData.status}} # Object: 角色状态 (health, mood, arousal, experience)，其中经验值单调递增，不主动清零升级，可以超过最大值
   attributes: {{ERA:PlayerData.attributes}} # Object: 角色属性信息 (只读)
   equipment: {{ERA:PlayerData.equipment}} # Object: 角色穿戴信息 (只读)
 worldInfo:   # Object: 世界信息
@@ -100,9 +100,6 @@ worldInfo:   # Object: 世界信息
   anecdotes:       {{ERA:worldInfo.anecdotes}} # Object: AnecdoteEntry, 旅途轶事，记录体验到的特产、风俗、地点等概念性条目
 progressData:   # Object: 进度信息
   questPhase:      "{{ERA:progressData.questPhase}}" # String: 当前激活任务的阶段描述
-  partyExperience:
-    current: {{ERA:progressData.partyExperience.current}} # Number: 经验值，单调递增，不主动清零升级，可以超过最大值
-    max:     {{ERA:progressData.partyExperience.max}} # Number: 最大经验值
   currentQuest:    {{ERA:progressData.currentQuest}} # Object: QuestData, 当前已接受并进行中的任务
   nextQuest:       {{ERA:progressData.nextQuest}} # Object: QuestData, 可接受的任务
   pendingQuest:    {{ERA:progressData.pendingQuest}} # Object: QuestData, 已接取但未追踪的任务
