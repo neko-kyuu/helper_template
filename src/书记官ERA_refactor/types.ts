@@ -81,7 +81,7 @@ export interface factionPrestige {
 }
 
 export interface MvuData {
-  PlayerData: {
+  playerData: {
     character: {
       name: string;
       level: number;
@@ -105,15 +105,15 @@ export interface MvuData {
       outfitContent: string;
     };
   };
-  PlayerDynamicData: {
+  playerDynamicData: {
     inventory: Record<string, InventoryItem>;
     gold: number;
   };
-  FollowerNPCData: Record<string, NpcData>;
-  Wardrobe: {
+  followerNPCData: Record<string, NpcData>;
+  wardrobe: {
     ownedOutfits: OwnedOutfits;
   };
-  ArchivedData: {
+  archivedData: {
     factionPrestige: Record<string, factionPrestige>;
     bestiary: Record<string, any>;
     anecdotes: Record<string, any>;
@@ -121,7 +121,7 @@ export interface MvuData {
     inventory: Record<string, OutfitData>;
     worldNPC: Record<string, NpcData>;
   };
-  WorldInfo: {
+  worldInfo: {
     date: string;
     time: string;
     weather: string;
@@ -132,7 +132,7 @@ export interface MvuData {
     bestiary: Record<string, any>;
     anecdotes: Record<string, any>;
   };
-  ProgressData: {
+  progressData: {
     questPhase: string;
     partyAttrPoints: Record<string, number>;
     currentQuest: Record<string, any>;
@@ -140,9 +140,9 @@ export interface MvuData {
     pendingQuest: Record<string, any>;
     completedQuest: Record<string, any>;
   };
-  System: {
+  system: {
     mainStoryMode: boolean;
   };
 }
 
-export type PartyMember = MvuData['PlayerData'] | NpcData;
+export type PartyMember = MvuData['playerData'] | NpcData;

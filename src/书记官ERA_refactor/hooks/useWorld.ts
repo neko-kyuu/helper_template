@@ -40,7 +40,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
   };
 
   const deleteNPC = (npcKey: string) => {
-    const itemToDelete = mvu.value.WorldInfo.nearbyNPC[npcKey];
+    const itemToDelete = mvu.value.worldInfo.nearbyNPC[npcKey];
     if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
       selectNpc(null, '');
     }
@@ -48,7 +48,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'deleteByPath',
         detail: {
-          path: `WorldInfo.nearbyNPC.${npcKey}`,
+          path: `worldInfo.nearbyNPC.${npcKey}`,
         },
       },
     ]);
@@ -56,7 +56,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'insertByPath',
         detail: {
-          path: `ArchivedData.worldNPC.${npcKey}`,
+          path: `archivedData.worldNPC.${npcKey}`,
           value: itemToDelete,
         },
       },
@@ -64,7 +64,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
   };
 
   const openNPC = (npcKey: string) => {
-    const itemToDelete = mvu.value.ArchivedData.worldNPC[npcKey];
+    const itemToDelete = mvu.value.archivedData.worldNPC[npcKey];
     if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
       selectNpc(null, '');
     }
@@ -72,7 +72,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'deleteByPath',
         detail: {
-          path: `ArchivedData.worldNPC.${npcKey}`,
+          path: `archivedData.worldNPC.${npcKey}`,
         },
       },
     ]);
@@ -80,7 +80,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'insertByPath',
         detail: {
-          path: `WorldInfo.nearbyNPC.${npcKey}`,
+          path: `worldInfo.nearbyNPC.${npcKey}`,
           value: itemToDelete,
         },
       },
@@ -88,8 +88,8 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
   };
 
   const getNPCNameByKey = (npcKey: string): string => {
-    const npc = mvu.value.WorldInfo.nearbyNPC;
-    const party = mvu.value.FollowerNPCData;
+    const npc = mvu.value.worldInfo.nearbyNPC;
+    const party = mvu.value.followerNPCData;
     return npc[npcKey] ? npc[npcKey].character.name : party[npcKey] ? party[npcKey].character.name : '';
   };
 

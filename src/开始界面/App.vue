@@ -196,7 +196,7 @@ const lastClickedCoords = ref<{ x: number; y: number } | null>(null);
 const activeTab = ref('character');
 
 const defaultMvuData: any = JSON.parse(`{
-    "PlayerData": {
+    "playerData": {
         "$meta": {
             "necessary": "self",
             "updatable": true
@@ -261,7 +261,7 @@ const defaultMvuData: any = JSON.parse(`{
             "outfitContent": "none"
         }
     },
-    "WorldInfo": {
+    "worldInfo": {
       "$meta": {
         "necessary": "self",
         "updatable": true
@@ -364,7 +364,7 @@ const defaultMvuData: any = JSON.parse(`{
         }
       }
     },
-    "ProgressData": {
+    "progressData": {
       "$meta": {
         "necessary": "self",
         "updatable": true
@@ -427,7 +427,7 @@ const defaultMvuData: any = JSON.parse(`{
       },
       "partyAttrPoints": {}
     },
-    "PlayerDynamicData": {
+    "playerDynamicData": {
         "$meta": {
             "necessary": "self",
             "updatable": true
@@ -450,7 +450,7 @@ const defaultMvuData: any = JSON.parse(`{
         },
         "gold": 100
     },
-    "FollowerNPCData": {
+    "followerNPCData": {
         "$meta": {
             "updatable": true
         },
@@ -529,7 +529,7 @@ const defaultMvuData: any = JSON.parse(`{
             }
         }
     },
-    "Wardrobe": {
+    "wardrobe": {
         "ownedOutfits": {
             "$meta": {
                 "updatable": true
@@ -559,7 +559,7 @@ const defaultMvuData: any = JSON.parse(`{
             }
         }
     },
-    "ArchivedData":{
+    "archivedData":{
         "factionPrestige": {
             "$meta": {
                 "updatable": true
@@ -621,7 +621,7 @@ const defaultMvuData: any = JSON.parse(`{
           }
         }
     },
-    "System": {
+    "system": {
         "mainStoryMode": true,
         "$meta": {
             "updatable": true

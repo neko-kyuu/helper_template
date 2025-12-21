@@ -13,7 +13,7 @@
             <span class="char-name">{{ char.character.name }} (Lv. {{ char.character.level }})</span>
             <div class="right-btns">
               <div v-if="isAssigningAttributes[charKey]">
-                <span>属性点: {{ (mvu.ProgressData.partyAttrPoints[charKey] || 0) - getSpentPoints(char) }}</span>
+                <span>属性点: {{ (mvu.progressData.partyAttrPoints[charKey] || 0) - getSpentPoints(char) }}</span>
                 <button @click="commitAttributes(char, charKey)">保存</button>
               </div>
               <button
@@ -63,7 +63,7 @@
                   <button
                     class="small"
                     @click="incrementAttribute(char, charKey, attrKey as unknown as string)"
-                    :disabled="(mvu.ProgressData.partyAttrPoints[charKey] || 0) <= getSpentPoints(char)"
+                    :disabled="(mvu.progressData.partyAttrPoints[charKey] || 0) <= getSpentPoints(char)"
                   >
                     +
                   </button>
@@ -99,7 +99,7 @@
             <div class="column-content">
               <span>套装ID</span>
               <select
-                :value="mvu.ArchivedData.outfitIds[selectedCharKey]"
+                :value="mvu.archivedData.outfitIds[selectedCharKey]"
                 @change="updateOutfit(($event.target as HTMLSelectElement).value)"
               >
                 <option value="">无</option>

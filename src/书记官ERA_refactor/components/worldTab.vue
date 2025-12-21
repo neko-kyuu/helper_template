@@ -8,7 +8,7 @@
     <div class="master-detail-body reverse">
       <div class="scene-detail-item" style="border: 1px solid var(--border_color)">
         <div
-          v-for="(npc, index) in mvu.WorldInfo.nearbyNPC"
+          v-for="(npc, index) in mvu.worldInfo.nearbyNPC"
           :key="index"
           @click="selectNpc(npc, index, false)"
           :class="{ selected: selectedNpc?.id === index }"
@@ -17,7 +17,7 @@
           {{ npc.character?.name }}
         </div>
         <div
-          v-for="(npc, index) in mvu.ArchivedData.worldNPC"
+          v-for="(npc, index) in mvu.archivedData.worldNPC"
           :key="index"
           @click="selectNpc(npc, index, true)"
           :class="{ selected: selectedNpc?.id === index }"
@@ -76,7 +76,7 @@
     </div>
 
     <div class="section-title" style="margin-top: 20px">阵营声望</div>
-    <div v-for="(faction, index) in mvu.WorldInfo.factionPrestige" :key="index" class="faction-card">
+    <div v-for="(faction, index) in mvu.worldInfo.factionPrestige" :key="index" class="faction-card">
       <div class="faction-header">
         <div class="faction-name">{{ faction.name }}</div>
         <div class="faction-prestige" :style="{ color: getPrestigeColor(faction.prestige) }">

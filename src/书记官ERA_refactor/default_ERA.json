@@ -1,5 +1,5 @@
 {
-  "PlayerData": {
+  "playerData": {
     "$meta": {
       "necessary": "self",
       "updatable": true
@@ -64,7 +64,7 @@
       "outfitContent": "none"
     }
   },
-  "ProgressData": {
+  "progressData": {
     "$meta": {
       "necessary": "self",
       "updatable": true
@@ -135,7 +135,7 @@
       "F1": 0
     }
   },
-  "WorldInfo": {
+  "worldInfo": {
     "$meta": {
       "necessary": "self",
       "updatable": true
@@ -238,7 +238,7 @@
       }
     }
   },
-  "PlayerDynamicData": {
+  "playerDynamicData": {
     "$meta": {
       "necessary": "self",
       "updatable": true
@@ -261,7 +261,7 @@
     },
     "gold": 100
   },
-  "FollowerNPCData": {
+  "followerNPCData": {
     "$meta": {
       "updatable": true
     },
@@ -411,7 +411,7 @@
       }
     }
   },
-  "Wardrobe": {
+  "wardrobe": {
     "ownedOutfits": {
       "$meta": {
         "updatable": true
@@ -441,7 +441,7 @@
       }
     }
   },
-  "ArchivedData": {
+  "archivedData": {
     "factionPrestige": {
       "$meta": {
         "updatable": true
@@ -504,7 +504,7 @@
       }
     }
   },
-  "System": {
+  "system": {
     "mainStoryMode": true,
     "$meta": {
       "updatable": true

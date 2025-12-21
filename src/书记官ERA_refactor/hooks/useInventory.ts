@@ -21,7 +21,7 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   }
 
   const deleteItem = (itemKey: string) => {
-    const itemToDelete = mvu.value.PlayerDynamicData.inventory[itemKey];
+    const itemToDelete = mvu.value.playerDynamicData.inventory[itemKey];
     if (selectedItem.value && itemToDelete && selectedItem.value.name === itemToDelete.name) {
       selectItem(null, '');
     }
@@ -29,7 +29,7 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'deleteByPath',
         detail: {
-          path: `PlayerDynamicData.inventory.${itemKey}`,
+          path: `playerDynamicData.inventory.${itemKey}`,
         },
       },
     ]);
@@ -40,7 +40,7 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'updateByPath',
         detail: {
-          path: `PlayerDynamicData.inventory.${itemKey}`,
+          path: `playerDynamicData.inventory.${itemKey}`,
           value: item,
         },
       },
@@ -87,9 +87,9 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       consumable: {},
     };
 
-    if (mvu.value.PlayerDynamicData.inventory) {
-      for (const key in mvu.value.PlayerDynamicData.inventory) {
-        const item = mvu.value.PlayerDynamicData.inventory[key];
+    if (mvu.value.playerDynamicData.inventory) {
+      for (const key in mvu.value.playerDynamicData.inventory) {
+        const item = mvu.value.playerDynamicData.inventory[key];
         if (item.type && groups[item.type]) {
           groups[item.type][key] = item;
         }

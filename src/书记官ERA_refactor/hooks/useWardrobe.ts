@@ -26,7 +26,7 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update', outf
     if (!outfitData) return null;
 
     const hydratedSlots: any = {};
-    const inventory = mvu.value.PlayerDynamicData.inventory;
+    const inventory = mvu.value.playerDynamicData.inventory;
 
     for (const slotKey in outfitData.slots) {
       const slotName = slotKey as keyof Slots;
@@ -47,7 +47,7 @@ export function useWardrobe(mvu: Ref<MvuData>, emit: (event: 'open-update', outf
   };
 
   const selectedOutfit = computed(() => {
-    const outfitData = mvu.value.Wardrobe.ownedOutfits[selectedOutfitId.value];
+    const outfitData = mvu.value.wardrobe.ownedOutfits[selectedOutfitId.value];
     return hydrateOutfit(outfitData);
   });
 

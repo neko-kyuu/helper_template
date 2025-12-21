@@ -7,7 +7,7 @@
       </div>
 
       <div
-        v-for="(outfit, outfitId) in mvu.Wardrobe.ownedOutfits"
+        v-for="(outfit, outfitId) in mvu.wardrobe.ownedOutfits"
         :key="outfitId"
         class="outfit-item"
         :class="{ selected: outfitId === selectedOutfitId }"

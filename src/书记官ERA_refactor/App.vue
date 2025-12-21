@@ -9,14 +9,14 @@
     <div class="scene-section">
       <div class="scene-details">
         <div class="scene-left">
-          <div class="location">🏰 {{ mvu.WorldInfo.currentRegion }} - {{ mvu.WorldInfo.currentLocation }}</div>
+          <div class="location">🏰 {{ mvu.worldInfo.currentRegion }} - {{ mvu.worldInfo.currentLocation }}</div>
         </div>
         <div class="scene-right">
           <div class="meta-info">
-            时间: <span>{{ mvu.WorldInfo.date }} {{ mvu.WorldInfo.time }}</span>
+            时间: <span>{{ mvu.worldInfo.date }} {{ mvu.worldInfo.time }}</span>
           </div>
           <div class="meta-info">
-            天气: <span>{{ mvu.WorldInfo.weather }}</span>
+            天气: <span>{{ mvu.worldInfo.weather }}</span>
           </div>
         </div>
       </div>
@@ -132,7 +132,7 @@ const handleConfirm = () => {
       let outfitKey = editingOutfitId.value;
       event = !outfitKey ? 'insertByObject' : 'updateByObject';
       if (!outfitKey) {
-        const wardrobeKeys = Object.keys(mvu.value.Wardrobe.ownedOutfits);
+        const wardrobeKeys = Object.keys(mvu.value.wardrobe.ownedOutfits);
         const maxId = wardrobeKeys.reduce((max, key) => {
           const idNum = parseInt(key.slice(1), 10);
           return idNum > max ? idNum : max;
@@ -144,7 +144,7 @@ const handleConfirm = () => {
         {
           event: event,
           detail: {
-            Wardrobe: {
+            wardrobe: {
               ownedOutfits: {
                 [outfitKey]: outfitData,
               },

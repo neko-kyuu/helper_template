@@ -28,7 +28,7 @@
 <VariableThink>
 1.  **意图分析**: {简洁描述变量更新目的，如：玩家HP减少，出现新NPC。}
 2.  **操作计划**:
-    - {说明具体操作，如：用 `<VariableEdit>` 更新 `PlayerData.status.hp.current`。}
+    - {说明具体操作，如：用 `<VariableEdit>` 更新 `playerData.status.hp.current`。}
     - {若新增实体，说明计划创建的ID。}
 </VariableThink>
 
@@ -61,7 +61,7 @@
 </VariableThink>
 <VariableEdit>
 {
-  "PlayerData": {
+  "playerData": {
     "status": {
       "hp": {
         "current": 10
@@ -74,12 +74,12 @@
 ### 示例 2: 添加新 NPC
 ...（正文）...
 <VariableThink>
-1.  **意图分析**: 新角色 "Ralof" 出现，需加入 `WorldInfo.nearbyNPC`。
+1.  **意图分析**: 新角色 "Ralof" 出现，需加入 `worldInfo.nearbyNPC`。
 2.  **操作计划**: - 用 `<VariableInsert>` 添加，并创建新ID "C1"。
 </VariableThink>
 <VariableInsert>
 {
-  "WorldInfo": {
+  "worldInfo": {
     "nearbyNPC": {
       "C1": {
         "character": {
@@ -117,7 +117,7 @@
 </VariableThink>
 <VariableInsert>
 {
-  "PlayerDynamicData": {
+  "playerDynamicData": {
     "inventory": {
       "I1": {
         "name": "皮甲",
@@ -146,7 +146,7 @@
 </VariableThink>
 <VariableInsert>
 {
-  "ProgressData": {
+  "progressData": {
     "currentQuest": {
       "Q1": {
         "name": "任务名",
@@ -165,7 +165,7 @@
 </VariableThink>
 <VariableInsert>
 {
-  "WorldInfo": {
+  "worldInfo": {
     "nearbyNPC": {
       "C1": {
         "meta": {
@@ -185,7 +185,7 @@
 </VariableThink>
 <VariableDelete>
 {
-  "WorldInfo": {
+  "worldInfo": {
     "nearbyNPC": {
       "C1": {}
     }
@@ -204,7 +204,7 @@
 </VariableThink>
 <VariableDelete>
 {
-  "ProgressData": {
+  "progressData": {
     "currentQuest": {
       "Q1": {}
     }
@@ -213,7 +213,7 @@
 </VariableDelete>
 <VariableInsert>
 {
-  "ProgressData": {
+  "progressData": {
     "completedQuest": {
       "Q1": {
         "name": "随机任务1",

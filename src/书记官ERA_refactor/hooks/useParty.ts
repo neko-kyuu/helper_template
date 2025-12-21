@@ -12,17 +12,17 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const partyUpgradeState = ref<{ [charName: string]: UpgradeState }>({});
 
   const isAssigningAttributes = computed(() => {
-    const points = mvu.value.ProgressData.partyAttrPoints || {};
+    const points = mvu.value.progressData.partyAttrPoints || {};
     return _.mapValues(points, val => val > 0);
   });
 
   const party = computed(() => {
     const partyAsObject: Record<string, any> = {
-      F0: { ...mvu.value.PlayerData },
+      F0: { ...mvu.value.playerData },
     };
-    const followerNpcKeys = Object.keys(mvu.value.FollowerNPCData || {});
+    const followerNpcKeys = Object.keys(mvu.value.followerNPCData || {});
     for (const key of followerNpcKeys) {
-      const mvuNpcData = rawMvuData.value?.FollowerNPCData?.[key];
+      const mvuNpcData = rawMvuData.value?.followerNPCData?.[key];
       if (mvuNpcData) {
         partyAsObject[key] = mvuNpcData;
       }
@@ -139,7 +139,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       newExp: currentExp - maxExp,
       newMaxExp: calculateMaxExpForLevel(newLevel), // 计算下一级的最大经验值
       levelsToGain,
-      newAttrPointsForChar: (mvu.value.ProgressData.partyAttrPoints?.[key] || 0) + pointsToGain,
+      newAttrPointsForChar: (mvu.value.progressData.partyAttrPoints?.[key] || 0) + pointsToGain,
       newMaxHp: (char.status.health.max || 10) + hpGainPerLevel * levelsToGain,
     };
   }
@@ -147,9 +147,9 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   // 获取角色数据路径
   function getCharacterPath(key: string): string {
     if (key === 'F0') {
-      return 'PlayerData';
+      return 'playerData';
     }
-    return `FollowerNPCData.${key}`;
+    return `followerNPCData.${key}`;
   }
 
   // 生成升级命令
@@ -168,7 +168,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       { event: 'updateByPath', detail: { path: `${basePath}.status.health.current`, value: newMaxHp } },
       { event: 'updateByPath', detail: { path: `${basePath}.status.experience.current`, value: newExp } },
       { event: 'updateByPath', detail: { path: `${basePath}.status.experience.max`, value: newMaxExp } },
-      { event: 'updateByPath', detail: { path: `ProgressData.partyAttrPoints.${key}`, value: newAttrPointsForChar } },
+      { event: 'updateByPath', detail: { path: `progressData.partyAttrPoints.${key}`, value: newAttrPointsForChar } },
     ];
   }
 
@@ -206,7 +206,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     if (commands.length > 0) {
       commands.push({
         event: 'updateByPath',
-        detail: { path: `ProgressData.partyAttrPoints.${key}`, value: newAttrPointsForChar },
+        detail: { path: `progressData.partyAttrPoints.${key}`, value: newAttrPointsForChar },
       });
     }
     return commands;
@@ -236,7 +236,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       return;
     }
 
-    const availablePoints = mvu.value.ProgressData.partyAttrPoints?.[key] || 0;
+    const availablePoints = mvu.value.progressData.partyAttrPoints?.[key] || 0;
     if (pointsSpent > availablePoints) {
       toastr.error('属性点不足');
       return;
@@ -272,7 +272,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const charName = char.character.name;
     const state = partyUpgradeState.value[charName];
     if (state) {
-      const availablePoints = mvu.value.ProgressData.partyAttrPoints?.[key] || 0;
+      const availablePoints = mvu.value.progressData.partyAttrPoints?.[key] || 0;
       const spentPoints = getSpentPoints(char);
       if (availablePoints > spentPoints) {
         state.tempAttributes[attrKey]++;
@@ -303,16 +303,16 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
 
   const characterOutfits = computed(() => {
     if (!selectedCharKey.value) return {};
-    return _.pickBy(mvu.value.Wardrobe.ownedOutfits, outfit => outfit.wearer === selectedCharKey.value);
+    return _.pickBy(mvu.value.wardrobe.ownedOutfits, outfit => outfit.wearer === selectedCharKey.value);
   });
 
   async function updateOutfit(newOutfitId: string) {
     if (!selectedCharKey.value) return;
 
     let outfitContent = '';
-    if (newOutfitId && mvu.value.Wardrobe.ownedOutfits[newOutfitId]) {
-      const outfitData = mvu.value.Wardrobe.ownedOutfits[newOutfitId];
-      const inventory = mvu.value.PlayerDynamicData.inventory;
+    if (newOutfitId && mvu.value.wardrobe.ownedOutfits[newOutfitId]) {
+      const outfitData = mvu.value.wardrobe.ownedOutfits[newOutfitId];
+      const inventory = mvu.value.playerDynamicData.inventory;
       const itemNames: string[] = [];
 
       for (const slotKey in outfitData.slots) {
@@ -333,7 +333,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const commands = [
       {
         event: 'updateByPath',
-        detail: { path: `ArchivedData.outfitIds.${selectedCharKey.value}`, value: newOutfitId },
+        detail: { path: `archivedData.outfitIds.${selectedCharKey.value}`, value: newOutfitId },
       },
       {
         event: 'updateByPath',
@@ -347,8 +347,8 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   }
 
   const getNPCNameByKey = (npcKey: string): string => {
-    const npc = mvu.value.WorldInfo.nearbyNPC;
-    const party = mvu.value.FollowerNPCData;
+    const npc = mvu.value.worldInfo.nearbyNPC;
+    const party = mvu.value.followerNPCData;
     return npc[npcKey] ? npc[npcKey].character.name : party[npcKey] ? party[npcKey].character.name : '';
   };
 

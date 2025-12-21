@@ -3,25 +3,25 @@ import { computed, ref } from 'vue';
 
 export function useQuests(mvu: any, handleMvuUpdate: any) {
   const currentQuests = computed(() => {
-    return mvu.value.ProgressData.currentQuest;
+    return mvu.value.progressData.currentQuest;
   });
 
   const nextQuests = computed(() => {
-    return mvu.value.ProgressData.nextQuest;
+    return mvu.value.progressData.nextQuest;
   });
 
   const pendingQuests = computed(() => {
-    return mvu.value.ProgressData.pendingQuest;
+    return mvu.value.progressData.pendingQuest;
   });
 
   const completedQuests = computed(() => {
-    return mvu.value.ProgressData.completedQuest;
+    return mvu.value.progressData.completedQuest;
   });
 
   const activeQuestTab = ref('currentQuests');
 
   const activeQuest = (questId: string) => {
-    const questToActivate = mvu.value.ProgressData.nextQuest[questId];
+    const questToActivate = mvu.value.progressData.nextQuest[questId];
 
     if (questToActivate) {
       const quest = _.cloneDeep(questToActivate);
@@ -29,11 +29,11 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
       handleMvuUpdate([
         {
           event: 'insertByPath',
-          detail: { path: `ProgressData.currentQuest.${questId}`, value: quest },
+          detail: { path: `progressData.currentQuest.${questId}`, value: quest },
         },
         {
           event: 'deleteByPath',
-          detail: { path: `ProgressData.nextQuest.${questId}` },
+          detail: { path: `progressData.nextQuest.${questId}` },
         },
       ]);
     }
@@ -43,14 +43,14 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
     questId: string,
     questType: 'currentQuest' | 'nextQuest' | 'pendingQuest' | 'completedQuest',
   ) => {
-    const questToDelete = mvu.value.ProgressData[questType]?.[questId];
+    const questToDelete = mvu.value.progressData[questType]?.[questId];
     if (questToDelete) {
       toastr.success(`成功删除 ${questToDelete.name}`);
       handleMvuUpdate([
         {
           event: 'deleteByPath',
           detail: {
-            path: `ProgressData.${questType}.${questId}`,
+            path: `progressData.${questType}.${questId}`,
           },
         },
       ]);

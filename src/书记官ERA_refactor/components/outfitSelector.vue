@@ -115,10 +115,10 @@ const editingOutfit = ref<OutfitData>(_.cloneDeep(defaultOutfitTemplate));
 watch(
   () => props.outfitId,
   newOutfitId => {
-    const newOutfitData = newOutfitId ? mvu.value.Wardrobe.ownedOutfits[newOutfitId] : null;
+    const newOutfitData = newOutfitId ? mvu.value.wardrobe.ownedOutfits[newOutfitId] : null;
     if (newOutfitData) {
       const hydratedSlots: Slots = _.cloneDeep(defaultSlots);
-      const itemInventory = mvu.value.PlayerDynamicData.inventory;
+      const itemInventory = mvu.value.playerDynamicData.inventory;
 
       for (const slotKey in newOutfitData.slots) {
         if (Object.prototype.hasOwnProperty.call(newOutfitData.slots, slotKey)) {
@@ -188,7 +188,7 @@ defineExpose({
 });
 
 const groupedInventory = computed(() => {
-  const inventoryItemsWithId = Object.entries(mvu.value.PlayerDynamicData.inventory).map(([id, itemData]) => ({
+  const inventoryItemsWithId = Object.entries(mvu.value.playerDynamicData.inventory).map(([id, itemData]) => ({
     ...itemData,
     id,
   }));

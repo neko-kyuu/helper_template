@@ -238,7 +238,7 @@ export function useCharacterCreation(defaultMvuData: any) {
     );
 
     let userSelection = {
-      PlayerData: {
+      playerData: {
         character: { ...state.character },
         attributes: { ...state.attributes },
         equipment: {
@@ -247,7 +247,7 @@ export function useCharacterCreation(defaultMvuData: any) {
           outfitContent: '旅行装',
         },
       },
-      FollowerNPCData: state.followers.reduce((acc: any, curr, i) => {
+      followerNPCData: state.followers.reduce((acc: any, curr, i) => {
         // 使用模板字符串 `${}` 拼接键名
         acc[`F${i + 1}`] = {
           character: { ...curr.character },
@@ -270,19 +270,19 @@ export function useCharacterCreation(defaultMvuData: any) {
         };
         return acc;
       }, {}),
-      System: {
+      system: {
         mainStoryMode: sys.mainStoryMode,
       },
-      ProgressData: {
+      progressData: {
         partyAttrPoints,
       },
-      ArchivedData: {
+      archivedData: {
         outfitIds,
       },
     };
     if (sys.mainStoryMode) {
       const mainStoryInit = {
-        ProgressData: {
+        progressData: {
           currentQuest: {
             MQ1: {
               name: '节日的插曲',
@@ -292,7 +292,7 @@ export function useCharacterCreation(defaultMvuData: any) {
             },
           },
         },
-        WorldInfo: {
+        worldInfo: {
           date: '1468DR 奈托月19日',
           time: '傍晚',
           weather: '飘雪',
@@ -418,7 +418,7 @@ ${state.character.name}${state.followers.length > 1 ? '一行人' : state.follow
 
   eventOn('era:writeDone', detail => {
     if (!detail || !detail.statWithoutMeta) return;
-    if (!detail.statWithoutMeta.PlayerData || !detail.statWithoutMeta.PlayerData.character.name) return;
+    if (!detail.statWithoutMeta.playerData || !detail.statWithoutMeta.playerData.character.name) return;
 
     // 处理世界书蓝绿灯
     let currentQuests: string[] = [];
@@ -501,10 +501,10 @@ function createDefaultCharacter(state: any) {
     return newObj;
   };
 
-  state.character = filterMeta(defaultEra.PlayerData.character);
-  state.attributes = filterMeta(defaultEra.PlayerData.attributes);
-  state.equipment = filterMeta(defaultEra.PlayerData.equipment);
-  state.followers = Object.values(filterMeta(defaultEra.FollowerNPCData))
+  state.character = filterMeta(defaultEra.playerData.character);
+  state.attributes = filterMeta(defaultEra.playerData.attributes);
+  state.equipment = filterMeta(defaultEra.playerData.equipment);
+  state.followers = Object.values(filterMeta(defaultEra.followerNPCData))
     .filter((v: any) => v.character)
     .map((v: any) => {
       return {

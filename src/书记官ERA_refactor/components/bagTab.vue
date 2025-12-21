@@ -1,7 +1,7 @@
 <template>
   <div class="bag-container">
     <div class="inventory-mini">
-      <div class="gold">💰 {{ mvu.PlayerDynamicData.gold }}金币</div>
+      <div class="gold">💰 {{ mvu.playerDynamicData.gold }}金币</div>
       <div>
         <button style="margin-right: 6px">炼金 <i class="fa-solid fa-capsules"></i></button>
         <button>强化 <i class="fa-solid fa-hammer"></i></button>
@@ -10,7 +10,7 @@
     <div class="master-detail-body">
       <div
         class="master-grid bag-grid"
-        v-if="mvu.PlayerDynamicData.inventory && Object.keys(mvu.PlayerDynamicData.inventory).length"
+        v-if="mvu.playerDynamicData.inventory && Object.keys(mvu.playerDynamicData.inventory).length"
       >
         <template v-for="type in groupOrder" :key="type">
           <template v-if="groupedInventory[type] && Object.keys(groupedInventory[type]).length">
