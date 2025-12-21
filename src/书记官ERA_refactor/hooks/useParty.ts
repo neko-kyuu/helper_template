@@ -12,7 +12,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const partyUpgradeState = ref<{ [charName: string]: UpgradeState }>({});
 
   const isAssigningAttributes = computed(() => {
-    const points = mvu.value.progressData.partyAttrPoints || {};
+    const points = mvu.value.ProgressData.partyAttrPoints || {};
     return _.mapValues(points, val => val > 0);
   });
 
@@ -139,7 +139,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       newExp: currentExp - maxExp,
       newMaxExp: calculateMaxExpForLevel(newLevel), // 计算下一级的最大经验值
       levelsToGain,
-      newAttrPointsForChar: (mvu.value.progressData.partyAttrPoints?.[key] || 0) + pointsToGain,
+      newAttrPointsForChar: (mvu.value.ProgressData.partyAttrPoints?.[key] || 0) + pointsToGain,
       newMaxHp: (char.status.health.max || 10) + hpGainPerLevel * levelsToGain,
     };
   }
@@ -168,7 +168,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       { event: 'updateByPath', detail: { path: `${basePath}.status.health.current`, value: newMaxHp } },
       { event: 'updateByPath', detail: { path: `${basePath}.status.experience.current`, value: newExp } },
       { event: 'updateByPath', detail: { path: `${basePath}.status.experience.max`, value: newMaxExp } },
-      { event: 'updateByPath', detail: { path: `progressData.partyAttrPoints.${key}`, value: newAttrPointsForChar } },
+      { event: 'updateByPath', detail: { path: `ProgressData.partyAttrPoints.${key}`, value: newAttrPointsForChar } },
     ];
   }
 
@@ -206,7 +206,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     if (commands.length > 0) {
       commands.push({
         event: 'updateByPath',
-        detail: { path: `progressData.partyAttrPoints.${key}`, value: newAttrPointsForChar },
+        detail: { path: `ProgressData.partyAttrPoints.${key}`, value: newAttrPointsForChar },
       });
     }
     return commands;
@@ -236,7 +236,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       return;
     }
 
-    const availablePoints = mvu.value.progressData.partyAttrPoints?.[key] || 0;
+    const availablePoints = mvu.value.ProgressData.partyAttrPoints?.[key] || 0;
     if (pointsSpent > availablePoints) {
       toastr.error('属性点不足');
       return;
@@ -272,7 +272,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const charName = char.character.name;
     const state = partyUpgradeState.value[charName];
     if (state) {
-      const availablePoints = mvu.value.progressData.partyAttrPoints?.[key] || 0;
+      const availablePoints = mvu.value.ProgressData.partyAttrPoints?.[key] || 0;
       const spentPoints = getSpentPoints(char);
       if (availablePoints > spentPoints) {
         state.tempAttributes[attrKey]++;
@@ -333,7 +333,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     const commands = [
       {
         event: 'updateByPath',
-        detail: { path: `${basePath}.equipment.outfit`, value: newOutfitId },
+        detail: { path: `ArchivedData.outfitIds.${selectedCharKey.value}`, value: newOutfitId },
       },
       {
         event: 'updateByPath',
@@ -345,6 +345,26 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
       toastr.success('套装已更新!');
     });
   }
+
+  const getNPCNameByKey = (npcKey: string): string => {
+    const npc = mvu.value.WorldInfo.nearbyNPC;
+    const party = mvu.value.FollowerNPCData;
+    return npc[npcKey] ? npc[npcKey].character.name : party[npcKey] ? party[npcKey].character.name : '';
+  };
+
+  const getHealthDescription = (current: number, max: number): string => {
+    if (current / max >= 0.75) return '健康';
+    if (current / max >= 0.5) return '良好';
+    if (current / max >= 0.25) return '受伤';
+    return '急需治疗';
+  };
+
+  const getHealthColor = (current: number, max: number): string => {
+    if (current / max >= 0.75) return '#4caf50';
+    if (current / max >= 0.5) return '#8bc34a';
+    if (current / max >= 0.25) return '#ffeb3b';
+    return '#f44336';
+  };
 
   return {
     party,
@@ -365,5 +385,8 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     selectedCharKey,
     characterOutfits,
     updateOutfit,
+    getNPCNameByKey,
+    getHealthDescription,
+    getHealthColor,
   };
 }

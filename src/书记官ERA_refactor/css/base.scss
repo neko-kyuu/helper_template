@@ -58,6 +58,7 @@
     display: flex;
     border-bottom: 1px solid var(--border_color);
     background-color: var(--blur_tint_color_fill);
+    gap: 4px;
 
     button {
       flex: 1;
@@ -141,6 +142,10 @@
       border-radius: 3px;
       transition: background-color 0.3s;
 
+      &.archived {
+        background-color: var(--underline_text_color);
+      }
+
       &:hover {
         background: var(--user_mes_blur_tint_color);
       }
@@ -156,7 +161,7 @@
     background: var(--blur_tint_color);
     border: 1px solid var(--border_color);
     border-radius: 4px;
-    margin-bottom: 10px;
+    margin-bottom: 4px;
 
     .faction-header {
       padding: 6px 5px;
@@ -284,7 +289,7 @@
   }
 
   .quest-item {
-    margin-bottom: 10px;
+    margin-bottom: 6px;
     padding: 8px;
     background: var(--blur_tint_color);
     border-left: 3px solid var(--quote_text_color);
@@ -346,6 +351,9 @@
   color: var(--italics_text_color);
   line-height: 1.5;
   padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 
   .gold {
     color: var(--quote_text_color);

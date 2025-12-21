@@ -11,14 +11,19 @@
       <button :class="{ active: activeTab === 'race' }" @click="activeTab = 'race'">选择种族</button>
       <button :class="{ active: activeTab === 'attributes' }" @click="activeTab = 'attributes'">属性点分配</button>
       <button :class="{ active: activeTab === 'follower' }" @click="activeTab = 'follower'">随行NPC</button>
-      <button :class="{ active: activeTab === 'initLocation' }" @click="activeTab = 'initLocation'">初始地点</button>
+      <button
+        :class="{ active: activeTab === 'initLocation' }"
+        @click="activeTab = 'initLocation'"
+        v-if="!sys.mainStoryMode"
+      >
+        初始地点
+      </button>
       <button :class="{ active: activeTab === 'confirm' }" @click="activeTab = 'confirm'">确认开局</button>
     </div>
 
     <div class="tab-content">
       <div class="sys-section" v-if="activeTab === 'sys'">
-        <div><input type="checkbox" v-model="sys.mainStoryMode" /> 主线剧情模式</div>
-
+        <div>主线剧情模式 <input type="checkbox" v-model="sys.mainStoryMode" /></div>
         <div
           class="card"
           v-for="m in modes"
@@ -122,9 +127,7 @@
               </div>
               <div class="form-group">
                 <label>种族:</label>
-                <select v-model="follower.character.race">
-                  <option v-for="r in races" :key="r.name" :value="r.name">{{ r.name }}</option>
-                </select>
+                <input v-model="follower.character.race" />
               </div>
               <div class="form-group">
                 <label>身高:</label>
@@ -132,9 +135,7 @@
               </div>
               <div class="form-group">
                 <label>体型:</label>
-                <select v-model="follower.character.build">
-                  <option v-for="b in builds" :key="b" :value="b">{{ b }}</option>
-                </select>
+                <input v-model="follower.character.build" />
               </div>
             </div>
             <div class="form-group">
@@ -186,7 +187,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue';
-import MapSelector from '../书记官ERA/components/MapSelector.vue';
+import MapSelector from '../书记官ERA_refactor/components/MapSelector.vue';
 import { useCharacterCreation } from './useCharacterCreation';
 
 const coordinateHelperMode = ref(false);
@@ -257,11 +258,10 @@ const defaultMvuData: any = JSON.parse(`{
         "equipment": {
             "leftHand": "none",
             "rightHand": "none",
-            "outfit": "none",
             "outfitContent": "none"
         }
     },
-    "worldInfo": {
+    "WorldInfo": {
       "$meta": {
         "necessary": "self",
         "updatable": true
@@ -326,7 +326,7 @@ const defaultMvuData: any = JSON.parse(`{
         "$template": {
           "name": "[阵营名称]",
           "description": "[简要描述]",
-          "favorability": 0,
+          "prestige": 0,
           "$meta": {
             "updatable": true
           }
@@ -364,7 +364,7 @@ const defaultMvuData: any = JSON.parse(`{
         }
       }
     },
-    "progressData": {
+    "ProgressData": {
       "$meta": {
         "necessary": "self",
         "updatable": true
@@ -512,7 +512,6 @@ const defaultMvuData: any = JSON.parse(`{
             "equipment": {
               "leftHand": "none",
               "rightHand": "none",
-              "outfit": "none",
               "outfitContent": "none"
             },
             "meta": {
@@ -604,6 +603,22 @@ const defaultMvuData: any = JSON.parse(`{
                     "updatable": true
                 }
             }
+        },
+        "outfitIds":{
+          "$meta": {
+            "updatable": true
+          },
+          "F0":"none"
+        },
+        "inventory":{
+          "$meta": {
+            "updatable": true
+          }
+        },
+        "worldNPC":{
+          "$meta": {
+            "updatable": true
+          }
         }
     },
     "System": {

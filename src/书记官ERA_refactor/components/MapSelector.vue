@@ -98,6 +98,11 @@ const regions: Region[] = [
       { name: '迈林代尔', x: 209, y: 169 },
       { name: '米克斯塔', x: 202, y: 184 },
       { name: '巴拉德雷', x: 242, y: 195 },
+      { name: '帕尔', x: 206, y: 209 },
+      { name: '德沙林', x: 260, y: 265 },
+      { name: '忽密达', x: 195, y: 112 },
+      { name: '影牙要塞', x: 322, y: 162 },
+      { name: '鲁伯德要塞', x: 317, y: 236 },
     ],
   },
 ];
@@ -129,7 +134,9 @@ const drawMap = () => {
   ctx.clearRect(0, 0, width, height);
 
   if (isImageLoaded.value) {
+    ctx.globalAlpha = 0.8; // 降低背景图不透明度
     ctx.drawImage(mapImage, 0, 0, displayWidth, displayHeight);
+    ctx.globalAlpha = 1; // 重置不透明度，以免影响后续绘制
   } else {
     ctx.fillStyle = '#EAE7DC';
     ctx.fillRect(0, 0, displayWidth, displayHeight);
@@ -161,6 +168,7 @@ const drawMap = () => {
 
   ctx.font = '12px Arial';
   ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
   regions.forEach(region => {
     region.cities.forEach(city => {
       const cityX = city.x * scaleX.value;
@@ -171,8 +179,26 @@ const drawMap = () => {
       ctx.fill();
       ctx.strokeStyle = '#333';
       ctx.stroke();
-      ctx.fillStyle = 'black';
-      ctx.fillText(city.name, cityX, cityY + 15);
+
+      const text = city.name;
+      const textY = cityY + 18;
+      const textMetrics = ctx.measureText(text);
+      const textWidth = textMetrics.width;
+      const textHeight = 12; // font size
+      const padding = 4;
+
+      const backgroundWidth = textWidth + padding * 2;
+      const backgroundHeight = textHeight + padding;
+      const backgroundX = cityX - backgroundWidth / 2;
+      const backgroundY = textY - backgroundHeight / 2;
+
+      ctx.fillStyle = 'rgba(100, 100, 100, 0.7)';
+      ctx.beginPath();
+      ctx.roundRect(backgroundX, backgroundY, backgroundWidth, backgroundHeight, [4]);
+      ctx.fill();
+
+      ctx.fillStyle = 'white';
+      ctx.fillText(text, cityX, textY);
     });
   });
 

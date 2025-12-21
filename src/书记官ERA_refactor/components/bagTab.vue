@@ -2,6 +2,10 @@
   <div class="bag-container">
     <div class="inventory-mini">
       <div class="gold">💰 {{ mvu.PlayerDynamicData.gold }}金币</div>
+      <div>
+        <button style="margin-right: 6px">炼金 <i class="fa-solid fa-capsules"></i></button>
+        <button>强化 <i class="fa-solid fa-hammer"></i></button>
+      </div>
     </div>
     <div class="master-detail-body">
       <div
@@ -21,6 +25,7 @@
               @click="selectItem(item, key as unknown as string)"
             >
               <i class="fa-solid fa-box" v-if="item.type == 'item'"></i>
+              <i class="fa-solid fa-box" v-if="item.type == 'consumable'"></i>
               <i class="fa-solid fa-shirt" v-if="item.type == 'cloth'"></i>
               <i class="fa-solid fa-wand-sparkles" v-if="item.type == 'weapon'"></i>
               {{ item.name }}
@@ -34,7 +39,7 @@
         <div v-if="selectedItem" class="details-content">
           <div v-if="!isEditing">
             <div class="item-name flex-between">
-              {{ selectedItem.name }}
+              {{ selectedItem.name }} | {{ selectedItem.id }}
               <div style="flex-shrink: 0">
                 <i
                   class="fa-solid fa-pencil"

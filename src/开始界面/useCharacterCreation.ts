@@ -15,10 +15,46 @@ export function useCharacterCreation(defaultMvuData: any) {
 
   const races = [
     { name: '月精灵', description: '优雅而神秘的森林居民，擅长魔法和弓箭。' },
+    { name: '高等精灵', description: '追求奥术极致的精灵，博学且高傲，天生对魔力敏感。' },
+    { name: '木精灵', description: '荒野的守护者，动作迅捷，能完美融入森林环境。' },
+    { name: '卓尔', description: '居住在幽暗地域，拥有极佳的夜视能力和冷酷的社交手腕。' },
+    { name: '至高妖精', description: '来自妖精荒野的精灵，性格多变，充满艺术灵感。' },
     { name: '人类', description: '适应性强，遍布世界各地，在各种领域都有建树。' },
     { name: '矮人', description: '强壮的矿工和工匠，以其坚韧和对工艺的热爱而闻名。' },
     { name: '兽人', description: '勇猛的战士，拥有强大的力量和无畏的精神。' },
+    { name: '半身人', description: '乐观且热爱生活的族群，是天生的厨师和优秀的谈判家。' },
+    { name: '机械生命', description: '高度精密的合成金属生命体，逻辑严密，擅长制造与研究。' },
+    { name: '龙裔', description: '流淌着古龙之血的战士，拥有极强的身体素质和威慑力。' },
+    { name: '提夫林', description: '流淌着炼狱之血的凡人，对火焰有着天然抗性。' },
+    { name: '坎比翁', description: '高等恶魔与凡人的后代，不仅强壮且极具威慑力。' },
+    { name: '神裔', description: '体内承载着天界神力的生灵，是天生的领导者和医者。' },
+    { name: '堕落神裔', description: '被内心阴影或悲剧侵蚀的神裔，虽然失去了光辉，但拥有恐怖的战斗意志。' },
+    { name: '灵族', description: '纯粹的精神能量体，能感知灵魂，在医疗和艺术上有极高天赋。' },
+    { name: '穴居人', description: '长期生活在深地底，极其擅长挖掘和在恶劣环境下生存。' },
+    { name: '魅魔', description: '擅长玩弄人心的族群，社交手腕高超，审美独特。' },
+    { name: '树精', description: '森林的化身，生长缓慢但与植物有着天然的共鸣。' },
   ];
+  const raceBonuses: { [key: string]: Partial<typeof state.attributes> } = {
+    月精灵: { shooting: 3, intellectual: 2, artistic: 1 },
+    高等精灵: { intellectual: 4, artistic: 2, shooting: 1 },
+    木精灵: { shooting: 4, construction: 2, melee: 1 },
+    卓尔: { social: 3, shooting: 2, melee: 2 },
+    至高妖精: { artistic: 5, social: 2 },
+    人类: { social: 1, crafting: 1, cooking: 1, intellectual: 1, construction: 1, medical: 1 },
+    矮人: { mining: 3, construction: 2, crafting: 1 },
+    兽人: { melee: 4, mining: 2 },
+    半身人: { cooking: 4, social: 2, artistic: 1 },
+    机械生命: { intellectual: 4, crafting: 3, social: 0 },
+    龙裔: { melee: 3, construction: 2, social: 1 },
+    提夫林: { social: 4, intellectual: 2, cooking: 1 },
+    坎比翁: { melee: 4, social: 2, construction: 1 },
+    神裔: { medical: 4, social: 3, artistic: 1 },
+    堕落神裔: { melee: 3, shooting: 3, social: 1 },
+    灵族: { medical: 4, artistic: 3, intellectual: 1 },
+    穴居人: { mining: 5, construction: 2 },
+    魅魔: { social: 5, artistic: 2 },
+    树精: { planting: 5, medical: 2, cooking: 1 },
+  };
   const genders = ['男', '女']; // Example genders
   const builds = ['纤细', '匀称', '健壮', '魁梧'];
 
@@ -90,13 +126,6 @@ export function useCharacterCreation(defaultMvuData: any) {
     medical: '医疗',
     social: '社交',
     intellectual: '智识',
-  };
-
-  const raceBonuses: { [key: string]: Partial<typeof state.attributes> } = {
-    月精灵: { shooting: 3, intellectual: 2, artistic: 1 },
-    人类: { social: 1, crafting: 1, cooking: 1, intellectual: 1, construction: 1, medical: 1 },
-    矮人: { mining: 3, construction: 2, crafting: 1 },
-    兽人: { melee: 4, mining: 2 },
   };
 
   const baseAttributes = computed(() => {
@@ -200,27 +229,33 @@ export function useCharacterCreation(defaultMvuData: any) {
       },
       { F0: 0 },
     );
+    const outfitIds = state.followers.reduce(
+      (acc: Record<string, string>, _, i) => {
+        acc[`F${i + 1}`] = 'none';
+        return acc;
+      },
+      { F0: 'none' },
+    );
+
     let userSelection = {
       PlayerData: {
         character: { ...state.character },
         attributes: { ...state.attributes },
+        equipment: {
+          leftHand: 'none',
+          rightHand: 'none',
+          outfitContent: '旅行装',
+        },
       },
       FollowerNPCData: state.followers.reduce((acc: any, curr, i) => {
         // 使用模板字符串 `${}` 拼接键名
         acc[`F${i + 1}`] = {
           character: { ...curr.character },
           attributes: { ...curr.attributes },
-          status: {
-            health: { current: 12, max: 12 },
-            mood: { current: 50, max: 100 },
-            arousal: { current: 50, max: 100 },
-            experience: { current: 0, max: 100 },
-          },
           equipment: {
             leftHand: 'none',
             rightHand: 'none',
-            outfit: 'none',
-            outfitContent: 'none',
+            outfitContent: '旅行装',
           },
           meta: {
             relationship: '同伴',
@@ -238,13 +273,16 @@ export function useCharacterCreation(defaultMvuData: any) {
       System: {
         mainStoryMode: sys.mainStoryMode,
       },
-      progressData: {
+      ProgressData: {
         partyAttrPoints,
+      },
+      ArchivedData: {
+        outfitIds,
       },
     };
     if (sys.mainStoryMode) {
       const mainStoryInit = {
-        progressData: {
+        ProgressData: {
           currentQuest: {
             MQ1: {
               name: '节日的插曲',
@@ -254,7 +292,7 @@ export function useCharacterCreation(defaultMvuData: any) {
             },
           },
         },
-        worldInfo: {
+        WorldInfo: {
           date: '1468DR 奈托月19日',
           time: '傍晚',
           weather: '飘雪',
@@ -266,7 +304,7 @@ export function useCharacterCreation(defaultMvuData: any) {
     }
     // 使用 cloneDeep 避免修改原始的 defaultMvuData, 并确保结构匹配
     const finalCharacterData = _.merge(_.cloneDeep(defaultMvuData), userSelection);
-    console.log('Creating character:', finalCharacterData);
+    console.log('最终角色数据:', finalCharacterData);
 
     try {
       eventEmit('era:insertByObject', finalCharacterData);

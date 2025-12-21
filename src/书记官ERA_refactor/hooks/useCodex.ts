@@ -29,11 +29,11 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const editableEntry = ref<CodexEntry | null>(null);
 
   const bestiaryEntries = computed(() => {
-    return mvu.value.worldInfo.bestiary || {};
+    return mvu.value.WorldInfo.bestiary || {};
   });
 
   const anecdoteEntries = computed(() => {
-    return mvu.value.worldInfo.anecdotes || {};
+    return mvu.value.WorldInfo.anecdotes || {};
   });
 
   const selectedTab = ref('');
@@ -54,8 +54,8 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const deleteEntry = (entryKey: string) => {
     const entryToDelete =
       activeCodexTab.value === 'bestiary'
-        ? mvu.value.worldInfo.bestiary[entryKey]
-        : mvu.value.worldInfo.anecdotes[entryKey];
+        ? mvu.value.WorldInfo.bestiary[entryKey]
+        : mvu.value.WorldInfo.anecdotes[entryKey];
 
     if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
       selectEntry(null, '', '');
@@ -67,7 +67,7 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'deleteByPath',
         detail: {
-          path: `worldInfo.${path}.${entryKey}`,
+          path: `WorldInfo.${path}.${entryKey}`,
         },
       },
     ]);
@@ -79,7 +79,7 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'updateByPath',
         detail: {
-          path: `worldInfo.${path}.${entryKey}`,
+          path: `WorldInfo.${path}.${entryKey}`,
           value: entry,
         },
       },
@@ -127,8 +127,8 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
   const archiveEntry = (entryKey: string) => {
     const entryToDelete =
       activeCodexTab.value === 'bestiary'
-        ? mvu.value.worldInfo.bestiary[entryKey]
-        : mvu.value.worldInfo.anecdotes[entryKey];
+        ? mvu.value.WorldInfo.bestiary[entryKey]
+        : mvu.value.WorldInfo.anecdotes[entryKey];
 
     if (selectedEntry.value && entryToDelete && selectedEntry.value.name === entryToDelete.name) {
       selectEntry(null, '', '');
@@ -147,7 +147,7 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'deleteByPath',
         detail: {
-          path: `worldInfo.${path}.${entryKey}`,
+          path: `WorldInfo.${path}.${entryKey}`,
         },
       },
     ]);
@@ -169,7 +169,7 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
       {
         event: 'insertByPath',
         detail: {
-          path: `worldInfo.${path}.${entryKey}`,
+          path: `WorldInfo.${path}.${entryKey}`,
           value: entryToDelete,
         },
       },

@@ -49,7 +49,7 @@
 | 阵营 | `F` | `"F1"`, `"F2"` |
 | 生物图鉴 | `B` | `"B1"`, `"B2"` |
 | 趣闻 | `A` | `"A1"`, `"A2"` |
-**注意**: 生成任务时，如果为已知信息任务（已有ID与描述），直接使用原始信息。否则，为避免出现任务ID冲突，使用**Q**前缀。
+**注意**: 生成任务时，如果为已知信息任务（已有ID与描述），直接使用原始信息。否则，为避免出现任务ID冲突，只能使用**Q**前缀。
 
 ## 5. 格式示例
 
@@ -74,12 +74,12 @@
 ### 示例 2: 添加新 NPC
 ...（正文）...
 <VariableThink>
-1.  **意图分析**: 新角色 "Ralof" 出现，需加入 `worldInfo.nearbyNPC`。
+1.  **意图分析**: 新角色 "Ralof" 出现，需加入 `WorldInfo.nearbyNPC`。
 2.  **操作计划**: - 用 `<VariableInsert>` 添加，并创建新ID "C1"。
 </VariableThink>
 <VariableInsert>
 {
-  "worldInfo": {
+  "WorldInfo": {
     "nearbyNPC": {
       "C1": {
         "character": {
@@ -146,7 +146,7 @@
 </VariableThink>
 <VariableInsert>
 {
-  "progressData": {
+  "ProgressData": {
     "currentQuest": {
       "Q1": {
         "name": "任务名",
@@ -165,7 +165,7 @@
 </VariableThink>
 <VariableInsert>
 {
-  "worldInfo": {
+  "WorldInfo": {
     "nearbyNPC": {
       "C1": {
         "meta": {
@@ -185,7 +185,7 @@
 </VariableThink>
 <VariableDelete>
 {
-  "worldInfo": {
+  "WorldInfo": {
     "nearbyNPC": {
       "C1": {}
     }
@@ -204,7 +204,7 @@
 </VariableThink>
 <VariableDelete>
 {
-  "progressData": {
+  "ProgressData": {
     "currentQuest": {
       "Q1": {}
     }
@@ -213,7 +213,7 @@
 </VariableDelete>
 <VariableInsert>
 {
-  "progressData": {
+  "ProgressData": {
     "completedQuest": {
       "Q1": {
         "name": "随机任务1",

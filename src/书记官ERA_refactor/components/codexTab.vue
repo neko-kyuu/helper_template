@@ -50,7 +50,7 @@
         <div v-if="selectedEntry" class="details-content">
           <div v-if="!isEditing">
             <div class="item-name flex-between">
-              {{ selectedEntry.name }}
+              {{ selectedEntry.name }} | {{ selectedEntry.id }}
               <div style="flex-shrink: 0">
                 <i
                   class="fa-solid fa-pencil"

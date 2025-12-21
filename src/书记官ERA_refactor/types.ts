@@ -70,7 +70,6 @@ export interface NpcData {
   equipment?: {
     leftHand: string;
     rightHand: string;
-    outfit: string;
     outfitContent: string;
   };
 }
@@ -103,7 +102,6 @@ export interface MvuData {
     equipment: {
       leftHand: string;
       rightHand: string;
-      outfit: string;
       outfitContent: string;
     };
   };
@@ -119,8 +117,11 @@ export interface MvuData {
     factionPrestige: Record<string, factionPrestige>;
     bestiary: Record<string, any>;
     anecdotes: Record<string, any>;
+    outfitIds: Record<string, string>;
+    inventory: Record<string, OutfitData>;
+    worldNPC: Record<string, NpcData>;
   };
-  worldInfo: {
+  WorldInfo: {
     date: string;
     time: string;
     weather: string;
@@ -131,13 +132,16 @@ export interface MvuData {
     bestiary: Record<string, any>;
     anecdotes: Record<string, any>;
   };
-  progressData: {
+  ProgressData: {
     questPhase: string;
     partyAttrPoints: Record<string, number>;
     currentQuest: Record<string, any>;
     nextQuest: Record<string, any>;
     pendingQuest: Record<string, any>;
     completedQuest: Record<string, any>;
+  };
+  System: {
+    mainStoryMode: boolean;
   };
 }
 

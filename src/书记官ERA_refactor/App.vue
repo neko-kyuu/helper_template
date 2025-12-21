@@ -9,14 +9,14 @@
     <div class="scene-section">
       <div class="scene-details">
         <div class="scene-left">
-          <div class="location">🏰 {{ mvu.worldInfo.currentRegion }} - {{ mvu.worldInfo.currentLocation }}</div>
+          <div class="location">🏰 {{ mvu.WorldInfo.currentRegion }} - {{ mvu.WorldInfo.currentLocation }}</div>
         </div>
         <div class="scene-right">
           <div class="meta-info">
-            时间: <span>{{ mvu.worldInfo.date }} {{ mvu.worldInfo.time }}</span>
+            时间: <span>{{ mvu.WorldInfo.date }} {{ mvu.WorldInfo.time }}</span>
           </div>
           <div class="meta-info">
-            天气: <span>{{ mvu.worldInfo.weather }}</span>
+            天气: <span>{{ mvu.WorldInfo.weather }}</span>
           </div>
         </div>
       </div>
@@ -29,7 +29,7 @@
       <button @click="activeTab = 'wardrobe'" :class="{ active: activeTab === 'wardrobe' }">衣柜</button>
       <button @click="activeTab = 'quests'" :class="{ active: activeTab === 'quests' }">任务日志</button>
       <button @click="activeTab = 'bag'" :class="{ active: activeTab === 'bag' }">小队背包</button>
-      <button @click="activeTab = 'trade'" :class="{ active: activeTab === 'trade' }">交易</button>
+      <button @click="activeTab = 'trade'" :class="{ active: activeTab === 'trade' }">交易所</button>
       <button @click="activeTab = 'codex'" :class="{ active: activeTab === 'codex' }">图鉴</button>
     </div>
     <div class="tab-content">

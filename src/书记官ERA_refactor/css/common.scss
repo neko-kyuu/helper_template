@@ -109,7 +109,7 @@ button {
   background: var(--blur_tint_color);
   overflow-y: auto;
   max-height: 360px;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(120px, 0.33fr));
   grid-auto-rows: min-content;
   border: 1px solid var(--border_color);
 }
@@ -124,6 +124,7 @@ button {
   cursor: pointer;
   transition: all 0.2s ease-in-out;
   overflow: hidden;
+  max-width: 1/3fr;
 
   &:hover {
     background-color: var(--blur_tint_color_less);
@@ -253,10 +254,10 @@ button {
 
 .stat {
   display: grid;
-  grid-template-columns: 0.6fr 1fr 0.6fr;
+  grid-template-columns: 0.3fr 1fr 0.8fr;
   align-items: center;
-  gap: 4px;
-  height: 20px;
+  column-gap: 4px;
+  min-height: 20px;
 
   .bar {
     height: 12px;

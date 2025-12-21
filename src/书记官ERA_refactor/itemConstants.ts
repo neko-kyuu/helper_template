@@ -20,7 +20,7 @@ export const SlotTypeSchema = z.enum([
   'belt',
 ]);
 export type SlotType = z.infer<typeof SlotTypeSchema>;
-export const ItemTypeSchema = z.enum(['cloth', 'weapon', 'item']);
+export const ItemTypeSchema = z.enum(['cloth', 'weapon', 'item', 'consumable']);
 export type ItemType = z.infer<typeof ItemTypeSchema>;
 
 export const BaseInventoryItemSchema = z.object({
@@ -146,6 +146,7 @@ export const typeLabels: Record<ItemType, string> = {
   cloth: '衣物',
   weapon: '武器',
   item: '物品',
+  consumable: '消耗品',
 };
 
 export { ClothingSystemData };

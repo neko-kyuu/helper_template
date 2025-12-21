@@ -25,7 +25,7 @@ gold: |
   - 贵族: 日收入约 6,500 金币
   - 一方领主: 日收入约 25,000 金币
 favorability: |
-  好感度: -100至100，单次好感度变化不宜大于5。
+  好感度: -100至100，单次好感度变化不宜大于5，**1-2的增减是合适的**，过快的好感发展会破坏故事节奏，请避免。
 experience: |
   经验: 探索、任务、挑战、剧情突破均可提升经验，应当积极给予经验奖励。
   - 小挑战 / 击败弱小敌人: +10 ~ +30 XP
@@ -34,76 +34,61 @@ experience: |
   - 史诗级事件 / 击败首领: +500 XP 或更多
 
 # 2. 数据类型定义
-NpcData:
-  description: NPC 静态数据
-  fields:
-    character: # Object: NPC 基本信息，字段固定。
-    meta:      # Object: NPC 元数据，可根据需要增加新字段。
-FactionData:
-  description: 阵营数据
-  fields:
-    name:        # String: 阵营名称。
-    description: # String: 简要描述。
-    prestige:    # Number: 声望，等效于好感度，初始通常为 0。
-BestiaryEntry:
-  description: 生物图鉴条目
-  fields:
-    name:        # String: 名称。
-    description: # String: 描述。
-    habitat:     # String: 栖息地。
-    weaknesses:  # String: 已知弱点。
-    knownInfo:   # String: 已知信息。
-    killCount:   # Number: （若为敌对性生物）击杀数量。
-AnecdoteEntry:
- description: 旅途轶事条目
- fields:
-   name:               # String: 轶事名称。
-   description:        # String: 轶事描述。
-   location:           # String: 发生地点。
-   charactersInvolved: # String: 相关人物。
-   knownInfo:          # String: 已知信息。
-InventoryItem:
-  description: 玩家物品
-  fields:
-    name:        # String: 物品名称。
-    description: # String: 物品描述。
-    quality:     # Enum: 品质。'common' | 'good' | 'excellent' | 'masterwork' | 'legendary'
-    type:        # Enum: 物品类型。'cloth' | 'weapon' | 'item'
-    tier:        # Enum: 物品重量阶梯。'basic' | 'light' | 'medium' | 'heavy'
-    slot:        # Enum: 服装部位。当 type 为 'cloth' 时必须提供。'head' | 'bodyInner' | 'bodyArmor' | 'hands' | 'legsInner' | 'legsArmor' | 'feet' | 'cloak' | 'neck' | 'ring' | 'belt'
-QuestData:
-  description: 任务数据
-  fields:
-    name:        # String: 任务名称。
-    description: # String: 任务描述。
-    isMain:      # Boolean: 是否是主线任务。
+# 描述字段保持极简干练，强调重点
+NpcData: # NPC 静态数据
+  character: # Object: NPC 基本信息，字段固定。
+  meta:      # Object: NPC 元数据，可根据需要增加新字段。
+FactionData: # 阵营数据
+  name:        # String: 阵营名称。
+  description: # String: 简要描述。
+  prestige:    # Number: 声望，等效于好感度，初始通常为 0。
+BestiaryEntry: # 生物图鉴条目
+  name:        # String: 名称。
+  description: # String: 描述。
+  habitat:     # String: 栖息地。
+  weaknesses:  # String: 已知弱点。
+  knownInfo:   # String: 已知信息。
+  killCount:   # Number: （若为敌对性生物）击杀数量。
+AnecdoteEntry: # 旅途轶事条目
+  name:               # String: 轶事名称。
+  description:        # String: 轶事描述。
+  location:           # String: 发生地点。
+  charactersInvolved: # String: 相关人物。
+  knownInfo:          # String: 已知信息。
+InventoryItem: # 玩家物品
+  name:        # String: 物品名称。
+  description: # String: 物品描述。
+  quality:     # Enum: 品质。'common' | 'good' | 'excellent' | 'masterwork' | 'legendary'
+  type:        # Enum: 物品类型。'cloth' | 'weapon' | 'item' | 'consumable'
+  tier:        # Enum: 物品重量阶梯。'basic' | 'light' | 'medium' | 'heavy'
+  slot:        # Enum: 服装部位。当 type 为 'cloth' 时必须提供。'head' | 'bodyInner' | 'bodyArmor' | 'hands' | 'legsInner' | 'legsArmor' | 'feet' | 'cloak' | 'neck' | 'ring' | 'belt'
+QuestData: # 任务数据
+  name:        # String: 任务名称。
+  description: # String: 任务描述。
+  isMain:      # Boolean: 是否是主线任务。
 
 # 3. 核心变量结构
 PlayerData: # Object: 玩家静态数据根对象
-  character: # Object: 角色基本信息
-    name:     {{ERA:PlayerData.character.name}} # String: 角色名称 (只读)
-    level:    {{ERA:PlayerData.character.level}} # Number: 角色等级 (只读)
-    gender:   {{ERA:PlayerData.character.gender}} # String: 性别 (只读)
-    race:     {{ERA:PlayerData.character.race}} # String: 种族 (只读)
+  character: {{ERA:PlayerData.character}} # Object: 角色基本信息(只读)
   status:     {{ERA:PlayerData.status}} # Object: 角色状态 (health, mood, arousal, experience)，其中经验值单调递增，不主动清零升级，可以超过最大值
   attributes: {{ERA:PlayerData.attributes}} # Object: 角色属性信息 (只读)
-  equipment: {{ERA:PlayerData.equipment}} # Object: 角色穿戴信息 (只读)
-worldInfo:   # Object: 世界信息
-  date:            {{ERA:worldInfo.date}} # String: 当前日期，格式参考<world_background>中的历法，如 "1149DR 奈托9日"
-  time:            {{ERA:worldInfo.time}} # String: 模糊时间，如 "下午"
-  weather:         {{ERA:worldInfo.weather}} # String: 天气状况
-  currentRegion:   {{ERA:worldInfo.currentRegion}} # String: 当前大区域，最细到城市
-  currentLocation: {{ERA:worldInfo.currentLocation}} # String: 当前地点
-  nearbyNPC:       {{ERA:worldInfo.nearbyNPC}} # Object: NpcData, 场景内的NPC，包括友善、中立、敌对。NPC信息可以随玩家对其的了解程度更新。
-  factionPrestige: {{ERA:worldInfo.factionPrestige}} # Object: FactionData, 阵营声望
-  bestiary:        {{ERA:worldInfo.bestiary}} # Object: BestiaryEntry, 生物图鉴
-  anecdotes:       {{ERA:worldInfo.anecdotes}} # Object: AnecdoteEntry, 旅途轶事，记录体验到的特产、风俗、地点等概念性条目
-progressData:   # Object: 进度信息
-  questPhase:      "{{ERA:progressData.questPhase}}" # String: 当前激活任务的阶段描述
-  currentQuest:    {{ERA:progressData.currentQuest}} # Object: QuestData, 当前已接受并进行中的任务
-  nextQuest:       {{ERA:progressData.nextQuest}} # Object: QuestData, 可接受的任务
-  pendingQuest:    {{ERA:progressData.pendingQuest}} # Object: QuestData, 已接取但未追踪的任务
-  completedQuest:  {{ERA:progressData.completedQuest}} # Object: QuestData, 已完成任务，如果任务分阶段则须完成最终阶段 (只增不删)
+  equipment: {{ERA:PlayerData.equipment}} # Object: 角色穿戴信息
+WorldInfo:   # Object: 世界信息
+  date:            {{ERA:WorldInfo.date}} # String: 当前日期，格式参考<world_background>中的历法，如 "1149DR 奈托9日"
+  time:            {{ERA:WorldInfo.time}} # String: 模糊时间，如 "下午"
+  weather:         {{ERA:WorldInfo.weather}} # String: 天气状况
+  currentRegion:   {{ERA:WorldInfo.currentRegion}} # String: 当前大区域，最细到城市
+  currentLocation: {{ERA:WorldInfo.currentLocation}} # String: 当前地点
+  nearbyNPC:       {{ERA:WorldInfo.nearbyNPC}} # Object: NpcData, 场景内的NPC，包括友善、中立、敌对。NPC信息可以随玩家对其的了解程度更新。
+  factionPrestige: {{ERA:WorldInfo.factionPrestige}} # Object: FactionData, 阵营声望
+  bestiary:        {{ERA:WorldInfo.bestiary}} # Object: BestiaryEntry, 生物图鉴
+  anecdotes:       {{ERA:WorldInfo.anecdotes}} # Object: AnecdoteEntry, 旅途轶事，记录体验到的特产、风俗、地点等概念性条目
+ProgressData:   # Object: 进度信息
+  questPhase:      "{{ERA:ProgressData.questPhase}}" # String: 当前激活任务的阶段描述
+  currentQuest:    {{ERA:ProgressData.currentQuest}} # Object: QuestData, 当前已接受并进行中的任务
+  nextQuest:       {{ERA:ProgressData.nextQuest}} # Object: QuestData, 可接受的任务
+  pendingQuest:    {{ERA:ProgressData.pendingQuest}} # Object: QuestData, 已接取但未追踪的任务
+  completedQuest:  {{ERA:ProgressData.completedQuest}} # Object: QuestData, 已完成任务，如果任务分阶段则须完成最终阶段 (只增不删)
 PlayerDynamicData: # Object: 玩家动态数据
   inventory: {{ERA:PlayerDynamicData.inventory}} # Object: InventoryItem, 小队的物品，包括跟随NPC的物品
   gold:      {{ERA:PlayerDynamicData.gold}} # Number: 玩家拥有的金币

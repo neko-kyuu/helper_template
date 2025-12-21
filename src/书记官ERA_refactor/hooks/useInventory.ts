@@ -77,13 +77,14 @@ export function useInventory(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     }
   });
 
-  const groupOrder = ['item', 'cloth', 'weapon'] as const;
+  const groupOrder = ['item', 'consumable', 'cloth', 'weapon'] as const;
 
   const groupedInventory = computed(() => {
     const groups: { [key: string]: { [key: string]: any } } = {
       cloth: {},
       weapon: {},
       item: {},
+      consumable: {},
     };
 
     if (mvu.value.PlayerDynamicData.inventory) {

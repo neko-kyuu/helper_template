@@ -13,7 +13,7 @@
             <span class="char-name">{{ char.character.name }} (Lv. {{ char.character.level }})</span>
             <div class="right-btns">
               <div v-if="isAssigningAttributes[charKey]">
-                <span>属性点: {{ (mvu.progressData.partyAttrPoints[charKey] || 0) - getSpentPoints(char) }}</span>
+                <span>属性点: {{ (mvu.ProgressData.partyAttrPoints[charKey] || 0) - getSpentPoints(char) }}</span>
                 <button @click="commitAttributes(char, charKey)">保存</button>
               </div>
               <button
@@ -27,13 +27,21 @@
           <div class="column">
             <!-- 状态 -->
             <div class="status">
-              <div class="stat grid-col-1">{{ charKey }} | {{ char.character.gender }} {{ char.character.race }}</div>
+              <!-- <div class="stat grid-col-1">{{ charKey }} | {{ char.character.gender }} {{ char.character.race }}</div> -->
               <div class="stat" v-for="(stat, key) in char.status" :key="key">
                 {{ statusLabels[key] }}
                 <div class="bar">
                   <div class="fill" :style="{ width: `${Math.min(100, (stat.current / stat.max) * 100)}%` }"></div>
                 </div>
                 {{ stat.current }} / {{ stat.max }}
+                <div></div>
+                <div
+                  class="grid-col-1"
+                  v-if="key == 'health'"
+                  :style="{ color: getHealthColor(stat.current, stat.max) }"
+                >
+                  当前状态: {{ getHealthDescription(stat.current, stat.max) }}
+                </div>
               </div>
             </div>
             <!-- 属性 -->
@@ -55,7 +63,7 @@
                   <button
                     class="small"
                     @click="incrementAttribute(char, charKey, attrKey as unknown as string)"
-                    :disabled="(mvu.progressData.partyAttrPoints[charKey] || 0) <= getSpentPoints(char)"
+                    :disabled="(mvu.ProgressData.partyAttrPoints[charKey] || 0) <= getSpentPoints(char)"
                   >
                     +
                   </button>
@@ -67,9 +75,9 @@
         </div>
       </div>
       <div class="detail-panel">
-        <div v-if="selectedChar" class="scene-detail-item">
+        <div v-if="selectedChar && selectedCharKey" class="scene-detail-item">
           <div class="column">
-            <div class="section-title">基础信息</div>
+            <div class="section-title">基础信息 | {{ selectedCharKey }}</div>
             <div class="column-content" v-for="(value, key) in selectedChar.character" :key="key">
               <span>{{ characterLabels[key] || key }}</span> {{ value }}
             </div>
@@ -79,27 +87,31 @@
               <div class="column-content" v-for="(value, key) in selectedChar.meta" :key="key">
                 <span>{{ metaLabels[key] || key }}</span>
                 <span v-if="key === 'favorabilityTowardsNPCs'">
-                  <div v-for="(fav, npcName) in value" :key="npcName">{{ npcName }}: {{ fav }}</div>
+                  <div v-for="(fav, npcName) in value" :key="npcName">
+                    {{ getNPCNameByKey(npcName as unknown as string) }}: {{ fav }}
+                  </div>
                 </span>
                 <span v-else> {{ value }} </span>
               </div>
             </template>
 
             <div class="section-title">穿戴信息</div>
+            <div class="column-content">
+              <span>套装ID</span>
+              <select
+                :value="mvu.ArchivedData.outfitIds[selectedCharKey]"
+                @change="updateOutfit(($event.target as HTMLSelectElement).value)"
+              >
+                <option value="">无</option>
+                <option v-for="(outfit, outfitId) in characterOutfits" :key="outfitId" :value="outfitId">
+                  {{ outfit.name }}
+                </option>
+              </select>
+            </div>
             <div class="column-content" v-for="(value, key) in selectedChar.equipment" :key="key">
               <span>{{ equipmentLabels[key] || key }}</span>
-              <template v-if="key === 'outfit'">
-                <select :value="value" @change="updateOutfit(($event.target as HTMLSelectElement).value)">
-                  <option value="">无</option>
-                  <option v-for="(outfit, outfitId) in characterOutfits" :key="outfitId" :value="outfitId">
-                    {{ outfit.name }}
-                  </option>
-                </select>
-              </template>
-              <template v-else>
-                <span v-if="value"> {{ value }} </span>
-                <span v-else> -- </span>
-              </template>
+              <span v-if="value"> {{ value }} </span>
+              <span v-else> -- </span>
             </div>
           </div>
         </div>
@@ -133,5 +145,8 @@ const {
   selectedCharKey,
   characterOutfits,
   updateOutfit,
+  getNPCNameByKey,
+  getHealthDescription,
+  getHealthColor,
 } = useParty(mvu, rawMvuData, handleMvuUpdate);
 </script>

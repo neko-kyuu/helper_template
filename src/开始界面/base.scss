@@ -24,6 +24,7 @@
     border-top: 1px solid var(--border_color);
     width: 100%;
     height: 100%;
+    min-height: 300px;
     overflow-y: auto;
     background-color: var(--blur_tint_color_fill);
   }

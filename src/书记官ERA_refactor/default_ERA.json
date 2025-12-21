@@ -61,11 +61,10 @@
     "equipment": {
       "leftHand": "none",
       "rightHand": "none",
-      "outfit": "none",
       "outfitContent": "none"
     }
   },
-  "progressData": {
+  "ProgressData": {
     "$meta": {
       "necessary": "self",
       "updatable": true
@@ -136,7 +135,7 @@
       "F1": 0
     }
   },
-  "worldInfo": {
+  "WorldInfo": {
     "$meta": {
       "necessary": "self",
       "updatable": true
@@ -324,7 +323,6 @@
       "equipment": {
         "leftHand": "none",
         "rightHand": "none",
-        "outfit": "none",
         "outfitContent": "none"
       },
       "meta": {
@@ -395,6 +393,11 @@
         "medical": 2,
         "social": 4,
         "intellectual": 2
+      },
+      "equipment": {
+        "leftHand": "none",
+        "rightHand": "none",
+        "outfitContent": "none"
       },
       "meta": {
         "relationship": "同伴",
@@ -481,6 +484,23 @@
         "$meta": {
           "updatable": true
         }
+      }
+    },
+    "outfitIds":{
+      "$meta": {
+        "updatable": true
+      },
+      "F0":"none",
+      "F1":"none"
+    },
+    "inventory":{
+      "$meta": {
+        "updatable": true
+      }
+    },
+    "worldNPC":{
+      "$meta": {
+        "updatable": true
       }
     }
   },

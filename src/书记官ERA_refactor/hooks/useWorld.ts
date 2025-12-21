@@ -4,7 +4,9 @@ import { MvuData, NpcData, WithId } from '../types';
 export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (event: 'open-map') => void) {
   const selectedNpc = ref<WithId<NpcData> | null>(null);
 
-  function selectNpc(npc: NpcData | null, index: string) {
+  const archivedFlag = ref(false);
+  function selectNpc(npc: NpcData | null, index: string, archived: boolean = false) {
+    archivedFlag.value = archived;
     if (selectedNpc.value?.id === index) {
       selectedNpc.value = null;
     } else {
@@ -38,7 +40,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
   };
 
   const deleteNPC = (npcKey: string) => {
-    const itemToDelete = mvu.value.worldInfo.nearbyNPC[npcKey];
+    const itemToDelete = mvu.value.WorldInfo.nearbyNPC[npcKey];
     if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
       selectNpc(null, '');
     }
@@ -46,18 +48,60 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'deleteByPath',
         detail: {
-          path: `worldInfo.nearbyNPC.${npcKey}`,
+          path: `WorldInfo.nearbyNPC.${npcKey}`,
+        },
+      },
+    ]);
+    handleMvuUpdate([
+      {
+        event: 'insertByPath',
+        detail: {
+          path: `ArchivedData.worldNPC.${npcKey}`,
+          value: itemToDelete,
         },
       },
     ]);
   };
 
+  const openNPC = (npcKey: string) => {
+    const itemToDelete = mvu.value.ArchivedData.worldNPC[npcKey];
+    if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
+      selectNpc(null, '');
+    }
+    handleMvuUpdate([
+      {
+        event: 'deleteByPath',
+        detail: {
+          path: `ArchivedData.worldNPC.${npcKey}`,
+        },
+      },
+    ]);
+    handleMvuUpdate([
+      {
+        event: 'insertByPath',
+        detail: {
+          path: `WorldInfo.nearbyNPC.${npcKey}`,
+          value: itemToDelete,
+        },
+      },
+    ]);
+  };
+
+  const getNPCNameByKey = (npcKey: string): string => {
+    const npc = mvu.value.WorldInfo.nearbyNPC;
+    const party = mvu.value.FollowerNPCData;
+    return npc[npcKey] ? npc[npcKey].character.name : party[npcKey] ? party[npcKey].character.name : '';
+  };
+
   return {
+    archivedFlag,
     selectedNpc,
     selectNpc,
     openWorldMap,
     getPrestigeDescription,
     getPrestigeColor,
     deleteNPC,
+    openNPC,
+    getNPCNameByKey,
   };
 }

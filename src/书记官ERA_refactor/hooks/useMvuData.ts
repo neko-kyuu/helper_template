@@ -1,11 +1,10 @@
 // hooks/useMvuData.ts
 import _ from 'lodash';
 import { ref, watch } from 'vue';
-import { InventoryItem } from '../itemConstants';
-import { NpcData, OutfitData, factionPrestige } from '../types';
+import { MvuData } from '../types';
 
 // 默认的 MVU 数据结构
-const defaultMvuData = {
+const defaultMvuData: MvuData = {
   PlayerData: {
     character: {
       name: '',
@@ -52,41 +51,44 @@ const defaultMvuData = {
     equipment: {
       leftHand: 'none',
       rightHand: 'none',
-      outfit: 'none',
       outfitContent: 'none',
     },
   },
   PlayerDynamicData: {
-    inventory: {} as Record<string, InventoryItem>,
+    inventory: {},
     gold: 100,
   },
   FollowerNPCData: {},
   Wardrobe: {
-    ownedOutfits: {} as Record<string, OutfitData>,
-    //todo 随从的outfit
+    ownedOutfits: {},
   },
   ArchivedData: {
-    factionPrestige: {} as Record<string, factionPrestige>,
+    factionPrestige: {},
     bestiary: {},
     anecdotes: {},
+    outfitIds: {
+      F0: 'none',
+    },
+    inventory: {},
+    worldNPC: {},
   },
   System: {
     mainStoryMode: true,
   },
-  worldInfo: {
+  WorldInfo: {
     date: '',
     time: '',
     weather: '',
     currentRegion: '',
     currentLocation: '',
-    nearbyNPC: {} as Record<string, NpcData>,
-    factionPrestige: {} as Record<string, factionPrestige>,
+    nearbyNPC: {},
+    factionPrestige: {},
     bestiary: {},
     anecdotes: {},
   },
-  progressData: {
+  ProgressData: {
     questPhase: '',
-    partyAttrPoints: {} as Record<string, number>,
+    partyAttrPoints: {},
     currentQuest: {},
     nextQuest: {},
     pendingQuest: {},
@@ -171,14 +173,14 @@ watch(
 
     const followerNpcKeys = Object.keys(newFollowers || {});
     const allPartyKeys = ['F0', ...followerNpcKeys]; // F0 是玩家
-    const attrPoints = rawMvuData.value.progressData?.partyAttrPoints || {};
+    const attrPoints = rawMvuData.value.ProgressData?.partyAttrPoints || {};
     const commandsToSync: Command[] = [];
 
     for (const partyKey of allPartyKeys) {
       if (!(partyKey in attrPoints)) {
         commandsToSync.push({
           event: 'insertByPath',
-          detail: { path: `progressData.partyAttrPoints.${partyKey}`, value: 0 },
+          detail: { path: `ProgressData.partyAttrPoints.${partyKey}`, value: 0 },
         });
       }
     }
@@ -210,11 +212,11 @@ eventOn('era:writeDone', detail => {
   // 使用 statWithoutMeta 来更新 UI，它是不包含 ERA 内部字段的纯净数据
   rawMvuData.value = detail.statWithoutMeta;
   // 处理世界书蓝绿灯
-  const currentRegion = rawMvuData.value?.worldInfo?.currentRegion;
+  const currentRegion = rawMvuData.value?.WorldInfo?.currentRegion;
   let currentQuests: string[] = [];
 
   if (rawMvuData.value?.System?.mainStoryMode) {
-    const quest = rawMvuData.value?.progressData?.currentQuest || {};
+    const quest = rawMvuData.value?.ProgressData?.currentQuest || {};
     // const currentQuests:string[] = Object.values(quest)
     //   .filter((item:any) => item.name)
     //   .map((item:any) => item.name);
