@@ -101,3 +101,48 @@ const { mvu, handleMvuUpdate } = useMvuData();
 const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTab, activeQuest, deleteQuest } =
   useQuests(mvu, handleMvuUpdate);
 </script>
+<style lang="scss" scoped>
+.quest-container {
+  padding: 10px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+
+  .quest-item-container {
+    max-height: 360px;
+    overflow-y: auto;
+  }
+
+  .quest-item {
+    margin-bottom: 6px;
+    padding: 8px;
+    background: var(--blur_tint_color);
+    border-left: 3px solid var(--quote_text_color);
+    border-radius: 2px;
+
+    &.side-quest {
+      border-left-color: rgb(86, 57, 137);
+    }
+    &.main-quest {
+      border-left-color: rgb(137, 136, 57);
+    }
+
+    .quest-title {
+      font-size: var(--font-size-small);
+      font-weight: bold;
+      color: var(--main_text_color);
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .quest-description {
+      font-size: var(--font-size-extra-small);
+      color: var(--quote_text_color);
+      line-height: 1.5;
+    }
+  }
+}
+</style>

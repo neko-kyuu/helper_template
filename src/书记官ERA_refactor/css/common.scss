@@ -202,23 +202,23 @@ button {
     font-weight: bold;
 
     &.common {
-      color: #9d9d9d;
+      color: var(--quality-common-color);
     }
 
     &.good {
-      color: #14a700;
+      color: var(--quality-good-color);
     }
 
     &.excellent {
-      color: #0070dd;
+      color: var(--quality-excellent-color);
     }
 
     &.masterwork {
-      color: #a335ee;
+      color: var(--quality-masterwork-color);
     }
 
     &.legendary {
-      color: #ff8000;
+      color: var(--quality-legendary-color);
     }
   }
 

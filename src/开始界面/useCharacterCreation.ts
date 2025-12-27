@@ -1,5 +1,77 @@
 import { computed, reactive, ref, watch } from 'vue';
-import defaultEra from '../书记官ERA_refactor/default_ERA.json';
+
+const defaultEra = {
+  playerData: {
+    character: {
+      name: '马修',
+      level: 1,
+      gender: '男',
+      race: '月精灵',
+      height: '185cm',
+      build: '纤细',
+      appearance: '银发紫瞳，皮肤白皙，有着月精灵标志性的尖耳朵和高鼻梁。',
+      personality: '聪慧、冷静',
+    },
+    attributes: {
+      shooting: 3,
+      melee: 3,
+      construction: 0,
+      mining: 0,
+      cooking: 0,
+      planting: 0,
+      animals: 2,
+      crafting: 0,
+      artistic: 2,
+      medical: 4,
+      social: 4,
+      intellectual: 2,
+    },
+    equipment: {
+      leftHand: 'none',
+      rightHand: 'none',
+      outfitContent: 'none',
+    },
+  },
+  followerNPCData: {
+    F1: {
+      character: {
+        name: '利亚姆',
+        level: 1,
+        gender: '男',
+        race: '天使',
+        height: '188cm',
+        build: '肌肉发达',
+        appearance: '金发蓝瞳，皮肤白皙，背后生有白色羽翼。',
+        personality: '忠诚、勇敢、单纯',
+      },
+      attributes: {
+        shooting: 2,
+        melee: 4,
+        construction: 2,
+        mining: 0,
+        cooking: 2,
+        planting: 0,
+        animals: 1,
+        crafting: 1,
+        artistic: 0,
+        medical: 2,
+        social: 4,
+        intellectual: 2,
+      },
+      equipment: {
+        leftHand: 'none',
+        rightHand: 'none',
+        outfitContent: 'none',
+      },
+      meta: {
+        relationship: '同伴',
+        favorability: 60,
+        favorabilityTowardsNPCs: {},
+        description: '',
+      },
+    },
+  },
+};
 
 export function useCharacterCreation(defaultMvuData: any) {
   const sys = reactive({
@@ -252,6 +324,12 @@ export function useCharacterCreation(defaultMvuData: any) {
         acc[`F${i + 1}`] = {
           character: { ...curr.character },
           attributes: { ...curr.attributes },
+          status: {
+            health: { current: 12, max: 12 },
+            mood: { current: 80, max: 100 },
+            arousal: { current: 50, max: 100 },
+            experience: { current: 0, max: 100 },
+          },
           equipment: {
             leftHand: 'none',
             rightHand: 'none',

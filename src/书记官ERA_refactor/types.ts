@@ -80,6 +80,12 @@ export interface factionPrestige {
   prestige: number;
 }
 
+export interface CustomApiConfig {
+  apiurl: string;
+  key: string;
+  model: string;
+}
+
 export interface MvuData {
   playerData: {
     character: {
@@ -142,6 +148,7 @@ export interface MvuData {
   };
   system: {
     mainStoryMode: boolean;
+    customApi: CustomApiConfig;
   };
 }
 

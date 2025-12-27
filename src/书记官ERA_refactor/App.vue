@@ -57,7 +57,9 @@
       </template>
 
       <!-- 交易 -->
-      <template v-if="activeTab === 'trade'"> </template>
+      <template v-if="activeTab === 'trade'">
+        <TradeTab />
+      </template>
       <!-- 图鉴 -->
       <template v-if="activeTab === 'codex'">
         <CodexTab />
@@ -93,6 +95,7 @@ import { useMvuData } from './hooks/useMvuData';
 import MapSelector from './components/MapSelector.vue';
 import ModalDialog from './components/ModalDialog.vue';
 import OutfitSelector from './components/outfitSelector.vue';
+import TradeTab from './components/tradeTab.vue';
 
 const activeTab = ref('party');
 const showModal = ref(false);

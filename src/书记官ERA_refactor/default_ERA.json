@@ -9,14 +9,14 @@
         "necessary": "all",
         "updatable": true
       },
-      "name": "马修",
+      "name": "",
       "level": 1,
       "gender": "男",
-      "race": "月精灵",
-      "height": "185cm",
-      "build": "纤细",
-      "appearance": "银发紫瞳，皮肤白皙，有着月精灵标志性的尖耳朵和高鼻梁。",
-      "personality": "聪慧、冷静"
+      "race": "",
+      "height": "",
+      "build": "",
+      "appearance": "",
+      "personality": ""
     },
     "status": {
       "$meta": {
@@ -45,18 +45,18 @@
         "necessary": "all",
         "updatable": true
       },
-      "shooting": 3,
-      "melee": 3,
+      "shooting": 0,
+      "melee": 0,
       "construction": 0,
       "mining": 0,
       "cooking": 0,
       "planting": 0,
-      "animals": 2,
+      "animals": 0,
       "crafting": 0,
-      "artistic": 2,
-      "medical": 4,
-      "social": 4,
-      "intellectual": 2
+      "artistic": 0,
+      "medical": 0,
+      "social": 0,
+      "intellectual": 0
     },
     "equipment": {
       "leftHand": "none",
@@ -81,11 +81,6 @@
         "$meta": {
           "updatable": true
         }
-      },
-      "MQ1": {
-        "name": "节日的插曲",
-        "description": "你们作为旅者，本想享受这难得的安宁与热闹，却意外卷入了一场发生于市中心“长者之喉”许愿井的不同寻常的事件。",
-        "isMain": true
       }
     },
     "nextQuest": {
@@ -131,8 +126,7 @@
       }
     },
     "partyAttrPoints": {
-      "F0": 0,
-      "F1": 0
+      "F0": 0
     }
   },
   "worldInfo": {
@@ -140,11 +134,11 @@
       "necessary": "self",
       "updatable": true
     },
-    "date": "1468DR 奈托月19日",
-    "time": "傍晚",
-    "weather": "飘雪",
-    "currentRegion": "巴拉德雷",
-    "currentLocation": "羽笔与酒杯旅店附近",
+    "date": "",
+    "time": "",
+    "weather": "",
+    "currentRegion": "",
+    "currentLocation": "",
     "nearbyNPC": {
       "$meta": {
         "updatable": true
@@ -338,77 +332,6 @@
       "$meta": {
         "updatable": true
       }
-    },
-    "F1": {
-      "character": {
-        "$meta": {
-          "necessary": "all",
-          "updatable": true
-        },
-        "name": "利亚姆",
-        "level": 1,
-        "gender": "男",
-        "race": "天使",
-        "height": "188cm",
-        "build": "肌肉发达",
-        "appearance": "金发蓝瞳，皮肤白皙，背后生有白色羽翼。",
-        "personality": "忠诚、勇敢、单纯"
-      },
-      "status": {
-        "$meta": {
-          "necessary": "all",
-          "updatable": true
-        },
-        "health": {
-          "current": 12,
-          "max": 12
-        },
-        "mood": {
-          "current": 90,
-          "max": 100
-        },
-        "arousal": {
-          "current": 50,
-          "max": 100
-        },
-        "experience": {
-          "current": 0,
-          "max": 100
-        }
-      },
-      "attributes": {
-        "$meta": {
-          "necessary": "all",
-          "updatable": true
-        },
-        "shooting": 2,
-        "melee": 4,
-        "construction": 2,
-        "mining": 0,
-        "cooking": 2,
-        "planting": 0,
-        "animals": 1,
-        "crafting": 1,
-        "artistic": 0,
-        "medical": 2,
-        "social": 4,
-        "intellectual": 2
-      },
-      "equipment": {
-        "leftHand": "none",
-        "rightHand": "none",
-        "outfitContent": "none"
-      },
-      "meta": {
-        "relationship": "同伴",
-        "favorability": 60,
-        "favorabilityTowardsNPCs": {
-          "$meta": {
-            "updatable": true
-          }
-        },
-        "description": ""
-      }
     }
   },
   "wardrobe": {
@@ -490,8 +413,7 @@
       "$meta": {
         "updatable": true
       },
-      "F0":"none",
-      "F1":"none"
+      "F0":"none"
     },
     "inventory":{
       "$meta": {
@@ -508,6 +430,14 @@
     "mainStoryMode": true,
     "$meta": {
       "updatable": true
+    },
+    "customApi":{
+      "$meta": {
+        "updatable": true
+      },
+      "apiurl": "",
+      "key": "",
+      "model": ""
     }
   }
 }

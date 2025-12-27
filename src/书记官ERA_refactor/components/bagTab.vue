@@ -25,7 +25,7 @@
               @click="selectItem(item, key as unknown as string)"
             >
               <i class="fa-solid fa-box" v-if="item.type == 'item'"></i>
-              <i class="fa-solid fa-box" v-if="item.type == 'consumable'"></i>
+              <i class="fa-solid fa-plate-wheat" v-if="item.type == 'consumable'"></i>
               <i class="fa-solid fa-shirt" v-if="item.type == 'cloth'"></i>
               <i class="fa-solid fa-wand-sparkles" v-if="item.type == 'weapon'"></i>
               {{ item.name }}
@@ -125,3 +125,45 @@ const {
   groupedInventory,
 } = useInventory(mvu, handleMvuUpdate);
 </script>
+
+<style lang="scss" scoped>
+.bag-container {
+  padding: 10px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  .bag-grid {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+
+    .master-grid-item {
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+      padding: 12px 8px;
+
+      i {
+        font-size: 20px;
+        color: var(--italics_text_color);
+      }
+    }
+  }
+}
+
+.inventory-mini {
+  font-size: var(--font-size-small);
+  color: var(--italics_text_color);
+  line-height: 1.5;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .gold {
+    color: var(--quote_text_color);
+    font-weight: bold;
+  }
+}
+</style>

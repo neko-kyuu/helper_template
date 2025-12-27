@@ -74,6 +74,11 @@ const defaultMvuData: MvuData = {
   },
   system: {
     mainStoryMode: true,
+    customApi: {
+      apiurl: '',
+      key: '',
+      model: '',
+    },
   },
   worldInfo: {
     date: '',

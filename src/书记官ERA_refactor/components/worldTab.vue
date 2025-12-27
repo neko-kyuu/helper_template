@@ -110,3 +110,96 @@ const {
 } = useWorld(mvu, handleMvuUpdate, emit);
 const { characterLabels, metaLabels, attributeLabels } = useParty(mvu, rawMvuData, handleMvuUpdate);
 </script>
+<style lang="scss" scoped>
+.world-container {
+  padding: 10px 40px;
+
+  .scene-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 4px;
+    background: var(--blur_tint_color);
+    border-radius: 4px;
+
+    .column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+
+      .column-content {
+        display: grid;
+        grid-template-columns: 60px 1fr;
+        color: var(--main_text_color);
+        font-size: var(--font-size-small);
+      }
+    }
+
+    .npc-name {
+      background: var(--blur_tint_color);
+      border-radius: 3px;
+      border: 1px solid var(--border_color);
+      color: var(--main_text_color);
+      font-size: var(--font-size-small);
+      cursor: pointer;
+      padding: 2px 5px;
+      border-radius: 3px;
+      transition: background-color 0.3s;
+
+      &.archived {
+        background-color: var(--underline_text_color);
+      }
+
+      &:hover {
+        background: var(--user_mes_blur_tint_color);
+      }
+
+      &.selected {
+        background-color: var(--quote_text_color);
+        color: white;
+      }
+    }
+  }
+
+  .faction-card {
+    background: var(--blur_tint_color);
+    border: 1px solid var(--border_color);
+    border-radius: 4px;
+    margin-bottom: 4px;
+
+    .faction-header {
+      padding: 6px 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border_color);
+
+      .faction-name {
+        font-size: var(--font-size-small);
+        font-weight: bold;
+        color: var(--main_text_color);
+      }
+
+      .faction-prestige {
+        padding: 0 4px;
+        font-size: var(--font-size-small);
+        border: 1px solid var(--border_color);
+        border-radius: 4px;
+      }
+    }
+
+    .faction-content {
+      padding: 6px 5px;
+
+      span {
+        font-size: var(--font-size-small);
+        color: var(--italics_text_color);
+      }
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+</style>

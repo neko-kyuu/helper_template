@@ -83,3 +83,117 @@ const { slotNames, selectedOutfitId, selectedOutfit, editOutfit, openUpdateOutfi
   emit,
 );
 </script>
+
+<style lang="scss" scoped>
+.wardrobe-container {
+  display: flex;
+  gap: 16px;
+  height: 100%;
+  width: 100%;
+  padding: 0 40px;
+
+  .outfit-list {
+    width: 180px;
+    border-right: 1px solid var(--border_color);
+    padding-right: 16px;
+    flex-shrink: 0;
+    overflow-y: auto;
+
+    .outfit-item {
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 4px 0;
+      transition: all 0.2s ease;
+      font-size: var(--font-size-small);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      &:hover {
+        background-color: var(--blur_tint_color_less);
+      }
+
+      &.selected {
+        background-color: var(--blur_tint_color);
+        border-color: var(--border_color);
+      }
+
+      &.active {
+        font-weight: bold;
+        color: var(--main_text_color);
+      }
+
+      .current-tag {
+        font-size: var(--font-size-extra-small);
+        color: var(--quote_text_color);
+        font-weight: normal;
+      }
+    }
+  }
+
+  .outfit-details {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    .equipment-slots {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: 10px;
+
+      .slot-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 5px 0;
+        font-size: var(--font-size-small);
+        border-bottom: 1px solid var(--bot_mes_blur_tint_color);
+
+        .slot-name {
+          color: var(--quote_text_color);
+          text-transform: capitalize;
+          font-weight: bold;
+        }
+
+        .item-name {
+          .item-details {
+            color: var(--italics_text_color);
+            font-size: var(--font-size-extra-small);
+          }
+        }
+
+        .item-name-empty {
+          color: var(--italics_text_color);
+        }
+      }
+    }
+
+    .clothing-attributes {
+      margin-top: auto;
+      padding-top: 10px;
+
+      .attr {
+        display: flex;
+        justify-content: space-between;
+        font-size: var(--font-size-small);
+        padding: 3px 0;
+      }
+    }
+  }
+
+  .outfit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border_color);
+
+    .section-title {
+      margin-bottom: 0;
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+  }
+}
+</style>

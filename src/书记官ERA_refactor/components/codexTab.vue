@@ -171,3 +171,20 @@ const {
   archivedEntries,
 } = useCodex(mvu, handleMvuUpdate);
 </script>
+
+<style lang="scss" scoped>
+.codex-container {
+  padding: 10px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  .codex-grid {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+
+    .master-grid-item {
+      padding: 10px;
+    }
+  }
+}
+</style>

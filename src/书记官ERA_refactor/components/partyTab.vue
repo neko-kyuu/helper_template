@@ -150,3 +150,79 @@ const {
   getHealthColor,
 } = useParty(mvu, rawMvuData, handleMvuUpdate);
 </script>
+<style lang="scss" scoped>
+.party-container {
+  .character-card {
+    background: var(--blur_tint_color);
+    border: 1px solid var(--border_color);
+    border-radius: 4px;
+    margin-bottom: 10px;
+    cursor: pointer;
+
+    .char-header {
+      padding: 10px 40px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border_color);
+
+      .char-name {
+        font-size: var(--font-size-medium);
+        font-weight: bold;
+        color: var(--main_text_color);
+      }
+
+      .right-btns {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 4px;
+
+        span {
+          font-size: var(--font-size-small);
+          color: var(--italics_text_color);
+        }
+
+        span + button {
+          margin-left: 4px;
+        }
+      }
+    }
+
+    .column {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      padding: 10px 40px;
+    }
+
+    &.selected {
+      border-color: var(--quote_text_color);
+      box-shadow: 0 0 5px var(--quote_text_color);
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .scene-detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    .column {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+
+      .column-content {
+        display: grid;
+        grid-template-columns: 60px 1fr;
+        color: var(--main_text_color);
+        font-size: var(--font-size-small);
+      }
+    }
+  }
+}
+</style>
