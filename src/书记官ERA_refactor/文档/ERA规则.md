@@ -99,7 +99,7 @@
           "relationship": "陌生人",
           "favorability": 0,
           "favorabilityTowardsNPCs": {
-            "C2": 30
+            "Hadvar": -10
           },
           "description": "[简要描述]"
         }

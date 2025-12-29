@@ -2,36 +2,25 @@
   <div class="trade-container">
     <div class="inventory-mini">
       <div class="gold">💰 {{ mvu.playerDynamicData.gold }}金币</div>
-      <div>
-        <button @click="showSettings = !showSettings" :class="{ active: showSettings }" style="margin-right: 6px">
-          API 设置 <i class="fa-solid fa-gear"></i>
-        </button>
-        <button @click="refreshShop" :disabled="isGenerating">
-          刷新货架 <i class="fa-solid fa-rotate" :class="{ 'fa-spin': isGenerating }"></i>
-        </button>
+      <div class="trade-controls">
+        <textarea
+          v-model="refreshUserInput"
+          placeholder="输入刷新要求 (可选)..."
+          class="refresh-textarea"
+          :disabled="isGenerating"
+        ></textarea>
+        <div>
+          <button @click="$emit('open-settings')" title="API 设置" style="margin-right: 6px">
+            <i class="fa-solid fa-gear"></i>
+          </button>
+          <button @click="refreshShop(refreshUserInput)" :disabled="isGenerating">
+            刷新货架 <i class="fa-solid fa-rotate" :class="{ 'fa-spin': isGenerating }"></i>
+          </button>
+        </div>
       </div>
     </div>
 
     <div class="master-detail-body">
-      <!-- API 设置面板 -->
-      <div v-if="showSettings" class="settings-panel">
-        <div class="section-title">自定义 LLM API</div>
-        <div class="form-group">
-          <label>API 地址</label>
-          <input type="text" v-model="apiConfig.apiurl" placeholder="https://api.openai.com/v1" />
-        </div>
-        <div class="form-group">
-          <label>API Key</label>
-          <input type="password" v-model="apiConfig.key" placeholder="sk-..." />
-        </div>
-        <div class="form-group">
-          <label>模型名称</label>
-          <input type="text" v-model="apiConfig.model" placeholder="gpt-3.5-turbo" />
-        </div>
-        <div class="settings-tip">* 设置后将使用自定义 API 生成商品，留空则使用酒馆默认配置。</div>
-        <button @click="handleSaveApi">保存设置</button>
-      </div>
-
       <div class="master-grid trade-grid" v-if="shopItems.length">
         <div class="section-title grid-col-span-full">今日供应</div>
         <div
@@ -73,12 +62,7 @@
             </button>
           </div>
         </div>
-        <div v-else class="data-empty">
-          <div class="shop-description" v-if="shopDescription">
-            {{ shopDescription }}
-          </div>
-          <div v-else>选择一个商品查看详情</div>
-        </div>
+        <div v-else class="data-empty">选择一个商品查看详情</div>
       </div>
     </div>
   </div>
@@ -89,18 +73,13 @@ import { useMvuData } from '../hooks/useMvuData';
 import { useTrade } from '../hooks/useTrade';
 import { qualityLabels, slotLabels, tierLabels, typeLabels } from '../itemConstants';
 
+defineEmits(['open-settings']);
+
 const { mvu, handleMvuUpdate } = useMvuData();
-const {
-  shopItems,
-  shopDescription,
-  selectedItem,
-  isGenerating,
-  showSettings,
-  apiConfig,
-  refreshShop,
-  handleBuy,
-  handleSaveApi,
-} = useTrade(mvu, handleMvuUpdate);
+const { refreshUserInput, shopItems, selectedItem, isGenerating, refreshShop, handleBuy } = useTrade(
+  mvu,
+  handleMvuUpdate,
+);
 </script>
 
 <style lang="scss" scoped>
@@ -109,65 +88,21 @@ const {
   display: flex;
   flex-direction: column;
 
-  .settings-panel {
-    padding: 15px;
-    background: var(--user_mes_blur_tint_color);
-    border-bottom: 1px solid var(--border_color);
-
-    .form-group {
-      margin-bottom: 10px;
-      label {
-        display: block;
-        font-size: var(--font-size-extra-small);
-        color: var(--italics_text_color);
-        margin-bottom: 4px;
-      }
-      input {
-        width: 100%;
-        background: var(--bot_mes_blur_tint_color);
-        border: 1px solid var(--border_color);
-        color: var(--main_text_color);
-        padding: 6px 10px;
-        border-radius: 4px;
-        font-size: var(--font-size-small);
-
-        &:focus {
-          border-color: var(--quote_text_color);
-          outline: none;
-        }
-      }
-    }
-
-    .settings-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 12px;
-
-      .save-btn {
-        background: var(--quote_text_color);
-        color: white;
-        padding: 4px 12px;
-        font-size: var(--font-size-small);
-      }
-    }
-
-    .settings-tip {
-      font-size: var(--font-size-extra-small);
-      color: var(--italics_text_color);
-    }
-  }
-
   .trade-grid {
     .master-grid-item {
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
-      align-items: center;
+      align-items: flex-end;
       padding: 8px 12px;
+
+      .item-main {
+        text-align: right;
+      }
 
       .item-price {
         font-weight: bold;
-        color: var(--quality-legendary-color);
+        color: var(--quote_text_color);
         font-size: var(--font-size-small);
       }
     }
@@ -184,7 +119,6 @@ const {
     .price-tag {
       font-size: var(--font-size-medium);
       font-weight: bold;
-      color: var(--quality-legendary-color);
     }
 
     .buy-button {
@@ -196,15 +130,6 @@ const {
       cursor: pointer;
       transition: background 0.2s;
     }
-  }
-
-  .shop-description {
-    padding: 15px;
-    font-style: italic;
-    color: var(--italics_text_color);
-    line-height: 1.5;
-    background: var(--bot_mes_blur_tint_color);
-    border-radius: 4px;
   }
 }
 
@@ -220,6 +145,35 @@ const {
   .gold {
     color: var(--quote_text_color);
     font-weight: bold;
+  }
+
+  .trade-controls {
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+
+    .refresh-textarea {
+      width: 200px;
+      height: 28px;
+      background: var(--input_background_color);
+      color: var(--main_text_color);
+      border: 1px solid var(--border_color);
+      border-radius: 4px;
+      padding: 4px 8px;
+      font-size: var(--font-size-small);
+      resize: none;
+      font-family: inherit;
+
+      &:focus {
+        outline: none;
+        border-color: var(--quote_text_color);
+      }
+
+      &:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+    }
   }
 }
 </style>

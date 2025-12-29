@@ -37,7 +37,7 @@ experience: |
 # 描述字段保持极简干练，强调重点
 NpcData: # NPC 静态数据
   character: # Object: NPC 基本信息，字段固定。
-  meta:      # Object: NPC 元数据，可根据需要增加新字段。
+  meta:      # Object: NPC 元数据，可根据需要增加新字段。其中favorabilityTowardsNPCs为{"NPC名":"好感度"}键值对
 FactionData: # 阵营数据
   name:        # String: 阵营名称。
   description: # String: 简要描述。

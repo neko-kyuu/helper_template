@@ -74,7 +74,7 @@ const defaultMvuData: MvuData = {
   },
   system: {
     mainStoryMode: true,
-    customApi: {
+    tradeCustomApi: {
       apiurl: '',
       key: '',
       model: '',

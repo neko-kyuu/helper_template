@@ -349,7 +349,22 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
   const getNPCNameByKey = (npcKey: string): string => {
     const npc = mvu.value.worldInfo.nearbyNPC;
     const party = mvu.value.followerNPCData;
-    return npc[npcKey] ? npc[npcKey].character.name : party[npcKey] ? party[npcKey].character.name : '';
+    const archivedNpc = mvu.value.archivedData.worldNPC;
+    return npc[npcKey]
+      ? npc[npcKey].character.name
+      : party[npcKey]
+        ? party[npcKey].character.name
+        : archivedNpc[npcKey]
+          ? archivedNpc[npcKey].character.name
+          : '未知NPC';
+  };
+  const getFavorabilityTowardsNPCs = (val: Record<string, number> | undefined) => {
+    if (!val) return '';
+
+    const favs = Object.entries(val).map(([npcName, fav]) => {
+      return `${npcName}: ${fav}`;
+    });
+    return favs.join(', ');
   };
 
   const getHealthDescription = (current: number, max: number): string => {
@@ -386,6 +401,7 @@ export function useParty(mvu: Ref<MvuData>, rawMvuData: Ref<any>, handleMvuUpdat
     characterOutfits,
     updateOutfit,
     getNPCNameByKey,
+    getFavorabilityTowardsNPCs,
     getHealthDescription,
     getHealthColor,
   };

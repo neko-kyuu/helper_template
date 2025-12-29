@@ -148,7 +148,7 @@ export interface MvuData {
   };
   system: {
     mainStoryMode: boolean;
-    customApi: CustomApiConfig;
+    tradeCustomApi: CustomApiConfig;
   };
 }
 

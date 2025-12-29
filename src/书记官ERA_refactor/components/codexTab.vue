@@ -174,9 +174,8 @@ const {
 
 <style lang="scss" scoped>
 .codex-container {
-  padding: 10px 40px;
+  padding: 10px 20px;
   display: flex;
-  flex-direction: column;
   gap: 10px;
   height: 100%;
   .codex-grid {

@@ -87,9 +87,7 @@
               <div class="column-content" v-for="(value, key) in selectedChar.meta" :key="key">
                 <span>{{ metaLabels[key] || key }}</span>
                 <span v-if="key === 'favorabilityTowardsNPCs'">
-                  <div v-for="(fav, npcName) in value" :key="npcName">
-                    {{ getNPCNameByKey(npcName as unknown as string) }}: {{ fav }}
-                  </div>
+                  {{ getFavorabilityTowardsNPCs(value as unknown as any) }}
                 </span>
                 <span v-else> {{ value }} </span>
               </div>
@@ -146,6 +144,7 @@ const {
   characterOutfits,
   updateOutfit,
   getNPCNameByKey,
+  getFavorabilityTowardsNPCs,
   getHealthDescription,
   getHealthColor,
 } = useParty(mvu, rawMvuData, handleMvuUpdate);

@@ -103,13 +103,13 @@ const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTa
 </script>
 <style lang="scss" scoped>
 .quest-container {
-  padding: 10px 40px;
+  padding: 10px 20px;
   display: flex;
-  flex-direction: column;
   gap: 10px;
   height: 100%;
 
   .quest-item-container {
+    width: 100%;
     max-height: 360px;
     overflow-y: auto;
   }

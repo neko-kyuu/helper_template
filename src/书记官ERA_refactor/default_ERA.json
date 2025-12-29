@@ -431,7 +431,7 @@
     "$meta": {
       "updatable": true
     },
-    "customApi":{
+    "tradeCustomApi":{
       "$meta": {
         "updatable": true
       },

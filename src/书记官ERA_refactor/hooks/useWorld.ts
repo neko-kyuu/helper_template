@@ -39,11 +39,25 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
     return '#8bc34a';
   };
 
-  const deleteNPC = (npcKey: string) => {
+  const getNextId = (obj: Record<string, any> | undefined, prefix: string): string => {
+    if (!obj) return `${prefix}1`;
+    const keys = Object.keys(obj);
+    const ids = keys
+      .map(k => {
+        const match = k.match(new RegExp(`^${prefix}(\\d+)$`));
+        return match ? parseInt(match[1], 10) : 0;
+      })
+      .filter(id => !isNaN(id));
+    const maxId = ids.length > 0 ? Math.max(...ids) : 0;
+    return `${prefix}${maxId + 1}`;
+  };
+
+  const archiveNPC = (npcKey: string) => {
     const itemToDelete = mvu.value.worldInfo.nearbyNPC[npcKey];
     if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
       selectNpc(null, '');
     }
+    const newKey = getNextId(mvu.value.archivedData.worldNPC, 'AC');
     handleMvuUpdate([
       {
         event: 'deleteByPath',
@@ -56,7 +70,27 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'insertByPath',
         detail: {
-          path: `archivedData.worldNPC.${npcKey}`,
+          path: `archivedData.worldNPC.${newKey}`,
+          value: itemToDelete,
+        },
+      },
+    ]);
+  };
+  const archiveFaction = (factionKey: string) => {
+    const itemToDelete = mvu.value.worldInfo.factionPrestige[factionKey];
+    handleMvuUpdate([
+      {
+        event: 'deleteByPath',
+        detail: {
+          path: `worldInfo.factionPrestige.${factionKey}`,
+        },
+      },
+    ]);
+    handleMvuUpdate([
+      {
+        event: 'insertByPath',
+        detail: {
+          path: `archivedData.factionPrestige.${factionKey}`,
           value: itemToDelete,
         },
       },
@@ -68,6 +102,7 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
     if (selectedNpc.value && itemToDelete && selectedNpc.value.character.name === itemToDelete.character.name) {
       selectNpc(null, '');
     }
+    const newKey = getNextId(mvu.value.worldInfo.nearbyNPC, 'C');
     handleMvuUpdate([
       {
         event: 'deleteByPath',
@@ -80,7 +115,27 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
       {
         event: 'insertByPath',
         detail: {
-          path: `worldInfo.nearbyNPC.${npcKey}`,
+          path: `worldInfo.nearbyNPC.${newKey}`,
+          value: itemToDelete,
+        },
+      },
+    ]);
+  };
+  const openFaction = (factionKey: string) => {
+    const itemToDelete = mvu.value.archivedData.factionPrestige[factionKey];
+    handleMvuUpdate([
+      {
+        event: 'deleteByPath',
+        detail: {
+          path: `archivedData.factionPrestige.${factionKey}`,
+        },
+      },
+    ]);
+    handleMvuUpdate([
+      {
+        event: 'insertByPath',
+        detail: {
+          path: `worldInfo.factionPrestige.${factionKey}`,
           value: itemToDelete,
         },
       },
@@ -90,7 +145,22 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
   const getNPCNameByKey = (npcKey: string): string => {
     const npc = mvu.value.worldInfo.nearbyNPC;
     const party = mvu.value.followerNPCData;
-    return npc[npcKey] ? npc[npcKey].character.name : party[npcKey] ? party[npcKey].character.name : '';
+    const archivedNpc = mvu.value.archivedData.worldNPC;
+    return npc[npcKey]
+      ? npc[npcKey].character.name
+      : party[npcKey]
+        ? party[npcKey].character.name
+        : archivedNpc[npcKey]
+          ? archivedNpc[npcKey].character.name
+          : '未知NPC';
+  };
+  const getFavorabilityTowardsNPCs = (val: Record<string, number> | undefined) => {
+    if (!val) return '';
+
+    const favs = Object.entries(val).map(([npcName, fav]) => {
+      return `${npcName}: ${fav}`;
+    });
+    return favs.join(', ');
   };
 
   return {
@@ -100,8 +170,11 @@ export function useWorld(mvu: Ref<MvuData>, handleMvuUpdate: Function, emit: (ev
     openWorldMap,
     getPrestigeDescription,
     getPrestigeColor,
-    deleteNPC,
+    archiveNPC,
     openNPC,
+    archiveFaction,
+    openFaction,
     getNPCNameByKey,
+    getFavorabilityTowardsNPCs,
   };
 }

@@ -73,7 +73,7 @@
 
 <script setup lang="ts">
 import _ from 'lodash';
-import { computed, defineExpose, defineProps, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useMvuData } from '../hooks/useMvuData';
 import { useParty } from '../hooks/useParty';
 import { qualityLabels, slotLabels, tierLabels, type InventoryItem, type SlotType } from '../itemConstants';

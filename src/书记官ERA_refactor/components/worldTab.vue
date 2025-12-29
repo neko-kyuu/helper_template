@@ -32,9 +32,9 @@
           <i
             v-if="!archivedFlag"
             class="fa-solid fa-trash-can"
-            @click="deleteNPC(selectedNpc.id)"
+            @click="archiveNPC(selectedNpc.id)"
             style="cursor: pointer; position: absolute; top: 15px; right: 15px"
-            title="删除NPC"
+            title="归档NPC"
           >
           </i>
           <i
@@ -55,9 +55,9 @@
             <div class="column-content grid-col-span-full" v-for="(value, key) in selectedNpc.meta" :key="key">
               <span>{{ metaLabels[key as keyof typeof selectedNpc.meta] || key }}</span>
               <span v-if="key === 'favorabilityTowardsNPCs'">
-                <div v-for="(fav, npcName) in value" :key="npcName">
-                  {{ getNPCNameByKey(npcName as unknown as string) }}: {{ fav }}
-                </div>
+                <span v-if="key === 'favorabilityTowardsNPCs'">
+                  {{ getFavorabilityTowardsNPCs(value as unknown as any) }}
+                </span>
               </span>
               <span v-else> {{ value }} </span>
             </div>
@@ -81,6 +81,25 @@
         <div class="faction-name">{{ faction.name }}</div>
         <div class="faction-prestige" :style="{ color: getPrestigeColor(faction.prestige) }">
           {{ faction.prestige }} ({{ getPrestigeDescription(faction.prestige) }})
+          <i class="fa-solid fa-trash-can" @click="archiveFaction(index)" style="cursor: pointer" title="归档阵营"> </i>
+        </div>
+      </div>
+      <div class="faction-content">
+        <span>{{ faction.description }}</span>
+      </div>
+    </div>
+    <div v-for="(faction, index) in mvu.archivedData.factionPrestige" :key="index" class="faction-card archived">
+      <div class="faction-header">
+        <div class="faction-name">{{ faction.name }}</div>
+        <div class="faction-prestige" :style="{ color: getPrestigeColor(faction.prestige) }">
+          {{ faction.prestige }} ({{ getPrestigeDescription(faction.prestige) }})
+          <i
+            class="fa-solid fa-arrow-up-from-bracket"
+            @click="openFaction(index)"
+            style="cursor: pointer"
+            title="恢复阵营"
+          >
+          </i>
         </div>
       </div>
       <div class="faction-content">
@@ -104,9 +123,12 @@ const {
   openWorldMap,
   getPrestigeDescription,
   getPrestigeColor,
-  deleteNPC,
+  archiveNPC,
   openNPC,
+  archiveFaction,
+  openFaction,
   getNPCNameByKey,
+  getFavorabilityTowardsNPCs,
 } = useWorld(mvu, handleMvuUpdate, emit);
 const { characterLabels, metaLabels, attributeLabels } = useParty(mvu, rawMvuData, handleMvuUpdate);
 </script>
@@ -166,6 +188,9 @@ const { characterLabels, metaLabels, attributeLabels } = useParty(mvu, rawMvuDat
     border: 1px solid var(--border_color);
     border-radius: 4px;
     margin-bottom: 4px;
+    &.archived {
+      background-color: var(--underline_text_color);
+    }
 
     .faction-header {
       padding: 6px 5px;

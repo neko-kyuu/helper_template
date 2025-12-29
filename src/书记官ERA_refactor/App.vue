@@ -58,7 +58,7 @@
 
       <!-- 交易 -->
       <template v-if="activeTab === 'trade'">
-        <TradeTab />
+        <TradeTab @open-settings="openTradeSettingsModal" />
       </template>
       <!-- 图鉴 -->
       <template v-if="activeTab === 'codex'">
@@ -95,6 +95,7 @@ import { useMvuData } from './hooks/useMvuData';
 import MapSelector from './components/MapSelector.vue';
 import ModalDialog from './components/ModalDialog.vue';
 import OutfitSelector from './components/outfitSelector.vue';
+import TradeApiSettings from './components/tradeApiSettings.vue';
 import TradeTab from './components/tradeTab.vue';
 
 const activeTab = ref('party');
@@ -116,6 +117,12 @@ const openOutfitModal = (outfitId?: string) => {
   editingOutfitId.value = outfitId || null;
   modalTitle.value = outfitId ? '编辑套装' : '新增套装';
   modalContent.value = OutfitSelector;
+  showModal.value = true;
+};
+
+const openTradeSettingsModal = () => {
+  modalTitle.value = '交易所 API 设置';
+  modalContent.value = TradeApiSettings;
   showModal.value = true;
 };
 
@@ -155,6 +162,21 @@ const handleConfirm = () => {
           },
         },
       ]);
+    }
+  } else if (modalContent.value === TradeApiSettings) {
+    const apiConfig = modalComponentRef.value?.getApiConfig();
+    if (apiConfig) {
+      const hasCustomApi = !!mvu.value.system.tradeCustomApi;
+      handleMvuUpdate([
+        {
+          event: hasCustomApi ? 'updateByPath' : 'insertByPath',
+          detail: {
+            path: 'system.tradeCustomApi',
+            value: apiConfig,
+          },
+        },
+      ]);
+      toastr.success('API 配置已保存');
     }
   } else {
     console.log('确认按钮被点击');
