@@ -18,6 +18,18 @@
           >
             {{ entry.name }}
           </div>
+          <template v-if="Object.keys(achivedBestiary).length">
+            <div class="section-title grid-col-span-full">已归档</div>
+            <div
+              class="master-grid-item"
+              v-for="(entry, index) in achivedBestiary"
+              :key="index"
+              @click="selectEntry(entry, index as string, 'archivedEntries')"
+              :class="{ selected: selectedEntry?.name === entry.name }"
+            >
+              {{ entry.name }}
+            </div>
+          </template>
         </template>
         <template v-if="activeCodexTab === 'anecdotes'">
           <template v-if="Object.keys(anecdoteEntries).length">
@@ -32,11 +44,11 @@
               {{ entry.name }}
             </div>
           </template>
-          <template v-if="Object.keys(archivedEntries).length">
+          <template v-if="Object.keys(archivedAnecdote).length">
             <div class="section-title grid-col-span-full">已归档</div>
             <div
               class="master-grid-item"
-              v-for="(entry, index) in archivedEntries"
+              v-for="(entry, index) in archivedAnecdote"
               :key="index"
               @click="selectEntry(entry, index as string, 'archivedEntries')"
               :class="{ selected: selectedEntry?.name === entry.name }"
@@ -168,6 +180,7 @@ const {
   saveChanges,
   archiveEntry,
   openEntry,
-  archivedEntries,
+  archivedAnecdote,
+  achivedBestiary,
 } = useCodex(mvu, handleMvuUpdate);
 </script>

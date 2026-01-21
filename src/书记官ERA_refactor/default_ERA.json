@@ -253,7 +253,22 @@
         }
       }
     },
-    "gold": 100
+    "gold": 100,
+    "debt": {
+      "$meta": {
+        "updatable": true
+      },
+      "$template": {
+        "creditor": "[债权人]",
+        "amount": 0,
+        "dueDate": "[到期日期]",
+        "interestRate": "[利率]",
+        "description": "[债务描述]",
+        "$meta": {
+          "updatable": true
+        }
+      }
+    }
   },
   "followerNPCData": {
     "$meta": {

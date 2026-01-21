@@ -86,6 +86,14 @@ export interface CustomApiConfig {
   model: string;
 }
 
+export interface DebtEntry {
+  creditor: string;
+  amount: number;
+  dueDate: string;
+  interestRate: string;
+  description: string;
+}
+
 export interface MvuData {
   playerData: {
     character: {
@@ -114,6 +122,7 @@ export interface MvuData {
   playerDynamicData: {
     inventory: Record<string, InventoryItem>;
     gold: number;
+    debt: Record<string, DebtEntry>;
   };
   followerNPCData: Record<string, NpcData>;
   wardrobe: {

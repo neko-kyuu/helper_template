@@ -57,6 +57,7 @@ const defaultMvuData: MvuData = {
   playerDynamicData: {
     inventory: {},
     gold: 100,
+    debt: {},
   },
   followerNPCData: {},
   wardrobe: {

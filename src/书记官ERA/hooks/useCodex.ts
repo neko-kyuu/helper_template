@@ -131,8 +131,12 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     selectEntry(null, '', '');
   });
 
-  const archivedEntries = computed(() => {
+  const archivedAnecdote = computed(() => {
     return mvu.value.ArchivedData.anecdotes || {};
+  });
+
+  const achivedBestiary = computed(() => {
+    return mvu.value.ArchivedData.bestiary || {};
   });
 
   const archiveEntry = (entryKey: string) => {
@@ -232,6 +236,7 @@ export function useCodex(mvu: Ref<MvuData>, handleMvuUpdate: Function) {
     saveChanges,
     archiveEntry,
     openEntry,
-    archivedEntries,
+    archivedAnecdote,
+    achivedBestiary,
   };
 }

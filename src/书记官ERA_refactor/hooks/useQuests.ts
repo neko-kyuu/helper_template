@@ -38,6 +38,24 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
       ]);
     }
   };
+  const completeQuest = (questId: string) => {
+    const questToComplete = mvu.value.progressData.currentQuest[questId];
+
+    if (questToComplete) {
+      const quest = _.cloneDeep(questToComplete);
+      toastr.success(`成功完成 ${questToComplete.name} `);
+      handleMvuUpdate([
+        {
+          event: 'insertByPath',
+          detail: { path: `progressData.completedQuest.${questId}`, value: quest },
+        },
+        {
+          event: 'deleteByPath',
+          detail: { path: `progressData.currentQuest.${questId}` },
+        },
+      ]);
+    }
+  };
 
   const deleteQuest = (
     questId: string,
@@ -64,6 +82,7 @@ export function useQuests(mvu: any, handleMvuUpdate: any) {
     completedQuests,
     activeQuestTab,
     activeQuest,
+    completeQuest,
     deleteQuest,
   };
 }

@@ -66,6 +66,12 @@ QuestData: # 任务数据
   name:        # String: 任务名称。
   description: # String: 任务描述。
   isMain:      # Boolean: 是否是主线任务。
+DebtEntry: # 债务条目
+  creditor:     # String: 债权人。
+  amount:       # Number: 欠款金额。
+  dueDate:      # String: 到期日期。
+  interestRate: # String: 利率。
+  description:  # String: 债务描述。
 
 # 3. 核心变量结构
 playerData: # Object: 玩家静态数据根对象
@@ -91,6 +97,7 @@ progressData:   # Object: 进度信息
   completedQuest:  {{ERA:progressData.completedQuest}} # Object: QuestData, 已完成任务，如果任务分阶段则须完成最终阶段 (只增不删)
 playerDynamicData: # Object: 玩家动态数据
   inventory: {{ERA:playerDynamicData.inventory}} # Object: InventoryItem, 小队的物品，包括跟随NPC的物品
+  debt:      {{ERA:playerDynamicData.debt}} # Object: DebtEntry, 玩家的债务信息
   gold:      {{ERA:playerDynamicData.gold}} # Number: 玩家拥有的金币
 followerNPCData: {{ERA:followerNPCData}} # Object: 跟随的NPC数据
   # 注意: 此列表的插入与删除只能通过用户自行指定，绝对不可以随意进行。

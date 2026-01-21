@@ -18,15 +18,19 @@
     <template v-if="activeQuestTab === 'currentQuests'">
       <div v-if="Object.keys(currentQuests).length === 0" class="data-empty">自由探索中</div>
       <div class="quest-item-container" v-else>
+        <div class="quest-phase">当前进度: {{ mvu.progressData.questPhase }}</div>
         <div
           class="quest-item"
-          v-for="(quest, index) in currentQuests"
-          :key="index"
+          v-for="(quest, questId) in currentQuests"
+          :key="questId"
           :class="{ 'side-quest': !quest.isMain, 'main-quest': quest.isMain }"
         >
           <div class="quest-title">
             {{ quest.isMain ? '主线' : '支线' }} - {{ quest.name }}
-            <button @click="deleteQuest(index as unknown as string, 'currentQuest')">删除</button>
+            <div>
+              <button @click="completeQuest(questId as unknown as string)" style="margin-right: 6px">完成</button>
+              <button @click="deleteQuest(questId as unknown as string, 'currentQuest')">删除</button>
+            </div>
           </div>
           <div class="quest-description">{{ quest.description }}</div>
         </div>
@@ -98,8 +102,16 @@ import { useQuests } from '../hooks/useQuests';
 
 const { mvu, handleMvuUpdate } = useMvuData();
 
-const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTab, activeQuest, deleteQuest } =
-  useQuests(mvu, handleMvuUpdate);
+const {
+  currentQuests,
+  nextQuests,
+  pendingQuests,
+  completedQuests,
+  activeQuestTab,
+  activeQuest,
+  completeQuest,
+  deleteQuest,
+} = useQuests(mvu, handleMvuUpdate);
 </script>
 <style lang="scss" scoped>
 .quest-container {
@@ -112,6 +124,11 @@ const { currentQuests, nextQuests, pendingQuests, completedQuests, activeQuestTa
     width: 100%;
     max-height: 360px;
     overflow-y: auto;
+  }
+  .quest-phase {
+    font-size: var(--font-size-small);
+    color: var(--main_text_color);
+    margin-bottom: 6px;
   }
 
   .quest-item {
