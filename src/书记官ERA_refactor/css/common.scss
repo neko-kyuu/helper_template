@@ -82,7 +82,7 @@ button {
   padding-right: 8px;
   border-right: 1px solid var(--border_color);
 
-  button:not(.active){
+  button:not(.active) {
     background: transparent;
     border: none;
     text-align: right;
