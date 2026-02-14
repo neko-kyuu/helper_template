@@ -3,6 +3,7 @@
 import _ from 'lodash';
 import fs from 'node:fs';
 import path from 'node:path';
+<<<<<<< HEAD
 import { z } from 'zod';
 
 fs.globSync('src/**/schema.ts').forEach(async schema_file => {
@@ -12,6 +13,25 @@ fs.globSync('src/**/schema.ts').forEach(async schema_file => {
       fs.writeFileSync(
         path.join(path.dirname(schema_file), 'schema.json'),
         JSON.stringify(z.toJSONSchema(_.get(module, 'Schema'), { io: 'input', reused: 'ref' }), null, 2),
+=======
+import z from 'zod';
+
+fs.globSync('src/**/schema.ts').forEach(async schema_file => {
+  try {
+    globalThis._ = _;
+    globalThis.z = z;
+    const module = await import(
+      (process.platform === 'win32' ? 'file://' : '') + path.resolve(import.meta.dirname, schema_file)
+    );
+    if (_.has(module, 'Schema')) {
+      const schema = _.get(module, 'Schema');
+      if (_.isFunction(schema)) {
+        schema = schema();
+      }
+      fs.writeFileSync(
+        path.join(path.dirname(schema_file), 'schema.json'),
+        JSON.stringify(z.toJSONSchema(schema, { io: 'input', reused: 'ref' }), null, 2),
+>>>>>>> f761507b911da83fd69f1d4a12af9a3f8c81d148
       );
     }
   } catch (e) {
